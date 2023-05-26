@@ -9,13 +9,16 @@ import (
 
 	"api/internal/config"
 	v1 "api/internal/controllers/http/v1"
-	"api/internal/domain/usecase"
+	"api/internal/domain/service"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/i-b8o/logging"
 	"github.com/julienschmidt/httprouter"
+	pb "github.com/marketconnect/contracts/pb/auth/v1"
 	"github.com/rs/cors"
 	"golang.org/x/sync/errgroup"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 type App struct {
@@ -30,9 +33,19 @@ func NewApp(ctx context.Context, config *config.Config) (App, error) {
 	logger := logging.GetLogger(config.AppConfig.LogLevel)
 	logger.Print("router initializing")
 	router := httprouter.New()
+	creds := insecure.NewCredentials()
+	conn, err := grpc.Dial(
+		fmt.Sprintf("%s:%d", config.Service.IP, config.Service.PORT),
+		grpc.WithTransportCredentials(creds),
+	)
 
-	// Usecase
-	authUsecase := usecase.NewAuthUsecase()
+	if err != nil {
+		return App{}, err
+	}
+	authClient := pb.NewAuthServiceClient(conn)
+
+	// Service
+	authUsecase := service.NewAuthUsecase(authClient)
 
 	// Handler
 	authHandler := v1.NewAuthHandler(authUsecase)

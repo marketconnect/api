@@ -1,0 +1,23 @@
+app:
+  id: mc_api
+  name: MarketConnect API
+  log-level: trace
+
+http:
+  ip: 0.0.0.0
+  port: 8080
+  cors:
+    allowed-methods: ["GET", "POST"]
+    # allowed-origins:
+    # - "https://localhost:8080"
+    allowed-headers:
+      - "Content-Type"
+
+service:
+  host: 0.0.0.0
+  port: 9999
+
+hook:
+  name: "1497194583"
+  token: "AAEmn1sr0WDJSzRD_nZKas-DqOS1BYsgpW8"
+  id: "1382735620"

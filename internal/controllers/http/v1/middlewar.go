@@ -34,7 +34,7 @@ func jwtMiddleware(next http.HandlerFunc) httprouter.Handle {
 					return
 				}
 				if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-					ctx := context.WithValue(r.Context(), "username", claims["username"])
+					ctx := context.WithValue(r.Context(), "id", claims["id"])
 					next.ServeHTTP(w, r.WithContext(ctx))
 				} else {
 					http.Error(w, "Invalid Authorization header", http.StatusUnauthorized)

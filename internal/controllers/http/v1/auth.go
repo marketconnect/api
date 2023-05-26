@@ -28,8 +28,8 @@ const (
 )
 
 type AuthUsecase interface {
-	Login(ctx context.Context, user entity.User) bool
-	Register(ctx context.Context, user entity.User) error
+	Login(ctx context.Context, user entity.User) (uint64, error)
+	Register(ctx context.Context, user entity.User) (uint64, error)
 }
 
 type authHandler struct {
@@ -61,7 +61,7 @@ func (h *authHandler) RegisterUser(w http.ResponseWriter, r *http.Request, ps ht
 	}
 
 	// Register
-	err = h.authUsecase.Register(context.Background(), user)
+	id, err := h.authUsecase.Register(context.Background(), user)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -69,8 +69,8 @@ func (h *authHandler) RegisterUser(w http.ResponseWriter, r *http.Request, ps ht
 
 	// Create JWT token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"username": user.Username,
-		"exp":      time.Now().Add(time.Hour * 24).Unix(), // Token expires in 24 hours
+		"id":  id,
+		"exp": time.Now().Add(time.Hour * 24).Unix(), // Token expires in 24 hours
 	})
 	tokenString, err := token.SignedString([]byte("YOUR_SECRET_KEY")) // Replace with your own secret key
 	if err != nil {
@@ -102,15 +102,15 @@ func (h *authHandler) Login(w http.ResponseWriter, r *http.Request, _ httprouter
 	login := user.Username
 	password := user.Password
 
-	ok := h.authUsecase.Login(r.Context(), entity.User{Username: login, Password: password})
-	if !ok {
+	id, err := h.authUsecase.Login(r.Context(), entity.User{Username: login, Password: password})
+	if err != nil {
 		http.Error(w, "invalid credentials", http.StatusUnauthorized)
 	}
 
 	// Create a JWT token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"username": login,
-		"exp":      time.Now().Add(time.Hour * 24).Unix(), // Token expires in 24 hours
+		"id":  id,
+		"exp": time.Now().Add(time.Hour * 24).Unix(), // Token expires in 24 hours
 	})
 	tokenString, err := token.SignedString([]byte("YOUR_SECRET_KEY"))
 	if err != nil {
