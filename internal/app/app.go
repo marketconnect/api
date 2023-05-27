@@ -10,7 +10,7 @@ import (
 
 	"mc_api/internal/config"
 	postgressql "mc_api/internal/data_provider"
-	service "mc_api/internal/domain/service"
+	auth_service "mc_api/internal/domain/service/auth_service"
 	pb "mc_api/pkg/api"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -47,7 +47,7 @@ func NewApp(ctx context.Context, config *config.Config) (App, error) {
 	authDataProvider := postgressql.NewAuthStorage(pgClient)
 
 	// Services
-	authService := service.NewAuthService(authDataProvider, logger)
+	authService := auth_service.NewAuthService(authDataProvider, logger)
 
 	// Servers
 	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(unaryInterceptor))
