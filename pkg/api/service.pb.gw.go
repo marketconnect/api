@@ -138,7 +138,7 @@ func RegisterAPIHandlerServer(ctx context.Context, mux *runtime.ServeMux, server
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/main.API/LoginUser", runtime.WithHTTPPathPattern("/main.API/LoginUser"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/main.API/LoginUser", runtime.WithHTTPPathPattern("/login"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -224,7 +224,7 @@ func RegisterAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, client
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/main.API/LoginUser", runtime.WithHTTPPathPattern("/main.API/LoginUser"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/main.API/LoginUser", runtime.WithHTTPPathPattern("/login"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -246,7 +246,7 @@ func RegisterAPIHandlerClient(ctx context.Context, mux *runtime.ServeMux, client
 var (
 	pattern_API_RegisterUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"register"}, ""))
 
-	pattern_API_LoginUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"main.API", "LoginUser"}, ""))
+	pattern_API_LoginUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"login"}, ""))
 )
 
 var (

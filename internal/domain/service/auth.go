@@ -70,9 +70,9 @@ func (s *AuthService) RegisterUser(ctx context.Context, user *pb.User) (*pb.Auth
 func (s *AuthService) LoginUser(ctx context.Context, user *pb.User) (*pb.AuthResponse, error) {
 	email := user.GetEmail()
 	pswd := user.GetPassword()
-	id, err := s.storage.RegisterUser(ctx, email, pswd)
+	id, err := s.storage.LoginUser(ctx, email, pswd)
 	if err != nil {
-		s.logging.Errorf("Error getting chapters: %v", err)
+		s.logging.Errorf("Error login: %v", err)
 		return nil, err
 	}
 	token, err := createToken(id)

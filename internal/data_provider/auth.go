@@ -10,10 +10,11 @@ import (
 
 const (
 	// registerUser = `INSERT INTO chapter ("name", "num", "order_num","doc_id", "title", "description", "keywords") VALUES ($1, $2, $3, $4, $5, $6, $7) ON CONFLICT (doc_id, order_num) DO UPDATE SET	name = excluded.name, num = excluded.num,title = excluded.title, description = excluded.description, keywords = excluded.keywords RETURNING "id";`
-	registerUserQuery = `INSERT INTO public.mc_user (email, password) VALUES ($1, $2) RETURNING id`
-	loginUserQuery    = `SELECT id FROM public.mc_user WHERE email = $1 RETURNING id`
-	updatePswdQuery   = `UPDATE public.mc_user SET password = $1 WHERE id = $2`
-	deleteUserQuery   = `DELETE FROM public.mc_user WHERE id = $1`
+	registerUserQuery  = `INSERT INTO public.mc_user (email, password) VALUES ($1, $2) RETURNING id`
+	loginUserQuery     = `SELECT id FROM public.mc_user WHERE email = $1`
+	loginUserQueryPswd = `SELECT password FROM public.mc_user WHERE email=$1`
+	updatePswdQuery    = `UPDATE public.mc_user SET password = $1 WHERE id = $2`
+	deleteUserQuery    = `DELETE FROM public.mc_user WHERE id = $1`
 )
 
 type authStorage struct {
@@ -41,7 +42,7 @@ func (as *authStorage) LoginUser(ctx context.Context, email, password string) (u
 	}
 	// check if password matches
 	var queriedPassword string
-	err = as.client.QueryRow(ctx, "SELECT password FROM public.user WHERE email=$1", email).Scan(&queriedPassword)
+	err = as.client.QueryRow(ctx, loginUserQueryPswd, email).Scan(&queriedPassword)
 	if err != nil {
 		return 0, fmt.Errorf("failed to retrieve user password: %v", err)
 	}
