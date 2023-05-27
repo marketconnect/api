@@ -3,22 +3,19 @@ package main
 import (
 	"context"
 	"log"
-
-	"api/internal/app"
-	"api/internal/config"
+	"mc_api/internal/app"
+	"mc_api/internal/config"
 )
 
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-
 	cfg := config.GetConfig()
-
 	a, err := app.NewApp(ctx, cfg)
 	if err != nil {
 		log.Fatal(err)
 	}
-	a.Run(ctx)
+	err = a.Run(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}

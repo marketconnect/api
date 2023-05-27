@@ -15,10 +15,13 @@ type Config struct {
 		Token    string `yaml:"token" env:"T_TOKEN"`
 		ChatID   string `yaml:"id" env:"T_ID"`
 	} `yaml:"hook"`
-	Service struct {
-		IP   string `yaml:"ip" env:"IP"`
-		PORT string `yaml:"port" env:"port"`
-	} `yaml:"service"`
+	PostgreSQL struct {
+		Host     string `yaml:"host" env:"DB_HOST" env-required:"true"`
+		Username string `yaml:"username" env:"DB_USER" env-required:"true"`
+		Password string `yaml:"password" env:"DB_PASS" env-required:"true"`
+		Database string `yaml:"database" env:"DB_DBNAME" env-required:"true"`
+		Port     string `yaml:"port" env:"DB_PORT" env-required:"true"`
+	} `yaml:"postgresql"`
 	HTTP struct {
 		IP   string `yaml:"ip" env:"IP"`
 		Port int    `yaml:"port" env:"PORT"`
@@ -29,6 +32,10 @@ type Config struct {
 			AllowedHeaders []string `yaml:"allowed_headers"`
 		} `yaml:"cors"`
 	} `yaml:"http"`
+	GRPC struct {
+		IP   string `yaml:"ip" env:"IP"`
+		Port int    `yaml:"port" env:"PORT"`
+	} `yaml:"grpc"`
 
 	AppConfig struct {
 		LogLevel string `yaml:"log-level" env:"LOG_LEVEL" env-default:"trace"`

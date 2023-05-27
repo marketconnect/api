@@ -13,9 +13,16 @@ http:
     allowed-headers:
       - "Content-Type"
 
-service:
+grpc:
+  ip: 0.0.0.0
+  port: 1953
+  
+postgresql:
   host: 0.0.0.0
-  port: 9999
+  port: "5432"
+  username: mc_service
+  database: mc
+  password: 000000
 
 hook:
   name: "1497194583"
