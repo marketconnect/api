@@ -3,14 +3,15 @@ package app
 import (
 	"context"
 	"fmt"
+	"log"
 	"net"
 	"net/http"
 	"time"
 
-	pb "mc_api/gen/proto"
 	"mc_api/internal/config"
 	postgressql "mc_api/internal/data_provider"
-	service "mc_api/internal/service"
+	service "mc_api/internal/domain/service"
+	pb "mc_api/pkg/api"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/i-b8o/logging"
@@ -49,7 +50,7 @@ func NewApp(ctx context.Context, config *config.Config) (App, error) {
 	authService := service.NewAuthService(authDataProvider, logger)
 
 	// Servers
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(unaryInterceptor))
 	httpServer := runtime.NewServeMux()
 
 	pb.RegisterAPIHandlerServer(context.Background(), httpServer, authService)
@@ -78,4 +79,14 @@ func (a *App) Run(ctx context.Context) error {
 
 	return grp.Wait()
 
+}
+
+func unaryInterceptor(
+	ctx context.Context,
+	req interface{},
+	info *grpc.UnaryServerInfo,
+	handler grpc.UnaryHandler,
+) (interface{}, error) {
+	log.Println("--> unary interceptor: ", info.FullMethod)
+	return handler(ctx, req)
 }

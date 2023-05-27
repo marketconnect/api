@@ -5,15 +5,18 @@ package main;
 option go_package = "./proto";
 
 import "google/api/annotations.proto";
+import "validate/validate.proto";
 
 message User {
-    string email = 1;
-    string password = 2;
-}
+    string email = 1 [(validate.rules).string = {
+        pattern:   "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}",
+        max_bytes: 256,
+      }];
+    string password = 2 [(validate.rules).string = {min_len: 3}];
+    }
 
 message AuthResponse {
-    uint64 id = 1;
-    uint32 code = 2;
+    string token = 1;
 }
 
 service API {
@@ -23,5 +26,10 @@ service API {
             body: "*"
         };
     }
-    rpc LoginUser(User) returns (AuthResponse) {}
+    rpc LoginUser(User) returns (AuthResponse) {
+        option (google.api.http) = {
+            post: "/login"
+            body: "*"
+        };
+    }
 }

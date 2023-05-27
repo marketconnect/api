@@ -1,0 +1,24 @@
+version: v1
+plugins:
+  - plugin: go
+    out: ../pkg/api
+    opt:
+      - paths=source_relative
+  - plugin: go-grpc
+    out: ../pkg/api
+    opt:
+      - paths=source_relative
+  - plugin: grpc-gateway
+    out: ../pkg/api
+    opt:
+      - paths=source_relative
+      - generate_unbound_methods=true
+  - plugin: openapiv2
+    out: ../pkg/api
+    opt:
+      - allow_delete_body=true
+  - plugin: validate
+    out: ../pkg/api
+    opt:
+      - lang=go
+      - paths=source_relative

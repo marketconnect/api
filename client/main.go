@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	pb "mc_api/gen/proto"
+	pb "mc_api/pkg/api"
 
 	"google.golang.org/grpc"
 )
