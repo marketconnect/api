@@ -39,7 +39,7 @@ func NewAuthService(storage AuthStorage, logging logging.Logger) *AuthService {
 	}
 }
 
-func (s *AuthService) RegisterUser(ctx context.Context, user *pb.User) (*pb.AuthResponse, error) {
+func (s *AuthService) RegisterUser(ctx context.Context, user *pb.User) (*pb.TokenMessage, error) {
 	// // Anything linked to this variable will fetch request headers.
 	// md, ok := metadata.FromIncomingContext(ctx)
 
@@ -64,10 +64,10 @@ func (s *AuthService) RegisterUser(ctx context.Context, user *pb.User) (*pb.Auth
 
 	}
 
-	return &pb.AuthResponse{Token: token}, nil
+	return &pb.TokenMessage{Token: token}, nil
 }
 
-func (s *AuthService) LoginUser(ctx context.Context, user *pb.User) (*pb.AuthResponse, error) {
+func (s *AuthService) LoginUser(ctx context.Context, user *pb.User) (*pb.TokenMessage, error) {
 	email := user.GetEmail()
 	pswd := user.GetPassword()
 	id, err := s.storage.LoginUser(ctx, email, pswd)
@@ -79,7 +79,7 @@ func (s *AuthService) LoginUser(ctx context.Context, user *pb.User) (*pb.AuthRes
 	if err != nil {
 		return nil, status.Error(codes.Internal, "internal error")
 	}
-	return &pb.AuthResponse{Token: token}, nil
+	return &pb.TokenMessage{Token: token}, nil
 }
 
 func errHandler(err error) error {

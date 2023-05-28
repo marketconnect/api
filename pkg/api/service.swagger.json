@@ -23,7 +23,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/mainAuthResponse"
+              "$ref": "#/definitions/mainTokenMessage"
             }
           },
           "default": {
@@ -48,6 +48,38 @@
         ]
       }
     },
+    "/ranking": {
+      "post": {
+        "operationId": "API_Ranking",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/mainRankingResp"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/mainTokenMessage"
+            }
+          }
+        ],
+        "tags": [
+          "API"
+        ]
+      }
+    },
     "/register": {
       "post": {
         "operationId": "API_RegisterUser",
@@ -55,7 +87,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/mainAuthResponse"
+              "$ref": "#/definitions/mainTokenMessage"
             }
           },
           "default": {
@@ -82,7 +114,30 @@
     }
   },
   "definitions": {
-    "mainAuthResponse": {
+    "mainKeyPhrase": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        }
+      }
+    },
+    "mainRankingResp": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        },
+        "keyPhrases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/mainKeyPhrase"
+          }
+        }
+      }
+    },
+    "mainTokenMessage": {
       "type": "object",
       "properties": {
         "token": {

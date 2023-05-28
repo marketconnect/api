@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package main;
+
+option go_package = "./proto";
+
+
+import "validate/validate.proto";
+
+message User {
+    string email = 1 [(validate.rules).string = {
+        pattern:   "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}",
+        max_bytes: 256,
+      }];
+    string password = 2 [(validate.rules).string = {min_len: 3}];
+    }
+
+message TokenMessage {
+    string token = 1;
+}
+
+message Rank{
+    string date = 1;
+
+}
+
+message KeyPhrase {
+    string text = 1;
+}
+
+
+message RankingResp {
+    string token = 1;
+    repeated KeyPhrase keyPhrases = 2; 
+}
+

@@ -21,14 +21,16 @@ const _ = grpc.SupportPackageIsVersion7
 const (
 	API_RegisterUser_FullMethodName = "/main.API/RegisterUser"
 	API_LoginUser_FullMethodName    = "/main.API/LoginUser"
+	API_Ranking_FullMethodName      = "/main.API/Ranking"
 )
 
 // APIClient is the client API for API service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type APIClient interface {
-	RegisterUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*AuthResponse, error)
-	LoginUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*AuthResponse, error)
+	RegisterUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*TokenMessage, error)
+	LoginUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*TokenMessage, error)
+	Ranking(ctx context.Context, in *TokenMessage, opts ...grpc.CallOption) (*RankingResp, error)
 }
 
 type aPIClient struct {
@@ -39,8 +41,8 @@ func NewAPIClient(cc grpc.ClientConnInterface) APIClient {
 	return &aPIClient{cc}
 }
 
-func (c *aPIClient) RegisterUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*AuthResponse, error) {
-	out := new(AuthResponse)
+func (c *aPIClient) RegisterUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*TokenMessage, error) {
+	out := new(TokenMessage)
 	err := c.cc.Invoke(ctx, API_RegisterUser_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -48,9 +50,18 @@ func (c *aPIClient) RegisterUser(ctx context.Context, in *User, opts ...grpc.Cal
 	return out, nil
 }
 
-func (c *aPIClient) LoginUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*AuthResponse, error) {
-	out := new(AuthResponse)
+func (c *aPIClient) LoginUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*TokenMessage, error) {
+	out := new(TokenMessage)
 	err := c.cc.Invoke(ctx, API_LoginUser_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *aPIClient) Ranking(ctx context.Context, in *TokenMessage, opts ...grpc.CallOption) (*RankingResp, error) {
+	out := new(RankingResp)
+	err := c.cc.Invoke(ctx, API_Ranking_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -61,8 +72,9 @@ func (c *aPIClient) LoginUser(ctx context.Context, in *User, opts ...grpc.CallOp
 // All implementations must embed UnimplementedAPIServer
 // for forward compatibility
 type APIServer interface {
-	RegisterUser(context.Context, *User) (*AuthResponse, error)
-	LoginUser(context.Context, *User) (*AuthResponse, error)
+	RegisterUser(context.Context, *User) (*TokenMessage, error)
+	LoginUser(context.Context, *User) (*TokenMessage, error)
+	Ranking(context.Context, *TokenMessage) (*RankingResp, error)
 	mustEmbedUnimplementedAPIServer()
 }
 
@@ -70,11 +82,14 @@ type APIServer interface {
 type UnimplementedAPIServer struct {
 }
 
-func (UnimplementedAPIServer) RegisterUser(context.Context, *User) (*AuthResponse, error) {
+func (UnimplementedAPIServer) RegisterUser(context.Context, *User) (*TokenMessage, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterUser not implemented")
 }
-func (UnimplementedAPIServer) LoginUser(context.Context, *User) (*AuthResponse, error) {
+func (UnimplementedAPIServer) LoginUser(context.Context, *User) (*TokenMessage, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LoginUser not implemented")
+}
+func (UnimplementedAPIServer) Ranking(context.Context, *TokenMessage) (*RankingResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Ranking not implemented")
 }
 func (UnimplementedAPIServer) mustEmbedUnimplementedAPIServer() {}
 
@@ -125,6 +140,24 @@ func _API_LoginUser_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _API_Ranking_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TokenMessage)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(APIServer).Ranking(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: API_Ranking_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(APIServer).Ranking(ctx, req.(*TokenMessage))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // API_ServiceDesc is the grpc.ServiceDesc for API service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -139,6 +172,10 @@ var API_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "LoginUser",
 			Handler:    _API_LoginUser_Handler,
+		},
+		{
+			MethodName: "Ranking",
+			Handler:    _API_Ranking_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -5,53 +5,26 @@ package main;
 option go_package = "./proto";
 
 import "google/api/annotations.proto";
-import "validate/validate.proto";
+import "message.proto";
 
-message User {
-    string email = 1 [(validate.rules).string = {
-        pattern:   "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}",
-        max_bytes: 256,
-      }];
-    string password = 2 [(validate.rules).string = {min_len: 3}];
-    }
-
-message KeyPhrase {
-    string text = 1;
-}
-
-message AddKeyPhrasesReq {
-    string token = 1;
-    repeated KeyPhrase keyPhrases = 2; 
-}
-
-message AuthResponse {
-    string token = 1;
-}
 
 service API {
-    rpc RegisterUser(User) returns (AuthResponse) {
+    rpc RegisterUser(User) returns (TokenMessage) {
         option (google.api.http) = {
             post: "/register"
             body: "*"
         };
     }
-    rpc LoginUser(User) returns (AuthResponse) {
+    rpc LoginUser(User) returns (TokenMessage) {
         option (google.api.http) = {
             post: "/login"
             body: "*"
         };
     }
 
-    rpc AddKeyPhrases(AddKeyPhrasesReq) returns (AuthResponse) {
+    rpc Ranking(TokenMessage) returns (RankingResp) {
         option (google.api.http) = {
-            post: "/add-keywords"
-            body: "*"
-        };
-    }
-
-    rpc GetKeyPhrases(AddKeyPhrasesReq) returns (AuthResponse) {
-        option (google.api.http) = {
-            post: "/keywords"
+            post: "/ranking"
             body: "*"
         };
     }
