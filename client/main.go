@@ -16,7 +16,7 @@ func main() {
 		log.Println(err)
 	}
 
-	client := pb.NewAPIClient(conn)
+	client := pb.NewAuthServiceClient(conn)
 	resp, err := client.LoginUser(context.Background(), &pb.User{Email: "aassfd@mail.ru", Password: "111222333444"})
 	if err != nil {
 		log.Println(err)

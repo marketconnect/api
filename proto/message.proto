@@ -6,6 +6,8 @@ option go_package = "./proto";
 
 import "validate/validate.proto";
 
+message Empty {}
+
 message User {
     string email = 1 [(validate.rules).string = {
         pattern:   "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}",

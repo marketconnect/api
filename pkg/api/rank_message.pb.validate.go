@@ -35,6 +35,372 @@ var (
 	_ = sort.Sort
 )
 
+// Validate checks the field values on Phrase with the rules defined in the
+// proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *Phrase) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on Phrase with the rules defined in the
+// proto definition for this message. If any rules are violated, the result is
+// a list of violation errors wrapped in PhraseMultiError, or nil if none found.
+func (m *Phrase) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *Phrase) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Text
+
+	if len(errors) > 0 {
+		return PhraseMultiError(errors)
+	}
+
+	return nil
+}
+
+// PhraseMultiError is an error wrapping multiple validation errors returned by
+// Phrase.ValidateAll() if the designated constraints aren't met.
+type PhraseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m PhraseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m PhraseMultiError) AllErrors() []error { return m }
+
+// PhraseValidationError is the validation error returned by Phrase.Validate if
+// the designated constraints aren't met.
+type PhraseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e PhraseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e PhraseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e PhraseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e PhraseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e PhraseValidationError) ErrorName() string { return "PhraseValidationError" }
+
+// Error satisfies the builtin error interface
+func (e PhraseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sPhrase.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = PhraseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = PhraseValidationError{}
+
+// Validate checks the field values on Rank with the rules defined in the proto
+// definition for this message. If any rules are violated, the first error
+// encountered is returned, or nil if there are no violations.
+func (m *Rank) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on Rank with the rules defined in the
+// proto definition for this message. If any rules are violated, the result is
+// a list of violation errors wrapped in RankMultiError, or nil if none found.
+func (m *Rank) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *Rank) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Date
+
+	// no validation rules for Rank
+
+	// no validation rules for PaidRank
+
+	if len(errors) > 0 {
+		return RankMultiError(errors)
+	}
+
+	return nil
+}
+
+// RankMultiError is an error wrapping multiple validation errors returned by
+// Rank.ValidateAll() if the designated constraints aren't met.
+type RankMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m RankMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m RankMultiError) AllErrors() []error { return m }
+
+// RankValidationError is the validation error returned by Rank.Validate if the
+// designated constraints aren't met.
+type RankValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e RankValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e RankValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e RankValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e RankValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e RankValidationError) ErrorName() string { return "RankValidationError" }
+
+// Error satisfies the builtin error interface
+func (e RankValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sRank.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = RankValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = RankValidationError{}
+
+// Validate checks the field values on KeyPhrase with the rules defined in the
+// proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *KeyPhrase) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on KeyPhrase with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in KeyPhraseMultiError, or nil
+// if none found.
+func (m *KeyPhrase) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *KeyPhrase) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if all {
+		switch v := interface{}(m.GetPhrase()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, KeyPhraseValidationError{
+					field:  "Phrase",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, KeyPhraseValidationError{
+					field:  "Phrase",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetPhrase()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return KeyPhraseValidationError{
+				field:  "Phrase",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	for idx, item := range m.GetRanks() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, KeyPhraseValidationError{
+						field:  fmt.Sprintf("Ranks[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, KeyPhraseValidationError{
+						field:  fmt.Sprintf("Ranks[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return KeyPhraseValidationError{
+					field:  fmt.Sprintf("Ranks[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if len(errors) > 0 {
+		return KeyPhraseMultiError(errors)
+	}
+
+	return nil
+}
+
+// KeyPhraseMultiError is an error wrapping multiple validation errors returned
+// by KeyPhrase.ValidateAll() if the designated constraints aren't met.
+type KeyPhraseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m KeyPhraseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m KeyPhraseMultiError) AllErrors() []error { return m }
+
+// KeyPhraseValidationError is the validation error returned by
+// KeyPhrase.Validate if the designated constraints aren't met.
+type KeyPhraseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e KeyPhraseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e KeyPhraseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e KeyPhraseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e KeyPhraseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e KeyPhraseValidationError) ErrorName() string { return "KeyPhraseValidationError" }
+
+// Error satisfies the builtin error interface
+func (e KeyPhraseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sKeyPhrase.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = KeyPhraseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = KeyPhraseValidationError{}
+
 // Validate checks the field values on RankingResp with the rules defined in
 // the proto definition for this message. If any rules are violated, the first
 // error encountered is returned, or nil if there are no violations.
@@ -170,47 +536,47 @@ var _ interface {
 	ErrorName() string
 } = RankingRespValidationError{}
 
-// Validate checks the field values on KeyPhrase with the rules defined in the
-// proto definition for this message. If any rules are violated, the first
+// Validate checks the field values on AddPhrasesReq with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
 // error encountered is returned, or nil if there are no violations.
-func (m *KeyPhrase) Validate() error {
+func (m *AddPhrasesReq) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on KeyPhrase with the rules defined in
-// the proto definition for this message. If any rules are violated, the
-// result is a list of violation errors wrapped in KeyPhraseMultiError, or nil
-// if none found.
-func (m *KeyPhrase) ValidateAll() error {
+// ValidateAll checks the field values on AddPhrasesReq with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in AddPhrasesReqMultiError, or
+// nil if none found.
+func (m *AddPhrasesReq) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *KeyPhrase) validate(all bool) error {
+func (m *AddPhrasesReq) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
 
 	var errors []error
 
-	// no validation rules for Text
+	// no validation rules for Token
 
-	for idx, item := range m.GetRanks() {
+	for idx, item := range m.GetPhrases() {
 		_, _ = idx, item
 
 		if all {
 			switch v := interface{}(item).(type) {
 			case interface{ ValidateAll() error }:
 				if err := v.ValidateAll(); err != nil {
-					errors = append(errors, KeyPhraseValidationError{
-						field:  fmt.Sprintf("Ranks[%v]", idx),
+					errors = append(errors, AddPhrasesReqValidationError{
+						field:  fmt.Sprintf("Phrases[%v]", idx),
 						reason: "embedded message failed validation",
 						cause:  err,
 					})
 				}
 			case interface{ Validate() error }:
 				if err := v.Validate(); err != nil {
-					errors = append(errors, KeyPhraseValidationError{
-						field:  fmt.Sprintf("Ranks[%v]", idx),
+					errors = append(errors, AddPhrasesReqValidationError{
+						field:  fmt.Sprintf("Phrases[%v]", idx),
 						reason: "embedded message failed validation",
 						cause:  err,
 					})
@@ -218,8 +584,8 @@ func (m *KeyPhrase) validate(all bool) error {
 			}
 		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
 			if err := v.Validate(); err != nil {
-				return KeyPhraseValidationError{
-					field:  fmt.Sprintf("Ranks[%v]", idx),
+				return AddPhrasesReqValidationError{
+					field:  fmt.Sprintf("Phrases[%v]", idx),
 					reason: "embedded message failed validation",
 					cause:  err,
 				}
@@ -229,18 +595,19 @@ func (m *KeyPhrase) validate(all bool) error {
 	}
 
 	if len(errors) > 0 {
-		return KeyPhraseMultiError(errors)
+		return AddPhrasesReqMultiError(errors)
 	}
 
 	return nil
 }
 
-// KeyPhraseMultiError is an error wrapping multiple validation errors returned
-// by KeyPhrase.ValidateAll() if the designated constraints aren't met.
-type KeyPhraseMultiError []error
+// AddPhrasesReqMultiError is an error wrapping multiple validation errors
+// returned by AddPhrasesReq.ValidateAll() if the designated constraints
+// aren't met.
+type AddPhrasesReqMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m KeyPhraseMultiError) Error() string {
+func (m AddPhrasesReqMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -249,11 +616,11 @@ func (m KeyPhraseMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m KeyPhraseMultiError) AllErrors() []error { return m }
+func (m AddPhrasesReqMultiError) AllErrors() []error { return m }
 
-// KeyPhraseValidationError is the validation error returned by
-// KeyPhrase.Validate if the designated constraints aren't met.
-type KeyPhraseValidationError struct {
+// AddPhrasesReqValidationError is the validation error returned by
+// AddPhrasesReq.Validate if the designated constraints aren't met.
+type AddPhrasesReqValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -261,22 +628,22 @@ type KeyPhraseValidationError struct {
 }
 
 // Field function returns field value.
-func (e KeyPhraseValidationError) Field() string { return e.field }
+func (e AddPhrasesReqValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e KeyPhraseValidationError) Reason() string { return e.reason }
+func (e AddPhrasesReqValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e KeyPhraseValidationError) Cause() error { return e.cause }
+func (e AddPhrasesReqValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e KeyPhraseValidationError) Key() bool { return e.key }
+func (e AddPhrasesReqValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e KeyPhraseValidationError) ErrorName() string { return "KeyPhraseValidationError" }
+func (e AddPhrasesReqValidationError) ErrorName() string { return "AddPhrasesReqValidationError" }
 
 // Error satisfies the builtin error interface
-func (e KeyPhraseValidationError) Error() string {
+func (e AddPhrasesReqValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -288,14 +655,14 @@ func (e KeyPhraseValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sKeyPhrase.%s: %s%s",
+		"invalid %sAddPhrasesReq.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = KeyPhraseValidationError{}
+var _ error = AddPhrasesReqValidationError{}
 
 var _ interface {
 	Field() string
@@ -303,108 +670,4 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = KeyPhraseValidationError{}
-
-// Validate checks the field values on Rank with the rules defined in the proto
-// definition for this message. If any rules are violated, the first error
-// encountered is returned, or nil if there are no violations.
-func (m *Rank) Validate() error {
-	return m.validate(false)
-}
-
-// ValidateAll checks the field values on Rank with the rules defined in the
-// proto definition for this message. If any rules are violated, the result is
-// a list of violation errors wrapped in RankMultiError, or nil if none found.
-func (m *Rank) ValidateAll() error {
-	return m.validate(true)
-}
-
-func (m *Rank) validate(all bool) error {
-	if m == nil {
-		return nil
-	}
-
-	var errors []error
-
-	// no validation rules for Date
-
-	// no validation rules for Rank
-
-	// no validation rules for PaidRank
-
-	if len(errors) > 0 {
-		return RankMultiError(errors)
-	}
-
-	return nil
-}
-
-// RankMultiError is an error wrapping multiple validation errors returned by
-// Rank.ValidateAll() if the designated constraints aren't met.
-type RankMultiError []error
-
-// Error returns a concatenation of all the error messages it wraps.
-func (m RankMultiError) Error() string {
-	var msgs []string
-	for _, err := range m {
-		msgs = append(msgs, err.Error())
-	}
-	return strings.Join(msgs, "; ")
-}
-
-// AllErrors returns a list of validation violation errors.
-func (m RankMultiError) AllErrors() []error { return m }
-
-// RankValidationError is the validation error returned by Rank.Validate if the
-// designated constraints aren't met.
-type RankValidationError struct {
-	field  string
-	reason string
-	cause  error
-	key    bool
-}
-
-// Field function returns field value.
-func (e RankValidationError) Field() string { return e.field }
-
-// Reason function returns reason value.
-func (e RankValidationError) Reason() string { return e.reason }
-
-// Cause function returns cause value.
-func (e RankValidationError) Cause() error { return e.cause }
-
-// Key function returns key value.
-func (e RankValidationError) Key() bool { return e.key }
-
-// ErrorName returns error name.
-func (e RankValidationError) ErrorName() string { return "RankValidationError" }
-
-// Error satisfies the builtin error interface
-func (e RankValidationError) Error() string {
-	cause := ""
-	if e.cause != nil {
-		cause = fmt.Sprintf(" | caused by: %v", e.cause)
-	}
-
-	key := ""
-	if e.key {
-		key = "key for "
-	}
-
-	return fmt.Sprintf(
-		"invalid %sRank.%s: %s%s",
-		key,
-		e.field,
-		e.reason,
-		cause)
-}
-
-var _ error = RankValidationError{}
-
-var _ interface {
-	Field() string
-	Reason() string
-	Key() bool
-	Cause() error
-	ErrorName() string
-} = RankValidationError{}
+} = AddPhrasesReqValidationError{}

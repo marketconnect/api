@@ -10,7 +10,9 @@ import (
 
 	"mc_api/internal/config"
 	postgressql "mc_api/internal/data_provider"
-	auth_service "mc_api/internal/domain/service/auth_service"
+	"mc_api/internal/domain/service/auth_service"
+	"mc_api/internal/domain/service/ranking_service"
+
 	pb "mc_api/pkg/api"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -47,16 +49,20 @@ func NewApp(ctx context.Context, config *config.Config) (App, error) {
 
 	// Data Providers
 	authDataProvider := postgressql.NewAuthStorage(pgClient)
+	phraseDataProvider := postgressql.NewPhraseStorage(pgClient)
 
 	// Services
 	authService := auth_service.NewAuthService(authDataProvider, logger)
-
+	rankingService := ranking_service.NewRankingService(phraseDataProvider, logger)
 	// Servers
 	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(unaryInterceptor))
 	httpServer := runtime.NewServeMux()
 
-	pb.RegisterAPIHandlerServer(context.Background(), httpServer, authService)
-	pb.RegisterAPIServer(grpcServer, authService)
+	pb.RegisterAuthServiceHandlerServer(context.Background(), httpServer, authService)
+	pb.RegisterAuthServiceServer(grpcServer, authService)
+
+	pb.RegisterRankServiceHandlerServer(context.Background(), httpServer, rankingService)
+	pb.RegisterRankServiceServer(grpcServer, rankingService)
 
 	return App{cfg: config, grpcServer: grpcServer, logger: logger, pgClient: pgClient, httpServer: httpServer}, nil
 }

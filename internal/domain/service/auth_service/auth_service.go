@@ -5,20 +5,14 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"time"
 
+	mc_jwt "mc_api/internal/domain/jwt"
 	pb "mc_api/pkg/api"
 
-	"github.com/golang-jwt/jwt"
 	"github.com/i-b8o/logging"
 	"github.com/jackc/pgconn"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-)
-
-// TODO remove to config
-var (
-	sampleSecretKey = []byte("SecretYouShouldHide")
 )
 
 type AuthStorage interface {
@@ -29,7 +23,7 @@ type AuthStorage interface {
 type AuthService struct {
 	storage AuthStorage
 	logging logging.Logger
-	pb.UnimplementedAPIServer
+	pb.UnimplementedAuthServiceServer
 }
 
 func NewAuthService(storage AuthStorage, logging logging.Logger) *AuthService {
@@ -58,7 +52,7 @@ func (s *AuthService) RegisterUser(ctx context.Context, user *pb.User) (*pb.Toke
 	if err != nil {
 		return nil, errHandler(err)
 	}
-	token, err := createToken(id)
+	token, err := mc_jwt.CreateToken(id)
 	if err != nil {
 		return nil, status.Error(codes.Internal, "internal error")
 
@@ -75,7 +69,7 @@ func (s *AuthService) LoginUser(ctx context.Context, user *pb.User) (*pb.TokenMe
 
 		return nil, errHandler(err)
 	}
-	token, err := createToken(id)
+	token, err := mc_jwt.CreateToken(id)
 	if err != nil {
 		return nil, status.Error(codes.Internal, "internal error")
 	}
@@ -96,15 +90,6 @@ func errHandler(err error) error {
 
 	}
 	return err
-}
-
-func createToken(id uint64) (string, error) {
-	// Create JWT token
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"id":  id,
-		"exp": time.Now().Add(time.Hour * 24).Unix(), // Token expires in 24 hours
-	})
-	return token.SignedString([]byte("YOUR_SECRET_KEY")) // Replace with your own secret key
 }
 
 // func verifyJWT(endpointHandler func(writer http.ResponseWriter, request *http.Request)) http.HandlerFunc {

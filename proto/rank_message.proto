@@ -4,14 +4,8 @@ package main;
 
 option go_package = "./proto";
 
-message RankingResp {
-    string token = 1;
-    repeated KeyPhrase keyPhrases = 2; 
-}
-
-message KeyPhrase {
+message Phrase {
     string text = 1;
-    repeated Rank ranks = 2;
 }
 
 message Rank{
@@ -19,3 +13,22 @@ message Rank{
     int32  rank = 2; 
     int32  paidRank = 3;
 }
+
+message KeyPhrase {
+    Phrase phrase = 1;
+    repeated Rank ranks = 2;
+}
+
+message RankingResp {
+    string token = 1;
+    repeated KeyPhrase keyPhrases = 2; 
+}
+
+message AddPhrasesReq {
+    string token = 1;
+    repeated Phrase phrases = 2;
+}
+
+
+
+

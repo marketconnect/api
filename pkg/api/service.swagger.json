@@ -6,7 +6,10 @@
   },
   "tags": [
     {
-      "name": "API"
+      "name": "AuthService"
+    },
+    {
+      "name": "RankService"
     }
   ],
   "consumes": [
@@ -16,9 +19,41 @@
     "application/json"
   ],
   "paths": {
+    "/add-phrases": {
+      "post": {
+        "operationId": "RankService_AddPhrases",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/mainEmpty"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/mainAddPhrasesReq"
+            }
+          }
+        ],
+        "tags": [
+          "RankService"
+        ]
+      }
+    },
     "/login": {
       "post": {
-        "operationId": "API_LoginUser",
+        "operationId": "AuthService_LoginUser",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -44,13 +79,13 @@
           }
         ],
         "tags": [
-          "API"
+          "AuthService"
         ]
       }
     },
     "/ranking": {
       "post": {
-        "operationId": "API_Ranking",
+        "operationId": "RankService_Ranking",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -76,13 +111,13 @@
           }
         ],
         "tags": [
-          "API"
+          "RankService"
         ]
       }
     },
     "/register": {
       "post": {
-        "operationId": "API_RegisterUser",
+        "operationId": "AuthService_RegisterUser",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -108,23 +143,50 @@
           }
         ],
         "tags": [
-          "API"
+          "AuthService"
         ]
       }
     }
   },
   "definitions": {
+    "mainAddPhrasesReq": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        },
+        "phrases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/mainPhrase"
+          }
+        }
+      }
+    },
+    "mainEmpty": {
+      "type": "object"
+    },
     "mainKeyPhrase": {
       "type": "object",
       "properties": {
-        "text": {
-          "type": "string"
+        "phrase": {
+          "$ref": "#/definitions/mainPhrase"
         },
         "ranks": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/mainRank"
           }
+        }
+      }
+    },
+    "mainPhrase": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
         }
       }
     },
@@ -153,6 +215,7 @@
         "keyPhrases": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/mainKeyPhrase"
           }
         }
@@ -199,6 +262,7 @@
         "details": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/protobufAny"
           }
         }

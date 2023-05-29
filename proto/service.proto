@@ -9,7 +9,7 @@ import "message.proto";
 import "rank_message.proto";
 
 
-service API {
+service AuthService {
     rpc RegisterUser(User) returns (TokenMessage) {
         option (google.api.http) = {
             post: "/register"
@@ -22,10 +22,18 @@ service API {
             body: "*"
         };
     }
+}
 
+service RankService {
     rpc Ranking(TokenMessage) returns (RankingResp) {
         option (google.api.http) = {
             post: "/ranking"
+            body: "*"
+        };
+    }
+    rpc AddPhrases(AddPhrasesReq) returns (Empty) {
+        option (google.api.http) = {
+            post: "/add-phrases"
             body: "*"
         };
     }

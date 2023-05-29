@@ -5,14 +5,16 @@ import (
 	"database/sql"
 	"fmt"
 
+	pb "mc_api/pkg/api"
+
 	client "github.com/i-b8o/postgresql_client"
 )
 
 const (
-	addPhraseQuery     = `INSERT INTO public.phrases (content) VALUES ($1) RETURNING id`
-	addUserPhraseQuery = `INSERT INTO public.mc_user_phrase (user_id, phrase_id) VALUES ($1, $2)`
-	addPhraseRankQuery = `INSERT INTO public.ranks (user_id, phrase_id, rank, paid_rank) VALUES ($1, $2, $3, $4)`
-	selectUserPhrases  = `SELECT p.content, r.rank, r.paid_rank FROM public.mc_user_phrase up JOIN public.phrases p ON up.phrase_id = p.id LEFT JOIN public.ranks r ON up.phrase_id = r.phrase_id AND up.user_id = r.user_id WHERE up.user_id = $1`
+	addPhraseQuery     = `INSERT INTO public.phrases (content) VALUES ($1) ON CONFLICT (content) DO NOTHING RETURNING id;`
+	addUserPhraseQuery = `INSERT INTO public.mc_user_phrase (user_id, phrase_id) VALUES ($1, $2) ON CONFLICT (user_id, phrase_id) DO NOTHING`
+	addPhraseRankQuery = `INSERT INTO public.ranks (user_id, phrase_id, rank, paid_rank) VALUES ($1, $2, $3, $4) ON CONFLICT (user_id, phrase_id) DO UPDATE SET rank = EXCLUDED.rank,paid_rank = EXCLUDED.paid_rank`
+	selectUserPhrases  = `SELECT p.content, r.rank, r.paid_rank, r.created_at FROM public.mc_user_phrase up JOIN public.phrases p ON up.phrase_id = p.id LEFT JOIN public.ranks r ON up.phrase_id = r.phrase_id AND up.user_id = r.user_id WHERE up.user_id = $1`
 )
 
 type phraseStorage struct {
@@ -42,30 +44,45 @@ func (ps *phraseStorage) AddPhraseRank(ctx context.Context, userID, phraseID, ra
 	}
 	return nil
 }
-func (ps *phraseStorage) SelectUserPhrases(ctx context.Context, userID uint64) ([]map[string]interface{}, error) {
+
+func (ps *phraseStorage) SelectUserPhrases(ctx context.Context, userID uint64) ([]*pb.KeyPhrase, error) {
 	rows, err := ps.client.Query(ctx, selectUserPhrases, userID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var result []map[string]interface{}
+
+	var result []*pb.KeyPhrase
+	keyphraseMap := make(map[string]*pb.KeyPhrase)
 	for rows.Next() {
 		var content string
 		var rank, paidRank sql.NullInt64
-		if err := rows.Scan(&content, &rank, &paidRank); err != nil {
+		var createdAt sql.NullTime
+		if err := rows.Scan(&content, &rank, &paidRank, &createdAt); err != nil {
 			return nil, err
 		}
-		row := map[string]interface{}{"content": content}
-		if rank.Valid {
-			row["rank"] = rank.Int64
+		if keyphrase, exists := keyphraseMap[content]; exists {
+			if rank.Valid && paidRank.Valid {
+				keyphrase.Ranks = append(keyphrase.Ranks, &pb.Rank{Date: createdAt.Time.String(), Rank: int32(rank.Int64), PaidRank: int32(paidRank.Int64)})
+			}
+		} else {
+			keyphrase := &pb.KeyPhrase{Phrase: &pb.Phrase{Text: content}}
+			if rank.Valid && paidRank.Valid {
+				keyphrase.Ranks = []*pb.Rank{{Date: createdAt.Time.String(), Rank: int32(rank.Int64), PaidRank: int32(paidRank.Int64)}}
+			} else {
+				keyphrase.Ranks = []*pb.Rank{}
+			}
+			keyphraseMap[content] = keyphrase
 		}
-		if paidRank.Valid {
-			row["paid_rank"] = paidRank.Int64
-		}
-		result = append(result, row)
 	}
+
+	for _, keyphrase := range keyphraseMap {
+		result = append(result, keyphrase)
+	}
+
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
+
 	return result, nil
 }
