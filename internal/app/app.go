@@ -33,6 +33,8 @@ func NewApp(ctx context.Context, config *config.Config) (App, error) {
 	logger := logging.GetLogger(config.AppConfig.LogLevel)
 
 	logger.Print("Postgres initializing")
+	fmt.Printf("%s %s %s %s %s", config.PostgreSQL.Username, config.PostgreSQL.Password,
+		config.PostgreSQL.Host, config.PostgreSQL.Port, config.PostgreSQL.Database)
 	pgConfig := postgresql.NewPgConfig(
 		config.PostgreSQL.Username, config.PostgreSQL.Password,
 		config.PostgreSQL.Host, config.PostgreSQL.Port, config.PostgreSQL.Database,

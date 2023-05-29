@@ -72,8 +72,8 @@ func (s *AuthService) LoginUser(ctx context.Context, user *pb.User) (*pb.TokenMe
 	pswd := user.GetPassword()
 	id, err := s.storage.LoginUser(ctx, email, pswd)
 	if err != nil {
-		s.logging.Errorf("Error login: %v", err)
-		return nil, err
+
+		return nil, errHandler(err)
 	}
 	token, err := createToken(id)
 	if err != nil {
@@ -83,9 +83,8 @@ func (s *AuthService) LoginUser(ctx context.Context, user *pb.User) (*pb.TokenMe
 }
 
 func errHandler(err error) error {
-	fmt.Println(err)
 	if err != sql.ErrNoRows {
-		return status.Error(codes.AlreadyExists, "no rowxcxbbvvxcbcvs in result set")
+		return status.Error(codes.NotFound, "no rows in result set")
 	}
 
 	var pgErr *pgconn.PgError

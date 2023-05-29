@@ -119,6 +119,28 @@
       "properties": {
         "text": {
           "type": "string"
+        },
+        "ranks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/mainRank"
+          }
+        }
+      }
+    },
+    "mainRank": {
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string"
+        },
+        "rank": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "paidRank": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -131,7 +153,6 @@
         "keyPhrases": {
           "type": "array",
           "items": {
-            "type": "object",
             "$ref": "#/definitions/mainKeyPhrase"
           }
         }
@@ -178,7 +199,6 @@
         "details": {
           "type": "array",
           "items": {
-            "type": "object",
             "$ref": "#/definitions/protobufAny"
           }
         }

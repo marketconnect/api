@@ -6,6 +6,7 @@ option go_package = "./proto";
 
 import "google/api/annotations.proto";
 import "message.proto";
+import "rank_message.proto";
 
 
 service API {

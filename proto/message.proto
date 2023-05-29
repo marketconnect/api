@@ -4,7 +4,6 @@ package main;
 
 option go_package = "./proto";
 
-
 import "validate/validate.proto";
 
 message User {
@@ -18,19 +17,3 @@ message User {
 message TokenMessage {
     string token = 1;
 }
-
-message Rank{
-    string date = 1;
-
-}
-
-message KeyPhrase {
-    string text = 1;
-}
-
-
-message RankingResp {
-    string token = 1;
-    repeated KeyPhrase keyPhrases = 2; 
-}
-

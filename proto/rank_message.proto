@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package main;
+
+option go_package = "./proto";
+
+message RankingResp {
+    string token = 1;
+    repeated KeyPhrase keyPhrases = 2; 
+}
+
+message KeyPhrase {
+    string text = 1;
+    repeated Rank ranks = 2;
+}
+
+message Rank{
+    string date = 1;
+    int32  rank = 2; 
+    int32  paidRank = 3;
+}

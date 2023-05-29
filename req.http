@@ -1,11 +1,11 @@
-# POST http://localhost:8080/register HTTP/1.1
-# content-type: text/plain
+POST http://localhost:8080/register HTTP/1.1
+content-type: text/plain
 
-# {
-#     "username": "Ivan",
-#     "password": "111222aaa",
-#     "email": "iva1zsn@gmail.com"
-# }
+{
+    "username": "Ivan",
+    "password": "111222aaa",
+    "email": "iva1zsn@gmail.com"
+}
 
 POST http://localhost:8080/login HTTP/1.1
 content-type: text/plain

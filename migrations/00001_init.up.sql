@@ -1,4 +1,4 @@
-BEGIN;
+-- BEGIN;
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = ON;
@@ -11,15 +11,30 @@ SET default_with_oids = FALSE;
 -- EXTENSIONS --
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 -- TABLES --
-CREATE TABLE public.mc_user (
+CREATE TABLE public.mc_users (
     id SERIAL PRIMARY KEY,
     email varchar(255) UNIQUE NOT NULL,
     password varchar(255) NOT NULL,
     created_at timestamp NOT NULL DEFAULT NOW(),
     updated_at timestamp NOT NULL DEFAULT NOW()
 );
-
+CREATE TABLE public.phrases (id SERIAL PRIMARY KEY, content text);
+CREATE TABLE public.mc_user_phrase (
+    user_id integer NOT NULL REFERENCES public.mc_users(id),
+    phrase_id integer NOT NULL REFERENCES public.phrases(id),
+    PRIMARY KEY (user_id, phrase_id)
+);
+CREATE TABLE ranks (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES mc_users(id),
+    phrase_id INTEGER REFERENCES phrases(id),
+    rank INTEGER,
+    paid_rank INTEGER
+);
 CREATE USER mc_service WITH ENCRYPTED PASSWORD '000000';
 GRANT CONNECT ON DATABASE mc TO mc_service;
 GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO mc_service;
-GRANT ALL PRIVILEGES ON TABLE public.mc_user TO mc_service;
+GRANT ALL PRIVILEGES ON TABLE public.mc_users TO mc_service;
+GRANT ALL PRIVILEGES ON TABLE public.phrases TO mc_service;
+GRANT ALL PRIVILEGES ON TABLE public.mc_user_phrase TO mc_service;
+GRANT ALL PRIVILEGES ON TABLE public.ranks TO mc_service;
