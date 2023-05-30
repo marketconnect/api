@@ -21,15 +21,25 @@ message KeyPhrase {
     repeated Rank ranks = 2;
 }
 
-message RankingResp {
-    repeated KeyPhrase keyPhrases = 1; 
-}
 
+// AddPhrase
 message AddPhrasesReq {
     string token            = 1;
     repeated Phrase phrases = 2;
 }
 
+
+// Ranking
+message RankingReq {
+    string token = 1;
+    string mp    = 2;
+}
+
+message RankingResp {
+    repeated KeyPhrase keyPhrases = 1; 
+}
+
+// AddRank
 message AddRankReq {
     uint64 userId   = 1;
     uint64 phraseId = 2;

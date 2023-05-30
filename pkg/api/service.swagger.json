@@ -138,7 +138,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/mainTokenMessage"
+              "$ref": "#/definitions/mainRankingReq"
             }
           }
         ],
@@ -193,7 +193,8 @@
             "$ref": "#/definitions/mainPhrase"
           }
         }
-      }
+      },
+      "title": "AddPhrase"
     },
     "mainAddRankReq": {
       "type": "object",
@@ -217,7 +218,8 @@
         "mp": {
           "type": "string"
         }
-      }
+      },
+      "title": "AddRank"
     },
     "mainEmpty": {
       "type": "object"
@@ -266,6 +268,18 @@
           "type": "string"
         }
       }
+    },
+    "mainRankingReq": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        },
+        "mp": {
+          "type": "string"
+        }
+      },
+      "title": "Ranking"
     },
     "mainRankingResp": {
       "type": "object",

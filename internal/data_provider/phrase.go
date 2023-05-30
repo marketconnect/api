@@ -59,7 +59,7 @@ func (ps *phraseStorage) SelectUserPhrases(ctx context.Context, userID uint64, m
 		var content string
 		var rank, paidRank sql.NullInt64
 		var createdAt sql.NullTime
-		if err := rows.Scan(&content, &rank, &paidRank, &createdAt); err != nil {
+		if err := rows.Scan(&content, &mp, &rank, &paidRank, &createdAt); err != nil {
 			return nil, err
 		}
 		if keyphrase, exists := keyphraseMap[content]; exists {

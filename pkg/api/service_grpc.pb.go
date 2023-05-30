@@ -144,7 +144,7 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type RankServiceClient interface {
-	Ranking(ctx context.Context, in *TokenMessage, opts ...grpc.CallOption) (*RankingResp, error)
+	Ranking(ctx context.Context, in *RankingReq, opts ...grpc.CallOption) (*RankingResp, error)
 	AddPhrases(ctx context.Context, in *AddPhrasesReq, opts ...grpc.CallOption) (*Empty, error)
 	AddRank(ctx context.Context, in *AddRankReq, opts ...grpc.CallOption) (*Empty, error)
 }
@@ -157,7 +157,7 @@ func NewRankServiceClient(cc grpc.ClientConnInterface) RankServiceClient {
 	return &rankServiceClient{cc}
 }
 
-func (c *rankServiceClient) Ranking(ctx context.Context, in *TokenMessage, opts ...grpc.CallOption) (*RankingResp, error) {
+func (c *rankServiceClient) Ranking(ctx context.Context, in *RankingReq, opts ...grpc.CallOption) (*RankingResp, error) {
 	out := new(RankingResp)
 	err := c.cc.Invoke(ctx, "/main.RankService/Ranking", in, out, opts...)
 	if err != nil {
@@ -188,7 +188,7 @@ func (c *rankServiceClient) AddRank(ctx context.Context, in *AddRankReq, opts ..
 // All implementations must embed UnimplementedRankServiceServer
 // for forward compatibility
 type RankServiceServer interface {
-	Ranking(context.Context, *TokenMessage) (*RankingResp, error)
+	Ranking(context.Context, *RankingReq) (*RankingResp, error)
 	AddPhrases(context.Context, *AddPhrasesReq) (*Empty, error)
 	AddRank(context.Context, *AddRankReq) (*Empty, error)
 	mustEmbedUnimplementedRankServiceServer()
@@ -198,7 +198,7 @@ type RankServiceServer interface {
 type UnimplementedRankServiceServer struct {
 }
 
-func (UnimplementedRankServiceServer) Ranking(context.Context, *TokenMessage) (*RankingResp, error) {
+func (UnimplementedRankServiceServer) Ranking(context.Context, *RankingReq) (*RankingResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Ranking not implemented")
 }
 func (UnimplementedRankServiceServer) AddPhrases(context.Context, *AddPhrasesReq) (*Empty, error) {
@@ -221,7 +221,7 @@ func RegisterRankServiceServer(s grpc.ServiceRegistrar, srv RankServiceServer) {
 }
 
 func _RankService_Ranking_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TokenMessage)
+	in := new(RankingReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -233,7 +233,7 @@ func _RankService_Ranking_Handler(srv interface{}, ctx context.Context, dec func
 		FullMethod: "/main.RankService/Ranking",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RankServiceServer).Ranking(ctx, req.(*TokenMessage))
+		return srv.(RankServiceServer).Ranking(ctx, req.(*RankingReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }

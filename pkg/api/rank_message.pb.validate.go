@@ -405,139 +405,6 @@ var _ interface {
 	ErrorName() string
 } = KeyPhraseValidationError{}
 
-// Validate checks the field values on RankingResp with the rules defined in
-// the proto definition for this message. If any rules are violated, the first
-// error encountered is returned, or nil if there are no violations.
-func (m *RankingResp) Validate() error {
-	return m.validate(false)
-}
-
-// ValidateAll checks the field values on RankingResp with the rules defined in
-// the proto definition for this message. If any rules are violated, the
-// result is a list of violation errors wrapped in RankingRespMultiError, or
-// nil if none found.
-func (m *RankingResp) ValidateAll() error {
-	return m.validate(true)
-}
-
-func (m *RankingResp) validate(all bool) error {
-	if m == nil {
-		return nil
-	}
-
-	var errors []error
-
-	for idx, item := range m.GetKeyPhrases() {
-		_, _ = idx, item
-
-		if all {
-			switch v := interface{}(item).(type) {
-			case interface{ ValidateAll() error }:
-				if err := v.ValidateAll(); err != nil {
-					errors = append(errors, RankingRespValidationError{
-						field:  fmt.Sprintf("KeyPhrases[%v]", idx),
-						reason: "embedded message failed validation",
-						cause:  err,
-					})
-				}
-			case interface{ Validate() error }:
-				if err := v.Validate(); err != nil {
-					errors = append(errors, RankingRespValidationError{
-						field:  fmt.Sprintf("KeyPhrases[%v]", idx),
-						reason: "embedded message failed validation",
-						cause:  err,
-					})
-				}
-			}
-		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
-			if err := v.Validate(); err != nil {
-				return RankingRespValidationError{
-					field:  fmt.Sprintf("KeyPhrases[%v]", idx),
-					reason: "embedded message failed validation",
-					cause:  err,
-				}
-			}
-		}
-
-	}
-
-	if len(errors) > 0 {
-		return RankingRespMultiError(errors)
-	}
-
-	return nil
-}
-
-// RankingRespMultiError is an error wrapping multiple validation errors
-// returned by RankingResp.ValidateAll() if the designated constraints aren't met.
-type RankingRespMultiError []error
-
-// Error returns a concatenation of all the error messages it wraps.
-func (m RankingRespMultiError) Error() string {
-	var msgs []string
-	for _, err := range m {
-		msgs = append(msgs, err.Error())
-	}
-	return strings.Join(msgs, "; ")
-}
-
-// AllErrors returns a list of validation violation errors.
-func (m RankingRespMultiError) AllErrors() []error { return m }
-
-// RankingRespValidationError is the validation error returned by
-// RankingResp.Validate if the designated constraints aren't met.
-type RankingRespValidationError struct {
-	field  string
-	reason string
-	cause  error
-	key    bool
-}
-
-// Field function returns field value.
-func (e RankingRespValidationError) Field() string { return e.field }
-
-// Reason function returns reason value.
-func (e RankingRespValidationError) Reason() string { return e.reason }
-
-// Cause function returns cause value.
-func (e RankingRespValidationError) Cause() error { return e.cause }
-
-// Key function returns key value.
-func (e RankingRespValidationError) Key() bool { return e.key }
-
-// ErrorName returns error name.
-func (e RankingRespValidationError) ErrorName() string { return "RankingRespValidationError" }
-
-// Error satisfies the builtin error interface
-func (e RankingRespValidationError) Error() string {
-	cause := ""
-	if e.cause != nil {
-		cause = fmt.Sprintf(" | caused by: %v", e.cause)
-	}
-
-	key := ""
-	if e.key {
-		key = "key for "
-	}
-
-	return fmt.Sprintf(
-		"invalid %sRankingResp.%s: %s%s",
-		key,
-		e.field,
-		e.reason,
-		cause)
-}
-
-var _ error = RankingRespValidationError{}
-
-var _ interface {
-	Field() string
-	Reason() string
-	Key() bool
-	Cause() error
-	ErrorName() string
-} = RankingRespValidationError{}
-
 // Validate checks the field values on AddPhrasesReq with the rules defined in
 // the proto definition for this message. If any rules are violated, the first
 // error encountered is returned, or nil if there are no violations.
@@ -673,6 +540,242 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = AddPhrasesReqValidationError{}
+
+// Validate checks the field values on RankingReq with the rules defined in the
+// proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *RankingReq) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on RankingReq with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in RankingReqMultiError, or
+// nil if none found.
+func (m *RankingReq) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *RankingReq) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Token
+
+	// no validation rules for Mp
+
+	if len(errors) > 0 {
+		return RankingReqMultiError(errors)
+	}
+
+	return nil
+}
+
+// RankingReqMultiError is an error wrapping multiple validation errors
+// returned by RankingReq.ValidateAll() if the designated constraints aren't met.
+type RankingReqMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m RankingReqMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m RankingReqMultiError) AllErrors() []error { return m }
+
+// RankingReqValidationError is the validation error returned by
+// RankingReq.Validate if the designated constraints aren't met.
+type RankingReqValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e RankingReqValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e RankingReqValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e RankingReqValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e RankingReqValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e RankingReqValidationError) ErrorName() string { return "RankingReqValidationError" }
+
+// Error satisfies the builtin error interface
+func (e RankingReqValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sRankingReq.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = RankingReqValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = RankingReqValidationError{}
+
+// Validate checks the field values on RankingResp with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *RankingResp) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on RankingResp with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in RankingRespMultiError, or
+// nil if none found.
+func (m *RankingResp) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *RankingResp) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	for idx, item := range m.GetKeyPhrases() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, RankingRespValidationError{
+						field:  fmt.Sprintf("KeyPhrases[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, RankingRespValidationError{
+						field:  fmt.Sprintf("KeyPhrases[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return RankingRespValidationError{
+					field:  fmt.Sprintf("KeyPhrases[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if len(errors) > 0 {
+		return RankingRespMultiError(errors)
+	}
+
+	return nil
+}
+
+// RankingRespMultiError is an error wrapping multiple validation errors
+// returned by RankingResp.ValidateAll() if the designated constraints aren't met.
+type RankingRespMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m RankingRespMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m RankingRespMultiError) AllErrors() []error { return m }
+
+// RankingRespValidationError is the validation error returned by
+// RankingResp.Validate if the designated constraints aren't met.
+type RankingRespValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e RankingRespValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e RankingRespValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e RankingRespValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e RankingRespValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e RankingRespValidationError) ErrorName() string { return "RankingRespValidationError" }
+
+// Error satisfies the builtin error interface
+func (e RankingRespValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sRankingResp.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = RankingRespValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = RankingRespValidationError{}
 
 // Validate checks the field values on AddRankReq with the rules defined in the
 // proto definition for this message. If any rules are violated, the first
