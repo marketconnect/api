@@ -162,6 +162,8 @@ func (m *Rank) validate(all bool) error {
 
 	// no validation rules for PaidRank
 
+	// no validation rules for Place
+
 	if len(errors) > 0 {
 		return RankMultiError(errors)
 	}
@@ -422,8 +424,6 @@ func (m *RankingResp) validate(all bool) error {
 	}
 
 	var errors []error
-
-	// no validation rules for Token
 
 	for idx, item := range m.GetKeyPhrases() {
 		_, _ = idx, item

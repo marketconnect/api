@@ -16,13 +16,31 @@
 #     "email": "qqqqqq@gmail.com"
 # }
 
-POST http://localhost:8080/add-phrases HTTP/1.1
-Content-Type: application/json
+# POST http://localhost:8080/add-phrases HTTP/1.1
+# Content-Type: text/plain
+
+# {
+#     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODU1MTQ5NDQsImlkIjoxfQ.CLJ261bycRr6A9CBSNmeN5q0N2leh0CR9n5b4EjBnlA",
+#     "phrases": [
+#         {"text": "Hello, World!"},
+#         {"text": "Goodbye, World!"}
+#     ]
+# }
+
+# POST http://localhost:8080/add-phrases HTTP/1.1
+# Content-Type: text/plain
+
+# {
+#     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODU1MTQ5NDQsImlkIjoxfQ.CLJ261bycRr6A9CBSNmeN5q0N2leh0CR9n5b4EjBnlA",
+#     "phrases": [
+#         {"text": "Hello, World!"},
+#         {"text": "Goodbye, World!"}
+#     ]
+# }
+
+POST http://localhost:8080/ranking HTTP/1.1
+Content-Type: text/plain
 
 {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODU0Njc1ODIsImlkIjoxfQ.RcDZx9ArUdvD0JGEiJ8dwkafT-Qh11jkLtgD-mWZMy4",
-    "phrases": [
-        {"text": "Hello, World!"},
-        {"text": "Goodbye, World!"}
-    ]
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODU1MTQ5NDQsImlkIjoxfQ.CLJ261bycRr6A9CBSNmeN5q0N2leh0CR9n5b4EjBnlA"
 }

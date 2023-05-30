@@ -1,4 +1,3 @@
--- TABLES --
 CREATE TABLE public.mc_users (
     id SERIAL PRIMARY KEY,
     email varchar(255) UNIQUE NOT NULL,
@@ -14,13 +13,14 @@ CREATE TABLE public.mc_user_phrase (
 );
 CREATE TABLE ranks (
     id SERIAL PRIMARY KEY,
+    mp VARCHAR (10),
     user_id INTEGER REFERENCES mc_users(id),
     phrase_id INTEGER REFERENCES phrases(id),
     rank INTEGER,
     paid_rank INTEGER,
-    created_at timestamp NOT NULL DEFAULT NOW() 
+    created_at timestamp NOT NULL DEFAULT NOW()
 );
-CREATE USER mc_service WITH ENCRYPTED PASSWORD '000000';
+-- CREATE USER IF NOT EXISTS mc_service WITH ENCRYPTED PASSWORD '000000';
 GRANT CONNECT ON DATABASE mc TO mc_service;
 GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO mc_service;
 GRANT ALL PRIVILEGES ON TABLE public.mc_users TO mc_service;

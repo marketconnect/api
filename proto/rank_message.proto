@@ -12,6 +12,7 @@ message Rank{
     string date = 1;
     int32  rank = 2; 
     int32  paidRank = 3;
+    string mp = 4;     
 }
 
 message KeyPhrase {
@@ -20,8 +21,7 @@ message KeyPhrase {
 }
 
 message RankingResp {
-    string token = 1;
-    repeated KeyPhrase keyPhrases = 2; 
+    repeated KeyPhrase keyPhrases = 1; 
 }
 
 message AddPhrasesReq {
@@ -29,6 +29,12 @@ message AddPhrasesReq {
     repeated Phrase phrases = 2;
 }
 
+message AddRankReq {
+    string token = 1;
+    int32  rank = 2; 
+    int32  paidRank = 3;
+    string mp = 4;
+}
 
 
 

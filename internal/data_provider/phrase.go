@@ -13,8 +13,8 @@ import (
 const (
 	addPhraseQuery     = `INSERT INTO public.phrases (content) VALUES ($1) ON CONFLICT (content) DO NOTHING RETURNING id;`
 	addUserPhraseQuery = `INSERT INTO public.mc_user_phrase (user_id, phrase_id) VALUES ($1, $2) ON CONFLICT (user_id, phrase_id) DO NOTHING`
-	addPhraseRankQuery = `INSERT INTO public.ranks (user_id, phrase_id, rank, paid_rank) VALUES ($1, $2, $3, $4) ON CONFLICT (user_id, phrase_id) DO UPDATE SET rank = EXCLUDED.rank,paid_rank = EXCLUDED.paid_rank`
-	selectUserPhrases  = `SELECT p.content, r.rank, r.paid_rank, r.created_at FROM public.mc_user_phrase up JOIN public.phrases p ON up.phrase_id = p.id LEFT JOIN public.ranks r ON up.phrase_id = r.phrase_id AND up.user_id = r.user_id WHERE up.user_id = $1`
+	addPhraseRankQuery = `INSERT INTO public.ranks (mp, user_id, phrase_id, rank, paid_rank) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (user_id, phrase_id, mp) DO UPDATE SET rank = EXCLUDED.rank,paid_rank = EXCLUDED.paid_rank, mp = EXCLUDED.mp`
+	selectUserPhrases  = `SELECT p.content, r.mp, r.rank, r.paid_rank, r.created_at FROM public.mc_user_phrase up JOIN public.phrases p ON up.phrase_id = p.id LEFT JOIN public.ranks r ON up.phrase_id = r.phrase_id AND up.user_id = r.user_id WHERE up.user_id = $1 AND r.mp = $2`
 )
 
 type phraseStorage struct {
@@ -37,16 +37,17 @@ func (ps *phraseStorage) AddUserPhrase(ctx context.Context, userID, phraseID uin
 	}
 	return nil
 }
-func (ps *phraseStorage) AddPhraseRank(ctx context.Context, userID, phraseID, rank, paidRank uint64) error {
-	_, err := ps.client.Exec(ctx, addPhraseRankQuery, userID, phraseID, rank, paidRank)
+
+func (ps *phraseStorage) AddPhraseRank(ctx context.Context, userID, phraseID, rank, paidRank uint64, mp string) error {
+	_, err := ps.client.Exec(ctx, addPhraseRankQuery, mp, userID, phraseID, rank, paidRank)
 	if err != nil {
 		return fmt.Errorf("failed to add phrase rank: %v", err)
 	}
 	return nil
 }
 
-func (ps *phraseStorage) SelectUserPhrases(ctx context.Context, userID uint64) ([]*pb.KeyPhrase, error) {
-	rows, err := ps.client.Query(ctx, selectUserPhrases, userID)
+func (ps *phraseStorage) SelectUserPhrases(ctx context.Context, userID uint64, mp string) ([]*pb.KeyPhrase, error) {
+	rows, err := ps.client.Query(ctx, selectUserPhrases, userID, mp)
 	if err != nil {
 		return nil, err
 	}

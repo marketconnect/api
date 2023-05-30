@@ -54,6 +54,7 @@ func NewApp(ctx context.Context, config *config.Config) (App, error) {
 	// Services
 	authService := auth_service.NewAuthService(authDataProvider, logger)
 	rankingService := ranking_service.NewRankingService(phraseDataProvider, logger)
+
 	// Servers
 	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(unaryInterceptor))
 	httpServer := runtime.NewServeMux()

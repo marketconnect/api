@@ -22,3 +22,9 @@ git:
 
 	# https://raw.githubusercontent.com/googleapis/googleapis/master/google/api/http.proto > google/api/http.proto
 	# https://raw.githubusercontent.com/googleapis/googleapis/master/google/api/annotations.proto > google/api/annotations.proto
+
+migrate_up:
+	migrate -path ./schema -database 'postgres://postgres:postgres@localhost:5432/mc?sslmode=disable' up
+
+migrate_down:
+	migrate -path ./schema -database 'postgres://postgres:postgres@localhost:5432/mc?sslmode=disable' down
