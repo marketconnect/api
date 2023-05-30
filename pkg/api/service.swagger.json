@@ -10,6 +10,9 @@
     },
     {
       "name": "RankService"
+    },
+    {
+      "name": "ProductService"
     }
   ],
   "consumes": [
@@ -48,6 +51,38 @@
         ],
         "tags": [
           "RankService"
+        ]
+      }
+    },
+    "/add-products": {
+      "post": {
+        "operationId": "ProductService_AddProducts",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/mainEmpty"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/mainAddProductsReq"
+            }
+          }
+        ],
+        "tags": [
+          "ProductService"
         ]
       }
     },
@@ -190,11 +225,26 @@
         "phrases": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/mainPhrase"
           }
         }
       },
       "title": "AddPhrase"
+    },
+    "mainAddProductsReq": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string"
+        },
+        "products": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
     },
     "mainAddRankReq": {
       "type": "object",
@@ -233,6 +283,7 @@
         "ranks": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/mainRank"
           }
         }
@@ -287,6 +338,7 @@
         "keyPhrases": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/mainKeyPhrase"
           }
         }
@@ -333,6 +385,7 @@
         "details": {
           "type": "array",
           "items": {
+            "type": "object",
             "$ref": "#/definitions/protobufAny"
           }
         }

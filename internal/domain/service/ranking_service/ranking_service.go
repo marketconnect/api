@@ -16,16 +16,22 @@ type RankingStorage interface {
 	SelectUserPhrases(ctx context.Context, userID uint64, mp string) ([]*pb.KeyPhrase, error)
 }
 
+type ProductStorage interface {
+	SelectUserProducts(ctx context.Context, userID uint64) ([]uint64, error)
+}
+
 type RankingService struct {
-	storage RankingStorage
-	logging logging.Logger
+	rankingStorage RankingStorage
+	productStorage ProductStorage
+	logging        logging.Logger
 	pb.UnimplementedRankServiceServer
 }
 
-func NewRankingService(storage RankingStorage, logging logging.Logger) *RankingService {
+func NewRankingService(rankingStorage RankingStorage, productStorage ProductStorage, logging logging.Logger) *RankingService {
 	return &RankingService{
-		storage: storage,
-		logging: logging,
+		rankingStorage: rankingStorage,
+		productStorage: productStorage,
+		logging:        logging,
 	}
 }
 
@@ -36,12 +42,12 @@ func (s *RankingService) AddPhrases(ctx context.Context, req *pb.AddPhrasesReq) 
 	}
 	fmt.Printf("User ID: %d", userID)
 	for _, phrase := range req.Phrases {
-		phraseID, err := s.storage.AddPhrase(ctx, phrase.Text)
+		phraseID, err := s.rankingStorage.AddPhrase(ctx, phrase.Text)
 		if err != nil {
 			s.logging.Error(err)
 			continue
 		}
-		err = s.storage.AddUserPhrase(ctx, userID, phraseID)
+		err = s.rankingStorage.AddUserPhrase(ctx, userID, phraseID)
 		if err != nil {
 			s.logging.Error(err)
 		}
@@ -55,7 +61,8 @@ func (s *RankingService) Ranking(ctx context.Context, req *pb.RankingReq) (*pb.R
 	if err != nil {
 		return nil, err
 	}
-	keyPhrases, err := s.storage.SelectUserPhrases(ctx, userID, req.Mp)
+
+	keyPhrases, err := s.rankingStorage.SelectUserPhrases(ctx, userID, req.Mp)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +73,7 @@ func (s *RankingService) Ranking(ctx context.Context, req *pb.RankingReq) (*pb.R
 }
 
 func (s *RankingService) AddRank(ctx context.Context, req *pb.AddRankReq) (*pb.Empty, error) {
-	err := s.storage.AddPhraseRank(ctx, req.UserId, req.PhraseId, uint64(req.Rank), uint64(req.PaidRank), req.Mp)
+	err := s.rankingStorage.AddPhraseRank(ctx, req.UserId, req.PhraseId, uint64(req.Rank), uint64(req.PaidRank), req.Mp)
 	if err != nil {
 		return nil, err
 	}

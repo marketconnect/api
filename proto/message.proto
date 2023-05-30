@@ -19,3 +19,8 @@ message User {
 message TokenMessage {
     string token = 1;
 }
+
+message AddProductsReq {
+    string token             = 1;
+    repeated string products = 2;
+}

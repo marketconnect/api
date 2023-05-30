@@ -22,8 +22,9 @@ CREATE TABLE public.ranks (
     CONSTRAINT unique_mp_user_id_phrase_id_created_at UNIQUE (mp, user_id, phrase_id, created_at)
 );
 CREATE TABLE public.mc_products (
-    product INTEGER UNIQUE NOT NULL,
+    id  SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
+    product VARCHAR (30),
     FOREIGN KEY (user_id) REFERENCES public.mc_users(id)
 );
 -- CREATE USER IF NOT EXISTS mc_service WITH ENCRYPTED PASSWORD '000000';

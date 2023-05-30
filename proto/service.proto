@@ -44,3 +44,12 @@ service RankService {
         };
     }
 }
+
+service ProductService {
+    rpc AddProducts(AddProductsReq) returns (Empty) {
+        option (google.api.http) = {
+            post: "/add-products"
+            body: "*"
+        };
+    }
+}
