@@ -16,8 +16,9 @@ func main() {
 		log.Println(err)
 	}
 
-	client := pb.NewAuthServiceClient(conn)
-	resp, err := client.LoginUser(context.Background(), &pb.User{Email: "aassfd@mail.ru", Password: "111222333444"})
+	client := pb.NewRankServiceClient(conn)
+	req := pb.AddRankReq{UserId: 1, PhraseId: 2, Rank: 6, PaidRank: 7, Mp: "wb"}
+	resp, err := client.AddRank(context.Background(), &req)
 	if err != nil {
 		log.Println(err)
 	}

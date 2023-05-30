@@ -21,6 +21,11 @@ CREATE TABLE public.ranks (
     created_at date NOT NULL DEFAULT CURRENT_DATE,
     CONSTRAINT unique_mp_user_id_phrase_id_created_at UNIQUE (mp, user_id, phrase_id, created_at)
 );
+CREATE TABLE public.mc_products (
+    product INTEGER UNIQUE NOT NULL,
+    user_id INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES public.mc_users(id)
+);
 -- CREATE USER IF NOT EXISTS mc_service WITH ENCRYPTED PASSWORD '000000';
 GRANT CONNECT ON DATABASE mc TO mc_service;
 GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO mc_service;
