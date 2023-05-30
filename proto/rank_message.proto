@@ -5,18 +5,19 @@ package main;
 option go_package = "./proto";
 
 message Phrase {
-    string text = 1;
+    uint64 id   = 1;
+    string text = 2;
 }
 
 message Rank{
-    string date = 1;
-    int32  rank = 2; 
+    string date     = 1;
+    int32  rank     = 2; 
     int32  paidRank = 3;
-    string mp = 4;     
+    string mp       = 4;     
 }
 
 message KeyPhrase {
-    Phrase phrase = 1;
+    Phrase phrase       = 1;
     repeated Rank ranks = 2;
 }
 
@@ -25,15 +26,16 @@ message RankingResp {
 }
 
 message AddPhrasesReq {
-    string token = 1;
+    string token            = 1;
     repeated Phrase phrases = 2;
 }
 
 message AddRankReq {
-    string token = 1;
-    int32  rank = 2; 
-    int32  paidRank = 3;
-    string mp = 4;
+    uint64 userId   = 1;
+    uint64 phraseId = 2;
+    int32  rank     = 3; 
+    int32  paidRank = 4;
+    string mp       = 5;
 }
 
 

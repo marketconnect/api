@@ -51,6 +51,38 @@
         ]
       }
     },
+    "/add-rank": {
+      "post": {
+        "operationId": "RankService_AddRank",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/mainEmpty"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/mainAddRankReq"
+            }
+          }
+        ],
+        "tags": [
+          "RankService"
+        ]
+      }
+    },
     "/login": {
       "post": {
         "operationId": "AuthService_LoginUser",
@@ -163,6 +195,30 @@
         }
       }
     },
+    "mainAddRankReq": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "phraseId": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "rank": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "paidRank": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "mp": {
+          "type": "string"
+        }
+      }
+    },
     "mainEmpty": {
       "type": "object"
     },
@@ -183,6 +239,10 @@
     "mainPhrase": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
         "text": {
           "type": "string"
         }
@@ -202,7 +262,7 @@
           "type": "integer",
           "format": "int32"
         },
-        "place": {
+        "mp": {
           "type": "string"
         }
       }

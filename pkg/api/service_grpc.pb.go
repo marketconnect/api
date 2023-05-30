@@ -146,6 +146,7 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 type RankServiceClient interface {
 	Ranking(ctx context.Context, in *TokenMessage, opts ...grpc.CallOption) (*RankingResp, error)
 	AddPhrases(ctx context.Context, in *AddPhrasesReq, opts ...grpc.CallOption) (*Empty, error)
+	AddRank(ctx context.Context, in *AddRankReq, opts ...grpc.CallOption) (*Empty, error)
 }
 
 type rankServiceClient struct {
@@ -174,12 +175,22 @@ func (c *rankServiceClient) AddPhrases(ctx context.Context, in *AddPhrasesReq, o
 	return out, nil
 }
 
+func (c *rankServiceClient) AddRank(ctx context.Context, in *AddRankReq, opts ...grpc.CallOption) (*Empty, error) {
+	out := new(Empty)
+	err := c.cc.Invoke(ctx, "/main.RankService/AddRank", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RankServiceServer is the server API for RankService service.
 // All implementations must embed UnimplementedRankServiceServer
 // for forward compatibility
 type RankServiceServer interface {
 	Ranking(context.Context, *TokenMessage) (*RankingResp, error)
 	AddPhrases(context.Context, *AddPhrasesReq) (*Empty, error)
+	AddRank(context.Context, *AddRankReq) (*Empty, error)
 	mustEmbedUnimplementedRankServiceServer()
 }
 
@@ -192,6 +203,9 @@ func (UnimplementedRankServiceServer) Ranking(context.Context, *TokenMessage) (*
 }
 func (UnimplementedRankServiceServer) AddPhrases(context.Context, *AddPhrasesReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddPhrases not implemented")
+}
+func (UnimplementedRankServiceServer) AddRank(context.Context, *AddRankReq) (*Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddRank not implemented")
 }
 func (UnimplementedRankServiceServer) mustEmbedUnimplementedRankServiceServer() {}
 
@@ -242,6 +256,24 @@ func _RankService_AddPhrases_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RankService_AddRank_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddRankReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RankServiceServer).AddRank(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/main.RankService/AddRank",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RankServiceServer).AddRank(ctx, req.(*AddRankReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // RankService_ServiceDesc is the grpc.ServiceDesc for RankService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -256,6 +288,10 @@ var RankService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AddPhrases",
 			Handler:    _RankService_AddPhrases_Handler,
+		},
+		{
+			MethodName: "AddRank",
+			Handler:    _RankService_AddRank_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

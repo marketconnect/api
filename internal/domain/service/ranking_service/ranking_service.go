@@ -82,3 +82,12 @@ func (s *RankingService) Ranking(ctx context.Context, req *pb.TokenMessage) (*pb
 		KeyPhrases: keyPhrases,
 	}, nil
 }
+
+func (s *RankingService) AddRank(ctx context.Context, req *pb.AddRankReq) (*pb.Empty, error) {
+	err := s.storage.AddPhraseRank(ctx, req.UserId, req.PhraseId, req.Rank, req.PaidRank, req.Mp)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.Empty{}, nil
+}

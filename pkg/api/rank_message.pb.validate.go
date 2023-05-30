@@ -56,6 +56,8 @@ func (m *Phrase) validate(all bool) error {
 
 	var errors []error
 
+	// no validation rules for Id
+
 	// no validation rules for Text
 
 	if len(errors) > 0 {
@@ -162,7 +164,7 @@ func (m *Rank) validate(all bool) error {
 
 	// no validation rules for PaidRank
 
-	// no validation rules for Place
+	// no validation rules for Mp
 
 	if len(errors) > 0 {
 		return RankMultiError(errors)
@@ -671,3 +673,112 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = AddPhrasesReqValidationError{}
+
+// Validate checks the field values on AddRankReq with the rules defined in the
+// proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *AddRankReq) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on AddRankReq with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in AddRankReqMultiError, or
+// nil if none found.
+func (m *AddRankReq) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *AddRankReq) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for UserId
+
+	// no validation rules for PhraseId
+
+	// no validation rules for Rank
+
+	// no validation rules for PaidRank
+
+	// no validation rules for Mp
+
+	if len(errors) > 0 {
+		return AddRankReqMultiError(errors)
+	}
+
+	return nil
+}
+
+// AddRankReqMultiError is an error wrapping multiple validation errors
+// returned by AddRankReq.ValidateAll() if the designated constraints aren't met.
+type AddRankReqMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m AddRankReqMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m AddRankReqMultiError) AllErrors() []error { return m }
+
+// AddRankReqValidationError is the validation error returned by
+// AddRankReq.Validate if the designated constraints aren't met.
+type AddRankReqValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e AddRankReqValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e AddRankReqValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e AddRankReqValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e AddRankReqValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e AddRankReqValidationError) ErrorName() string { return "AddRankReqValidationError" }
+
+// Error satisfies the builtin error interface
+func (e AddRankReqValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sAddRankReq.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = AddRankReqValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = AddRankReqValidationError{}
