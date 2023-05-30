@@ -13,7 +13,7 @@ import (
 const (
 	addPhraseQuery     = `INSERT INTO public.phrases (content) VALUES ($1) ON CONFLICT (content) DO NOTHING RETURNING id;`
 	addUserPhraseQuery = `INSERT INTO public.mc_user_phrase (user_id, phrase_id) VALUES ($1, $2) ON CONFLICT (user_id, phrase_id) DO NOTHING`
-	addPhraseRankQuery = `INSERT INTO public.ranks (mp, user_id, phrase_id, rank, paid_rank) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (user_id, phrase_id, mp) DO UPDATE SET rank = EXCLUDED.rank,paid_rank = EXCLUDED.paid_rank, mp = EXCLUDED.mp`
+	addPhraseRankQuery = `INSERT INTO public.ranks (mp, user_id, phrase_id, rank, paid_rank, created_at) VALUES ($1, $2, $3, $4, $5, CURRENT_DATE) ON CONFLICT ON CONSTRAINT unique_mp_user_id_phrase_id_created_at DO UPDATE SET rank = EXCLUDED.rank, paid_rank = EXCLUDED.paid_rank WHERE ranks.created_at = CURRENT_DATE`
 	selectUserPhrases  = `SELECT p.content, r.mp, r.rank, r.paid_rank, r.created_at FROM public.mc_user_phrase up JOIN public.phrases p ON up.phrase_id = p.id LEFT JOIN public.ranks r ON up.phrase_id = r.phrase_id AND up.user_id = r.user_id WHERE up.user_id = $1 AND r.mp = $2`
 )
 

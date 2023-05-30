@@ -11,14 +11,15 @@ CREATE TABLE public.mc_user_phrase (
     phrase_id integer NOT NULL REFERENCES public.phrases(id),
     PRIMARY KEY (user_id, phrase_id)
 );
-CREATE TABLE ranks (
+CREATE TABLE public.ranks (
     id SERIAL PRIMARY KEY,
     mp VARCHAR (10),
     user_id INTEGER REFERENCES mc_users(id),
     phrase_id INTEGER REFERENCES phrases(id),
     rank INTEGER,
     paid_rank INTEGER,
-    created_at timestamp NOT NULL DEFAULT NOW()
+    created_at date NOT NULL DEFAULT CURRENT_DATE,
+    CONSTRAINT unique_mp_user_id_phrase_id_created_at UNIQUE (mp, user_id, phrase_id, created_at)
 );
 -- CREATE USER IF NOT EXISTS mc_service WITH ENCRYPTED PASSWORD '000000';
 GRANT CONNECT ON DATABASE mc TO mc_service;
