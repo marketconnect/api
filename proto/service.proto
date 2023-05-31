@@ -40,3 +40,12 @@ service RankService {
     rpc AddRank(AddRankReq) returns (Empty) {};
     rpc OldRanks(OldRanksReq) returns (OldRanksResp) {};
 }
+
+service ProductService {
+    rpc AddProducts(AddProductsReq) returns (Empty) {
+        option (google.api.http) = {
+            post: "/add-products"
+            body: "*"
+        };
+    }
+}

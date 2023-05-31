@@ -9,7 +9,7 @@ message Phrase {
     string text = 2;
 }
 
-message Rank{
+message Rank {
     string date     = 1;
     int32  rank     = 2; 
     int32  paidRank = 3;

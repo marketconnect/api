@@ -53,20 +53,27 @@ var file_service_proto_rawDesc = []byte{
 	0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x12, 0x33, 0x0a, 0x08, 0x4f, 0x6c, 0x64, 0x52, 0x61, 0x6e,
 	0x6b, 0x73, 0x12, 0x11, 0x2e, 0x6d, 0x61, 0x69, 0x6e, 0x2e, 0x4f, 0x6c, 0x64, 0x52, 0x61, 0x6e,
 	0x6b, 0x73, 0x52, 0x65, 0x71, 0x1a, 0x12, 0x2e, 0x6d, 0x61, 0x69, 0x6e, 0x2e, 0x4f, 0x6c, 0x64,
-	0x52, 0x61, 0x6e, 0x6b, 0x73, 0x52, 0x65, 0x73, 0x70, 0x22, 0x00, 0x42, 0x09, 0x5a, 0x07, 0x2e,
-	0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x52, 0x61, 0x6e, 0x6b, 0x73, 0x52, 0x65, 0x73, 0x70, 0x22, 0x00, 0x32, 0x5c, 0x0a, 0x0e, 0x50,
+	0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x4a, 0x0a,
+	0x0b, 0x41, 0x64, 0x64, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x73, 0x12, 0x14, 0x2e, 0x6d,
+	0x61, 0x69, 0x6e, 0x2e, 0x41, 0x64, 0x64, 0x50, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x73, 0x52,
+	0x65, 0x71, 0x1a, 0x0b, 0x2e, 0x6d, 0x61, 0x69, 0x6e, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22,
+	0x18, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x12, 0x3a, 0x01, 0x2a, 0x22, 0x0d, 0x2f, 0x61, 0x64, 0x64,
+	0x2d, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x73, 0x42, 0x09, 0x5a, 0x07, 0x2e, 0x2f, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var file_service_proto_goTypes = []interface{}{
-	(*User)(nil),          // 0: main.User
-	(*RankingReq)(nil),    // 1: main.RankingReq
-	(*AddPhrasesReq)(nil), // 2: main.AddPhrasesReq
-	(*AddRankReq)(nil),    // 3: main.AddRankReq
-	(*OldRanksReq)(nil),   // 4: main.OldRanksReq
-	(*TokenMessage)(nil),  // 5: main.TokenMessage
-	(*RankingResp)(nil),   // 6: main.RankingResp
-	(*Empty)(nil),         // 7: main.Empty
-	(*OldRanksResp)(nil),  // 8: main.OldRanksResp
+	(*User)(nil),           // 0: main.User
+	(*RankingReq)(nil),     // 1: main.RankingReq
+	(*AddPhrasesReq)(nil),  // 2: main.AddPhrasesReq
+	(*AddRankReq)(nil),     // 3: main.AddRankReq
+	(*OldRanksReq)(nil),    // 4: main.OldRanksReq
+	(*AddProductsReq)(nil), // 5: main.AddProductsReq
+	(*TokenMessage)(nil),   // 6: main.TokenMessage
+	(*RankingResp)(nil),    // 7: main.RankingResp
+	(*Empty)(nil),          // 8: main.Empty
+	(*OldRanksResp)(nil),   // 9: main.OldRanksResp
 }
 var file_service_proto_depIdxs = []int32{
 	0, // 0: main.AuthService.RegisterUser:input_type -> main.User
@@ -75,14 +82,16 @@ var file_service_proto_depIdxs = []int32{
 	2, // 3: main.RankService.AddPhrases:input_type -> main.AddPhrasesReq
 	3, // 4: main.RankService.AddRank:input_type -> main.AddRankReq
 	4, // 5: main.RankService.OldRanks:input_type -> main.OldRanksReq
-	5, // 6: main.AuthService.RegisterUser:output_type -> main.TokenMessage
-	5, // 7: main.AuthService.LoginUser:output_type -> main.TokenMessage
-	6, // 8: main.RankService.Ranking:output_type -> main.RankingResp
-	7, // 9: main.RankService.AddPhrases:output_type -> main.Empty
-	7, // 10: main.RankService.AddRank:output_type -> main.Empty
-	8, // 11: main.RankService.OldRanks:output_type -> main.OldRanksResp
-	6, // [6:12] is the sub-list for method output_type
-	0, // [0:6] is the sub-list for method input_type
+	5, // 6: main.ProductService.AddProducts:input_type -> main.AddProductsReq
+	6, // 7: main.AuthService.RegisterUser:output_type -> main.TokenMessage
+	6, // 8: main.AuthService.LoginUser:output_type -> main.TokenMessage
+	7, // 9: main.RankService.Ranking:output_type -> main.RankingResp
+	8, // 10: main.RankService.AddPhrases:output_type -> main.Empty
+	8, // 11: main.RankService.AddRank:output_type -> main.Empty
+	9, // 12: main.RankService.OldRanks:output_type -> main.OldRanksResp
+	8, // 13: main.ProductService.AddProducts:output_type -> main.Empty
+	7, // [7:14] is the sub-list for method output_type
+	0, // [0:7] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -103,7 +112,7 @@ func file_service_proto_init() {
 			NumEnums:      0,
 			NumMessages:   0,
 			NumExtensions: 0,
-			NumServices:   2,
+			NumServices:   3,
 		},
 		GoTypes:           file_service_proto_goTypes,
 		DependencyIndexes: file_service_proto_depIdxs,

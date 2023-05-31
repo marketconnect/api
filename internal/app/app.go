@@ -50,10 +50,11 @@ func NewApp(ctx context.Context, config *config.Config) (App, error) {
 	// Data Providers
 	authDataProvider := postgressql.NewAuthStorage(pgClient)
 	phraseDataProvider := postgressql.NewPhraseStorage(pgClient)
+	productDataProvider := postgressql.NewProductStorage(pgClient)
 
 	// Services
 	authService := auth_service.NewAuthService(authDataProvider, logger)
-	rankingService := ranking_service.NewRankingService(phraseDataProvider, logger)
+	rankingService := ranking_service.NewRankingService(phraseDataProvider, productDataProvider, logger)
 
 	// Servers
 	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(unaryInterceptor))
