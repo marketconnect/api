@@ -55,8 +55,12 @@ message OldRanksReq {
     uint32 to = 2;
 }
 
-message OldRanksResp {
+message OldRank {
     uint64 user_id           = 1;
     string phrase            = 2;
     repeated string products = 3;
+}
+
+message OldRanksResp {
+    repeated OldRank oldRanks = 1;
 }

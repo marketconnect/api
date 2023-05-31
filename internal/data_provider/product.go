@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	addProductQuery         = `INSERT INTO public.mc_products (product, user_id) VALUES ($1, $2) ON CONFLICT (product, user_id) DO NOTHING`
+	addProductQuery         = `INSERT INTO public.mc_products (user_id, product) VALUES ($1, $2) ON CONFLICT (user_id, product) DO NOTHING`
 	selectUserProductsQuery = `SELECT product FROM public.mc_products WHERE user_id = $1`
 )
 
@@ -21,6 +21,7 @@ func NewProductStorage(client client.PostgreSQLClient) *productStorage {
 }
 
 func (ps *productStorage) AddProduct(ctx context.Context, userID uint64, product string) error {
+	fmt.Printf("%d - %s", userID, product)
 	_, err := ps.client.Exec(ctx, addProductQuery, product, userID)
 	if err != nil {
 		return fmt.Errorf("failed to add product: %v", err)

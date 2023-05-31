@@ -20,41 +20,28 @@
 # Content-Type: text/plain
 
 # {
-#     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODU1MzQyMjgsImlkIjoxfQ.wcU8ORtfsohtwF3dS90A1JF5jbKMBxoPB3VQxVP2qa4",
+#     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODU2MTg0OTksImlkIjoxfQ.wSC97LTBz91ySQ7Vw1TRem94D8Lwl3p5n8k8sS_Xxyc",
 #     "phrases": [
 #         {"text": "Hello, World!"},
-#         {"text": "Goodbye, World!"}
+#         {"text": "Goodbye, World!"},
+#         {"text": "asdasdasdas"}
 #     ]
 # }
 
-# POST http://localhost:8080/add-phrases HTTP/1.1
+# POST http://localhost:8080/rank HTTP/1.1
 # Content-Type: text/plain
 
 # {
-#     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODU1MzQyMjgsImlkIjoxfQ.wcU8ORtfsohtwF3dS90A1JF5jbKMBxoPB3VQxVP2qa4",
-#     "phrases": [
-#         {"text": "Hello, World!"},
-#         {"text": "Goodbye, World!"}
-#     ]
-# }
-
-# POST http://localhost:8080/ranking HTTP/1.1
-# Content-Type: text/plain
-
-# {
-#     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODU1MzQyMjgsImlkIjoxfQ.wcU8ORtfsohtwF3dS90A1JF5jbKMBxoPB3VQxVP2qa4",
+#     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODU2MTg0OTksImlkIjoxfQ.wSC97LTBz91ySQ7Vw1TRem94D8Lwl3p5n8k8sS_Xxyc",
 #     "mp": "wb"
 # }
 
-# POST http://localhost:8080/add-rank HTTP/1.1
-# Content-Type: text/plain
 
-# {
-#     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODU1MzQyMjgsImlkIjoxfQ.wcU8ORtfsohtwF3dS90A1JF5jbKMBxoPB3VQxVP2qa4",
-#     "userId": 1,
-#     "phraseId": 1,
-#     "rank": 5,
-#     "paidRank":1,
-#     "mp": "wb"
+POST http://localhost:8080/add-products HTTP/1.1
+Content-Type: text/plain
 
-# }
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODU2MTg0OTksImlkIjoxfQ.wSC97LTBz91ySQ7Vw1TRem94D8Lwl3p5n8k8sS_Xxyc",
+    "products": ["111111","222222","333333","444444", "555555"]
+}
+

@@ -11,7 +11,8 @@ import (
 	"mc_api/internal/config"
 	postgressql "mc_api/internal/data_provider"
 	"mc_api/internal/domain/service/auth_service"
-	"mc_api/internal/domain/service/ranking_service"
+	"mc_api/internal/domain/service/product_service"
+	"mc_api/internal/domain/service/rank_service"
 
 	pb "mc_api/pkg/api"
 
@@ -54,7 +55,8 @@ func NewApp(ctx context.Context, config *config.Config) (App, error) {
 
 	// Services
 	authService := auth_service.NewAuthService(authDataProvider, logger)
-	rankingService := ranking_service.NewRankingService(phraseDataProvider, productDataProvider, logger)
+	rankingService := rank_service.NewRankingService(phraseDataProvider, logger)
+	productService := product_service.NewProductService(productDataProvider, logger)
 
 	// Servers
 	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(unaryInterceptor))
@@ -65,6 +67,9 @@ func NewApp(ctx context.Context, config *config.Config) (App, error) {
 
 	pb.RegisterRankServiceHandlerServer(context.Background(), httpServer, rankingService)
 	pb.RegisterRankServiceServer(grpcServer, rankingService)
+
+	pb.RegisterProductServiceHandlerServer(context.Background(), httpServer, productService)
+	pb.RegisterProductServiceServer(grpcServer, productService)
 
 	return App{cfg: config, grpcServer: grpcServer, logger: logger, pgClient: pgClient, httpServer: httpServer}, nil
 }

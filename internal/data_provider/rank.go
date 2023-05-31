@@ -14,24 +14,24 @@ const (
 	addPhraseQuery     = `INSERT INTO public.phrases (content) VALUES ($1) ON CONFLICT (content) DO NOTHING RETURNING id;`
 	addUserPhraseQuery = `INSERT INTO public.mc_user_phrase (user_id, phrase_id) VALUES ($1, $2) ON CONFLICT (user_id, phrase_id) DO NOTHING`
 	addPhraseRankQuery = `INSERT INTO public.ranks (mp, user_id, phrase_id, rank, paid_rank, created_at) VALUES ($1, $2, $3, $4, $5, CURRENT_DATE) ON CONFLICT ON CONSTRAINT unique_mp_user_id_phrase_id_created_at DO UPDATE SET rank = EXCLUDED.rank, paid_rank = EXCLUDED.paid_rank WHERE ranks.created_at = CURRENT_DATE`
-	selectUserPhrases  = `SELECT p.content, r.mp, r.rank, r.paid_rank, r.created_at FROM public.mc_user_phrase up JOIN public.phrases p ON up.phrase_id = p.id LEFT JOIN public.ranks r ON up.phrase_id = r.phrase_id AND up.user_id = r.user_id WHERE up.user_id = $1 AND r.mp = $2 ORDER BY updated_at ASC`
-	selectOldRanks     = `SELECT r.id, r.mp, r.user_id, r.phrase_id, r.rank, r.paid_rank, r.created_at, r.updated_at, p.content	FROM public.ranks r	JOIN public.phrases p ON r.phrase_id = p.id	WHERE r.updated_at < NOW() - INTERVAL '23 hours' AND r.user_id BETWEEN $1 AND $2`
+	selectUserPhrases  = `SELECT p.content, r.mp, r.rank, r.paid_rank, r.created_at FROM public.mc_user_phrase up JOIN public.phrases p ON up.phrase_id = p.id LEFT JOIN public.ranks r ON up.phrase_id = r.phrase_id AND up.user_id = r.user_id WHERE up.user_id = $1 AND r.mp = $2`
+	selectOldRanks     = `SELECT r.id, r.mp, r.user_id, r.phrase_id, r.rank, r.paid_rank, r.created_at, r.updated_at, p.content	FROM public.ranks r	JOIN public.phrases p ON r.phrase_id = p.id	WHERE r.updated_at < NOW() - INTERVAL '23 hours' AND r.user_id BETWEEN $1 AND $2 ORDER BY updated_at ASC`
 )
 
-type phraseStorage struct {
+type rankStorage struct {
 	client client.PostgreSQLClient
 }
 
-func NewPhraseStorage(client client.PostgreSQLClient) *phraseStorage {
-	return &phraseStorage{client: client}
+func NewPhraseStorage(client client.PostgreSQLClient) *rankStorage {
+	return &rankStorage{client: client}
 }
-func (ps *phraseStorage) AddPhrase(ctx context.Context, content string) (uint64, error) {
+func (ps *rankStorage) AddPhrase(ctx context.Context, content string) (uint64, error) {
 	row := ps.client.QueryRow(ctx, addPhraseQuery, content)
 	var phraseID uint64
 	err := row.Scan(&phraseID)
 	return phraseID, err
 }
-func (ps *phraseStorage) AddUserPhrase(ctx context.Context, userID, phraseID uint64) error {
+func (ps *rankStorage) AddUserPhrase(ctx context.Context, userID, phraseID uint64) error {
 	_, err := ps.client.Exec(ctx, addUserPhraseQuery, userID, phraseID)
 	if err != nil {
 		return fmt.Errorf("failed to add user phrase: %v", err)
@@ -39,7 +39,7 @@ func (ps *phraseStorage) AddUserPhrase(ctx context.Context, userID, phraseID uin
 	return nil
 }
 
-func (ps *phraseStorage) AddPhraseRank(ctx context.Context, userID, phraseID, rank, paidRank uint64, mp string) error {
+func (ps *rankStorage) AddPhraseRank(ctx context.Context, userID, phraseID, rank, paidRank uint64, mp string) error {
 	_, err := ps.client.Exec(ctx, addPhraseRankQuery, mp, userID, phraseID, rank, paidRank)
 	if err != nil {
 		return fmt.Errorf("failed to add phrase rank: %v", err)
@@ -47,7 +47,7 @@ func (ps *phraseStorage) AddPhraseRank(ctx context.Context, userID, phraseID, ra
 	return nil
 }
 
-func (ps *phraseStorage) SelectUserPhrases(ctx context.Context, userID uint64, mp string) ([]*pb.KeyPhrase, error) {
+func (ps *rankStorage) SelectUserPhrases(ctx context.Context, userID uint64, mp string) ([]*pb.KeyPhrase, error) {
 	rows, err := ps.client.Query(ctx, selectUserPhrases, userID, mp)
 	if err != nil {
 		return nil, err
@@ -89,20 +89,20 @@ func (ps *phraseStorage) SelectUserPhrases(ctx context.Context, userID uint64, m
 	return result, nil
 }
 
-func (ps *phraseStorage) SelectOldRanks(ctx context.Context, startID, endID uint64) ([]*pb.OldRanksResp, error) {
+func (ps *rankStorage) SelectOldRanks(ctx context.Context, startID, endID uint64) ([]*pb.OldRank, error) {
 	rows, err := ps.client.Query(ctx, selectOldRanks, startID, endID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var result []*pb.OldRanksResp
+	var result []*pb.OldRank
 	for rows.Next() {
 		var userID, phraseID, rank, paidRank sql.NullInt64
 		var mp, content sql.NullString
 		if err := rows.Scan(&mp, &userID, &phraseID, &rank, &paidRank, &content); err != nil {
 			return nil, err
 		}
-		r := &pb.OldRanksResp{
+		r := &pb.OldRank{
 			UserId:   uint64(userID.Int64),
 			Phrase:   content.String,
 			Products: []string{mp.String},

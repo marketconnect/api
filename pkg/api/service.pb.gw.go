@@ -342,7 +342,7 @@ func RegisterRankServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/main.RankService/Ranking", runtime.WithHTTPPathPattern("/ranking"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/main.RankService/Ranking", runtime.WithHTTPPathPattern("/rank"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -612,7 +612,7 @@ func RegisterRankServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/main.RankService/Ranking", runtime.WithHTTPPathPattern("/ranking"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/main.RankService/Ranking", runtime.WithHTTPPathPattern("/rank"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -698,7 +698,7 @@ func RegisterRankServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 }
 
 var (
-	pattern_RankService_Ranking_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"ranking"}, ""))
+	pattern_RankService_Ranking_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"rank"}, ""))
 
 	pattern_RankService_AddPhrases_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"add-phrases"}, ""))
 
