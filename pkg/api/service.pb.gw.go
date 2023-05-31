@@ -99,7 +99,7 @@ func local_request_AuthService_LoginUser_0(ctx context.Context, marshaler runtim
 
 }
 
-func request_RankService_Ranking_0(ctx context.Context, marshaler runtime.Marshaler, client RankServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func request_RankService_Rank_0(ctx context.Context, marshaler runtime.Marshaler, client RankServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq RankingReq
 	var metadata runtime.ServerMetadata
 
@@ -111,12 +111,12 @@ func request_RankService_Ranking_0(ctx context.Context, marshaler runtime.Marsha
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.Ranking(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.Rank(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_RankService_Ranking_0(ctx context.Context, marshaler runtime.Marshaler, server RankServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+func local_request_RankService_Rank_0(ctx context.Context, marshaler runtime.Marshaler, server RankServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq RankingReq
 	var metadata runtime.ServerMetadata
 
@@ -128,7 +128,7 @@ func local_request_RankService_Ranking_0(ctx context.Context, marshaler runtime.
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.Ranking(ctx, &protoReq)
+	msg, err := server.Rank(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -334,7 +334,7 @@ func RegisterAuthServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterRankServiceHandlerFromEndpoint instead.
 func RegisterRankServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server RankServiceServer) error {
 
-	mux.Handle("POST", pattern_RankService_Ranking_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_RankService_Rank_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -342,12 +342,12 @@ func RegisterRankServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/main.RankService/Ranking", runtime.WithHTTPPathPattern("/rank"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/main.RankService/Rank", runtime.WithHTTPPathPattern("/rank"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_RankService_Ranking_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_RankService_Rank_0(annotatedContext, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
@@ -355,7 +355,7 @@ func RegisterRankServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux
 			return
 		}
 
-		forward_RankService_Ranking_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_RankService_Rank_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -474,7 +474,7 @@ func RegisterProductServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 // RegisterAuthServiceHandlerFromEndpoint is same as RegisterAuthServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterAuthServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.Dial(endpoint, opts...)
+	conn, err := grpc.DialContext(ctx, endpoint, opts...)
 	if err != nil {
 		return err
 	}
@@ -571,7 +571,7 @@ var (
 // RegisterRankServiceHandlerFromEndpoint is same as RegisterRankServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterRankServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.Dial(endpoint, opts...)
+	conn, err := grpc.DialContext(ctx, endpoint, opts...)
 	if err != nil {
 		return err
 	}
@@ -606,25 +606,25 @@ func RegisterRankServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn
 // "RankServiceClient" to call the correct interceptors.
 func RegisterRankServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client RankServiceClient) error {
 
-	mux.Handle("POST", pattern_RankService_Ranking_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_RankService_Rank_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/main.RankService/Ranking", runtime.WithHTTPPathPattern("/rank"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/main.RankService/Rank", runtime.WithHTTPPathPattern("/rank"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_RankService_Ranking_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_RankService_Rank_0(annotatedContext, inboundMarshaler, client, req, pathParams)
 		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
 		if err != nil {
 			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_RankService_Ranking_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_RankService_Rank_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -698,7 +698,7 @@ func RegisterRankServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux
 }
 
 var (
-	pattern_RankService_Ranking_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"rank"}, ""))
+	pattern_RankService_Rank_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"rank"}, ""))
 
 	pattern_RankService_AddPhrases_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"add-phrases"}, ""))
 
@@ -708,7 +708,7 @@ var (
 )
 
 var (
-	forward_RankService_Ranking_0 = runtime.ForwardResponseMessage
+	forward_RankService_Rank_0 = runtime.ForwardResponseMessage
 
 	forward_RankService_AddPhrases_0 = runtime.ForwardResponseMessage
 
@@ -720,7 +720,7 @@ var (
 // RegisterProductServiceHandlerFromEndpoint is same as RegisterProductServiceHandler but
 // automatically dials to "endpoint" and closes the connection when "ctx" gets done.
 func RegisterProductServiceHandlerFromEndpoint(ctx context.Context, mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) (err error) {
-	conn, err := grpc.Dial(endpoint, opts...)
+	conn, err := grpc.DialContext(ctx, endpoint, opts...)
 	if err != nil {
 		return err
 	}

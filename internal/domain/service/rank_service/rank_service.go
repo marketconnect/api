@@ -13,7 +13,7 @@ type RankStorage interface {
 	AddPhrase(ctx context.Context, content string) (uint64, error)
 	AddUserPhrase(ctx context.Context, userID, phraseID uint64) error
 	AddPhraseRank(ctx context.Context, userID, phraseID, rank, paidRank uint64, mp string) error
-	SelectUserPhrases(ctx context.Context, userID uint64, mp string) ([]*pb.KeyPhrase, error)
+	SelectUserPhrases(ctx context.Context, userID uint64) ([]*pb.KeyPhrase, error)
 	SelectOldRanks(ctx context.Context, startID, endID uint64) ([]*pb.OldRank, error)
 }
 
@@ -52,19 +52,35 @@ func (s *RankService) AddPhrases(ctx context.Context, req *pb.AddPhrasesReq) (*p
 	return &pb.Empty{}, nil
 }
 
-func (s *RankService) Ranking(ctx context.Context, req *pb.RankingReq) (*pb.RankingResp, error) {
+func (s *RankService) Rank(ctx context.Context, req *pb.RankingReq) (*pb.RankingResp, error) {
 	userID, err := mc_jwt.GetIdFromToken(req.Token)
 	if err != nil {
 		return nil, err
 	}
 
-	keyPhrases, err := s.rankStorage.SelectUserPhrases(ctx, userID, req.Mp)
+	keyPhrases, err := s.rankStorage.SelectUserPhrases(ctx, userID)
 	if err != nil {
 		return nil, err
 	}
 
+	// Filter for MP
+	var resKeyPhrases []*pb.KeyPhrase
+
+	for _, keyPhrase := range keyPhrases {
+		var newRanks []*pb.Rank
+
+		for _, r := range keyPhrase.Ranks {
+			if r.Mp != req.Mp {
+				continue
+			}
+			newRanks = append(newRanks, r)
+		}
+		newKeyPhrase := &pb.KeyPhrase{Phrase: keyPhrase.Phrase, Ranks: newRanks}
+		resKeyPhrases = append(resKeyPhrases, newKeyPhrase)
+	}
+
 	return &pb.RankingResp{
-		KeyPhrases: keyPhrases,
+		KeyPhrases: resKeyPhrases,
 	}, nil
 }
 

@@ -25,7 +25,7 @@ service AuthService {
 }
 
 service RankService {
-    rpc Ranking(RankingReq) returns (RankingResp) {
+    rpc Rank(RankingReq) returns (RankingResp) {
         option (google.api.http) = {
             post: "/rank"
             body: "*"

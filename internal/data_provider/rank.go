@@ -14,7 +14,7 @@ const (
 	addPhraseQuery     = `INSERT INTO public.phrases (content) VALUES ($1) ON CONFLICT (content) DO NOTHING RETURNING id;`
 	addUserPhraseQuery = `INSERT INTO public.mc_user_phrase (user_id, phrase_id) VALUES ($1, $2) ON CONFLICT (user_id, phrase_id) DO NOTHING`
 	addPhraseRankQuery = `INSERT INTO public.ranks (mp, user_id, phrase_id, rank, paid_rank, created_at) VALUES ($1, $2, $3, $4, $5, CURRENT_DATE) ON CONFLICT ON CONSTRAINT unique_mp_user_id_phrase_id_created_at DO UPDATE SET rank = EXCLUDED.rank, paid_rank = EXCLUDED.paid_rank WHERE ranks.created_at = CURRENT_DATE`
-	selectUserPhrases  = `SELECT p.content, r.mp, r.rank, r.paid_rank, r.created_at FROM public.mc_user_phrase up JOIN public.phrases p ON up.phrase_id = p.id LEFT JOIN public.ranks r ON up.phrase_id = r.phrase_id AND up.user_id = r.user_id WHERE up.user_id = $1 AND r.mp = $2`
+	selectUserPhrases  = `SELECT p.content, COALESCE(r.mp, '') AS mp, COALESCE(r.rank, 0) AS rank, COALESCE(r.paid_rank, 0) AS paid_rank, COALESCE(r.created_at, '1970-01-01'::date) AS created_at FROM public.mc_user_phrase up JOIN public.phrases p ON up.phrase_id = p.id LEFT JOIN public.ranks r ON up.phrase_id = r.phrase_id AND up.user_id = r.user_id WHERE up.user_id = $1`
 	selectOldRanks     = `SELECT r.id, r.mp, r.user_id, r.phrase_id, r.rank, r.paid_rank, r.created_at, r.updated_at, p.content	FROM public.ranks r	JOIN public.phrases p ON r.phrase_id = p.id	WHERE r.updated_at < NOW() - INTERVAL '23 hours' AND r.user_id BETWEEN $1 AND $2 ORDER BY updated_at ASC`
 )
 
@@ -47,17 +47,17 @@ func (ps *rankStorage) AddPhraseRank(ctx context.Context, userID, phraseID, rank
 	return nil
 }
 
-func (ps *rankStorage) SelectUserPhrases(ctx context.Context, userID uint64, mp string) ([]*pb.KeyPhrase, error) {
-	rows, err := ps.client.Query(ctx, selectUserPhrases, userID, mp)
+func (ps *rankStorage) SelectUserPhrases(ctx context.Context, userID uint64) ([]*pb.KeyPhrase, error) {
+	rows, err := ps.client.Query(ctx, selectUserPhrases, userID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-
+	fmt.Printf("%d - %s", userID)
 	var result []*pb.KeyPhrase
 	keyphraseMap := make(map[string]*pb.KeyPhrase)
 	for rows.Next() {
-		var content string
+		var content, mp string
 		var rank, paidRank sql.NullInt64
 		var createdAt sql.NullTime
 		if err := rows.Scan(&content, &mp, &rank, &paidRank, &createdAt); err != nil {
