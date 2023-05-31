@@ -885,3 +885,209 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = AddRankReqValidationError{}
+
+// Validate checks the field values on OldRanksReq with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *OldRanksReq) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on OldRanksReq with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in OldRanksReqMultiError, or
+// nil if none found.
+func (m *OldRanksReq) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *OldRanksReq) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for From
+
+	// no validation rules for To
+
+	if len(errors) > 0 {
+		return OldRanksReqMultiError(errors)
+	}
+
+	return nil
+}
+
+// OldRanksReqMultiError is an error wrapping multiple validation errors
+// returned by OldRanksReq.ValidateAll() if the designated constraints aren't met.
+type OldRanksReqMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m OldRanksReqMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m OldRanksReqMultiError) AllErrors() []error { return m }
+
+// OldRanksReqValidationError is the validation error returned by
+// OldRanksReq.Validate if the designated constraints aren't met.
+type OldRanksReqValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e OldRanksReqValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e OldRanksReqValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e OldRanksReqValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e OldRanksReqValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e OldRanksReqValidationError) ErrorName() string { return "OldRanksReqValidationError" }
+
+// Error satisfies the builtin error interface
+func (e OldRanksReqValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sOldRanksReq.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = OldRanksReqValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = OldRanksReqValidationError{}
+
+// Validate checks the field values on OldRanksResp with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *OldRanksResp) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on OldRanksResp with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in OldRanksRespMultiError, or
+// nil if none found.
+func (m *OldRanksResp) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *OldRanksResp) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for UserId
+
+	// no validation rules for Phrase
+
+	if len(errors) > 0 {
+		return OldRanksRespMultiError(errors)
+	}
+
+	return nil
+}
+
+// OldRanksRespMultiError is an error wrapping multiple validation errors
+// returned by OldRanksResp.ValidateAll() if the designated constraints aren't met.
+type OldRanksRespMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m OldRanksRespMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m OldRanksRespMultiError) AllErrors() []error { return m }
+
+// OldRanksRespValidationError is the validation error returned by
+// OldRanksResp.Validate if the designated constraints aren't met.
+type OldRanksRespValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e OldRanksRespValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e OldRanksRespValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e OldRanksRespValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e OldRanksRespValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e OldRanksRespValidationError) ErrorName() string { return "OldRanksRespValidationError" }
+
+// Error satisfies the builtin error interface
+func (e OldRanksRespValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sOldRanksResp.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = OldRanksRespValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = OldRanksRespValidationError{}

@@ -147,6 +147,7 @@ type RankServiceClient interface {
 	Ranking(ctx context.Context, in *RankingReq, opts ...grpc.CallOption) (*RankingResp, error)
 	AddPhrases(ctx context.Context, in *AddPhrasesReq, opts ...grpc.CallOption) (*Empty, error)
 	AddRank(ctx context.Context, in *AddRankReq, opts ...grpc.CallOption) (*Empty, error)
+	OldRanks(ctx context.Context, in *OldRanksReq, opts ...grpc.CallOption) (*OldRanksResp, error)
 }
 
 type rankServiceClient struct {
@@ -184,6 +185,15 @@ func (c *rankServiceClient) AddRank(ctx context.Context, in *AddRankReq, opts ..
 	return out, nil
 }
 
+func (c *rankServiceClient) OldRanks(ctx context.Context, in *OldRanksReq, opts ...grpc.CallOption) (*OldRanksResp, error) {
+	out := new(OldRanksResp)
+	err := c.cc.Invoke(ctx, "/main.RankService/OldRanks", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RankServiceServer is the server API for RankService service.
 // All implementations must embed UnimplementedRankServiceServer
 // for forward compatibility
@@ -191,6 +201,7 @@ type RankServiceServer interface {
 	Ranking(context.Context, *RankingReq) (*RankingResp, error)
 	AddPhrases(context.Context, *AddPhrasesReq) (*Empty, error)
 	AddRank(context.Context, *AddRankReq) (*Empty, error)
+	OldRanks(context.Context, *OldRanksReq) (*OldRanksResp, error)
 	mustEmbedUnimplementedRankServiceServer()
 }
 
@@ -206,6 +217,9 @@ func (UnimplementedRankServiceServer) AddPhrases(context.Context, *AddPhrasesReq
 }
 func (UnimplementedRankServiceServer) AddRank(context.Context, *AddRankReq) (*Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddRank not implemented")
+}
+func (UnimplementedRankServiceServer) OldRanks(context.Context, *OldRanksReq) (*OldRanksResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method OldRanks not implemented")
 }
 func (UnimplementedRankServiceServer) mustEmbedUnimplementedRankServiceServer() {}
 
@@ -274,6 +288,24 @@ func _RankService_AddRank_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RankService_OldRanks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OldRanksReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RankServiceServer).OldRanks(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/main.RankService/OldRanks",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RankServiceServer).OldRanks(ctx, req.(*OldRanksReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // RankService_ServiceDesc is the grpc.ServiceDesc for RankService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -292,6 +324,10 @@ var RankService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AddRank",
 			Handler:    _RankService_AddRank_Handler,
+		},
+		{
+			MethodName: "OldRanks",
+			Handler:    _RankService_OldRanks_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

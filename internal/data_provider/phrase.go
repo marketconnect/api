@@ -14,7 +14,8 @@ const (
 	addPhraseQuery     = `INSERT INTO public.phrases (content) VALUES ($1) ON CONFLICT (content) DO NOTHING RETURNING id;`
 	addUserPhraseQuery = `INSERT INTO public.mc_user_phrase (user_id, phrase_id) VALUES ($1, $2) ON CONFLICT (user_id, phrase_id) DO NOTHING`
 	addPhraseRankQuery = `INSERT INTO public.ranks (mp, user_id, phrase_id, rank, paid_rank, created_at) VALUES ($1, $2, $3, $4, $5, CURRENT_DATE) ON CONFLICT ON CONSTRAINT unique_mp_user_id_phrase_id_created_at DO UPDATE SET rank = EXCLUDED.rank, paid_rank = EXCLUDED.paid_rank WHERE ranks.created_at = CURRENT_DATE`
-	selectUserPhrases  = `SELECT p.content, r.mp, r.rank, r.paid_rank, r.created_at FROM public.mc_user_phrase up JOIN public.phrases p ON up.phrase_id = p.id LEFT JOIN public.ranks r ON up.phrase_id = r.phrase_id AND up.user_id = r.user_id WHERE up.user_id = $1 AND r.mp = $2`
+	selectUserPhrases  = `SELECT p.content, r.mp, r.rank, r.paid_rank, r.created_at FROM public.mc_user_phrase up JOIN public.phrases p ON up.phrase_id = p.id LEFT JOIN public.ranks r ON up.phrase_id = r.phrase_id AND up.user_id = r.user_id WHERE up.user_id = $1 AND r.mp = $2 ORDER BY updated_at ASC`
+	selectOldRanks     = `SELECT r.id, r.mp, r.user_id, r.phrase_id, r.rank, r.paid_rank, r.created_at, r.updated_at, p.content	FROM public.ranks r	JOIN public.phrases p ON r.phrase_id = p.id	WHERE r.updated_at < NOW() - INTERVAL '23 hours' AND r.user_id BETWEEN $1 AND $2`
 )
 
 type phraseStorage struct {
@@ -85,5 +86,31 @@ func (ps *phraseStorage) SelectUserPhrases(ctx context.Context, userID uint64, m
 		return nil, err
 	}
 
+	return result, nil
+}
+
+func (ps *phraseStorage) SelectOldRanks(ctx context.Context, startID, endID uint64) ([]*pb.OldRanksResp, error) {
+	rows, err := ps.client.Query(ctx, selectOldRanks, startID, endID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var result []*pb.OldRanksResp
+	for rows.Next() {
+		var userID, phraseID, rank, paidRank sql.NullInt64
+		var mp, content sql.NullString
+		if err := rows.Scan(&mp, &userID, &phraseID, &rank, &paidRank, &content); err != nil {
+			return nil, err
+		}
+		r := &pb.OldRanksResp{
+			UserId:   uint64(userID.Int64),
+			Phrase:   content.String,
+			Products: []string{mp.String},
+		}
+		result = append(result, r)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
 	return result, nil
 }

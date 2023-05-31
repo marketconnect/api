@@ -49,4 +49,14 @@ message AddRankReq {
 }
 
 
+// OldRanks
+message OldRanksReq {
+    uint32 from = 1;
+    uint32 to = 2;
+}
 
+message OldRanksResp {
+    uint64 user_id           = 1;
+    string phrase            = 2;
+    repeated string products = 3;
+}

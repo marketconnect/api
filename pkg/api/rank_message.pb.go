@@ -440,6 +440,125 @@ func (x *AddRankReq) GetMp() string {
 	return ""
 }
 
+// OldRanks
+type OldRanksReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	From uint32 `protobuf:"varint,1,opt,name=from,proto3" json:"from,omitempty"`
+	To   uint32 `protobuf:"varint,2,opt,name=to,proto3" json:"to,omitempty"`
+}
+
+func (x *OldRanksReq) Reset() {
+	*x = OldRanksReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_rank_message_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *OldRanksReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OldRanksReq) ProtoMessage() {}
+
+func (x *OldRanksReq) ProtoReflect() protoreflect.Message {
+	mi := &file_rank_message_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use OldRanksReq.ProtoReflect.Descriptor instead.
+func (*OldRanksReq) Descriptor() ([]byte, []int) {
+	return file_rank_message_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *OldRanksReq) GetFrom() uint32 {
+	if x != nil {
+		return x.From
+	}
+	return 0
+}
+
+func (x *OldRanksReq) GetTo() uint32 {
+	if x != nil {
+		return x.To
+	}
+	return 0
+}
+
+type OldRanksResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	UserId   uint64   `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Phrase   string   `protobuf:"bytes,2,opt,name=phrase,proto3" json:"phrase,omitempty"`
+	Products []string `protobuf:"bytes,3,rep,name=products,proto3" json:"products,omitempty"`
+}
+
+func (x *OldRanksResp) Reset() {
+	*x = OldRanksResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_rank_message_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *OldRanksResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*OldRanksResp) ProtoMessage() {}
+
+func (x *OldRanksResp) ProtoReflect() protoreflect.Message {
+	mi := &file_rank_message_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use OldRanksResp.ProtoReflect.Descriptor instead.
+func (*OldRanksResp) Descriptor() ([]byte, []int) {
+	return file_rank_message_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *OldRanksResp) GetUserId() uint64 {
+	if x != nil {
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *OldRanksResp) GetPhrase() string {
+	if x != nil {
+		return x.Phrase
+	}
+	return ""
+}
+
+func (x *OldRanksResp) GetProducts() []string {
+	if x != nil {
+		return x.Products
+	}
+	return nil
+}
+
 var File_rank_message_proto protoreflect.FileDescriptor
 
 var file_rank_message_proto_rawDesc = []byte{
@@ -478,7 +597,16 @@ var file_rank_message_proto_rawDesc = []byte{
 	0x12, 0x0a, 0x04, 0x72, 0x61, 0x6e, 0x6b, 0x18, 0x03, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x72,
 	0x61, 0x6e, 0x6b, 0x12, 0x1a, 0x0a, 0x08, 0x70, 0x61, 0x69, 0x64, 0x52, 0x61, 0x6e, 0x6b, 0x18,
 	0x04, 0x20, 0x01, 0x28, 0x05, 0x52, 0x08, 0x70, 0x61, 0x69, 0x64, 0x52, 0x61, 0x6e, 0x6b, 0x12,
-	0x0e, 0x0a, 0x02, 0x6d, 0x70, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x6d, 0x70, 0x42,
+	0x0e, 0x0a, 0x02, 0x6d, 0x70, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x6d, 0x70, 0x22,
+	0x31, 0x0a, 0x0b, 0x4f, 0x6c, 0x64, 0x52, 0x61, 0x6e, 0x6b, 0x73, 0x52, 0x65, 0x71, 0x12, 0x12,
+	0x0a, 0x04, 0x66, 0x72, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x04, 0x66, 0x72,
+	0x6f, 0x6d, 0x12, 0x0e, 0x0a, 0x02, 0x74, 0x6f, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x02,
+	0x74, 0x6f, 0x22, 0x5b, 0x0a, 0x0c, 0x4f, 0x6c, 0x64, 0x52, 0x61, 0x6e, 0x6b, 0x73, 0x52, 0x65,
+	0x73, 0x70, 0x12, 0x17, 0x0a, 0x07, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x04, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x70,
+	0x68, 0x72, 0x61, 0x73, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x70, 0x68, 0x72,
+	0x61, 0x73, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x73, 0x18,
+	0x03, 0x20, 0x03, 0x28, 0x09, 0x52, 0x08, 0x70, 0x72, 0x6f, 0x64, 0x75, 0x63, 0x74, 0x73, 0x42,
 	0x09, 0x5a, 0x07, 0x2e, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x33,
 }
@@ -495,7 +623,7 @@ func file_rank_message_proto_rawDescGZIP() []byte {
 	return file_rank_message_proto_rawDescData
 }
 
-var file_rank_message_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_rank_message_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_rank_message_proto_goTypes = []interface{}{
 	(*Phrase)(nil),        // 0: main.Phrase
 	(*Rank)(nil),          // 1: main.Rank
@@ -504,6 +632,8 @@ var file_rank_message_proto_goTypes = []interface{}{
 	(*RankingReq)(nil),    // 4: main.RankingReq
 	(*RankingResp)(nil),   // 5: main.RankingResp
 	(*AddRankReq)(nil),    // 6: main.AddRankReq
+	(*OldRanksReq)(nil),   // 7: main.OldRanksReq
+	(*OldRanksResp)(nil),  // 8: main.OldRanksResp
 }
 var file_rank_message_proto_depIdxs = []int32{
 	0, // 0: main.KeyPhrase.phrase:type_name -> main.Phrase
@@ -607,6 +737,30 @@ func file_rank_message_proto_init() {
 				return nil
 			}
 		}
+		file_rank_message_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*OldRanksReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_rank_message_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*OldRanksResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -614,7 +768,7 @@ func file_rank_message_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_rank_message_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

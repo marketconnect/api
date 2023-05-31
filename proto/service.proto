@@ -37,10 +37,6 @@ service RankService {
             body: "*"
         };
     }
-    rpc AddRank(AddRankReq) returns (Empty) {
-        option (google.api.http) = {
-            post: "/add-rank"
-            body: "*"
-        };
-    }
+    rpc AddRank(AddRankReq) returns (Empty) {};
+    rpc OldRanks(OldRanksReq) returns (OldRanksResp) {};
 }

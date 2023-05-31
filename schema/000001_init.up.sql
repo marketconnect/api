@@ -19,6 +19,7 @@ CREATE TABLE public.ranks (
     rank INTEGER,
     paid_rank INTEGER,
     created_at date NOT NULL DEFAULT CURRENT_DATE,
+    updated_at timestamp NOT NULL DEFAULT NOW(),
     CONSTRAINT unique_mp_user_id_phrase_id_created_at UNIQUE (mp, user_id, phrase_id, created_at)
 );
 CREATE TABLE public.mc_products (
