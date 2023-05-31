@@ -35,4 +35,5 @@ GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO mc_service;
 GRANT ALL PRIVILEGES ON TABLE public.mc_users TO mc_service;
 GRANT ALL PRIVILEGES ON TABLE public.phrases TO mc_service;
 GRANT ALL PRIVILEGES ON TABLE public.mc_user_phrase TO mc_service;
+GRANT ALL PRIVILEGES ON TABLE public.mc_products TO mc_service;
 GRANT ALL PRIVILEGES ON TABLE public.ranks TO mc_service;

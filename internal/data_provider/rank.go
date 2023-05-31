@@ -53,7 +53,7 @@ func (ps *rankStorage) SelectUserPhrases(ctx context.Context, userID uint64) ([]
 		return nil, err
 	}
 	defer rows.Close()
-	fmt.Printf("%d - %s", userID)
+
 	var result []*pb.KeyPhrase
 	keyphraseMap := make(map[string]*pb.KeyPhrase)
 	for rows.Next() {

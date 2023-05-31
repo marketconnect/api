@@ -37,6 +37,7 @@ func (s *ProductService) AddProducts(ctx context.Context, req *pb.AddProductsReq
 	for _, product := range products {
 		err := s.storage.AddProduct(ctx, userID, product)
 		if err != nil {
+			s.logging.Errorf(err.Error())
 			return nil, status.Error(codes.Internal, "failed to add product to storage")
 		}
 	}

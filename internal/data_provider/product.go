@@ -22,7 +22,7 @@ func NewProductStorage(client client.PostgreSQLClient) *productStorage {
 
 func (ps *productStorage) AddProduct(ctx context.Context, userID uint64, product string) error {
 	fmt.Printf("%d - %s", userID, product)
-	_, err := ps.client.Exec(ctx, addProductQuery, product, userID)
+	_, err := ps.client.Exec(ctx, addProductQuery, userID, product)
 	if err != nil {
 		return fmt.Errorf("failed to add product: %v", err)
 	}
