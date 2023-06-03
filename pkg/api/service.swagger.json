@@ -247,6 +247,9 @@
           "items": {
             "type": "string"
           }
+        },
+        "mp": {
+          "type": "string"
         }
       }
     },
@@ -289,6 +292,12 @@
           "format": "int32"
         },
         "mp": {
+          "type": "string"
+        },
+        "geo": {
+          "type": "string"
+        },
+        "action": {
           "type": "string"
         }
       }

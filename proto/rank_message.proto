@@ -13,7 +13,9 @@ message Rank {
     string date     = 1;
     int32  rank     = 2; 
     int32  paidRank = 3;
-    string mp       = 4;     
+    string mp       = 4;    
+    string geo      = 5;     
+    string action   = 6;
 }
 
 message KeyPhrase {
@@ -46,6 +48,8 @@ message AddRankReq {
     int32  rank     = 3; 
     int32  paidRank = 4;
     string mp       = 5;
+    string geo      = 6;
+    string action   = 7;
 }
 
 
@@ -53,12 +57,14 @@ message AddRankReq {
 message OldRanksReq {
     uint32 from = 1;
     uint32 to = 2;
+    string geo = 3; 
 }
 
 message OldRank {
     uint64 user_id           = 1;
     string phrase            = 2;
     repeated string products = 3;
+    string mp                = 4;
 }
 
 message OldRanksResp {

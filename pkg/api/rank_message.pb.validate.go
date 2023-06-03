@@ -166,6 +166,10 @@ func (m *Rank) validate(all bool) error {
 
 	// no validation rules for Mp
 
+	// no validation rules for Geo
+
+	// no validation rules for Action
+
 	if len(errors) > 0 {
 		return RankMultiError(errors)
 	}
@@ -809,6 +813,10 @@ func (m *AddRankReq) validate(all bool) error {
 
 	// no validation rules for Mp
 
+	// no validation rules for Geo
+
+	// no validation rules for Action
+
 	if len(errors) > 0 {
 		return AddRankReqMultiError(errors)
 	}
@@ -912,6 +920,8 @@ func (m *OldRanksReq) validate(all bool) error {
 
 	// no validation rules for To
 
+	// no validation rules for Geo
+
 	if len(errors) > 0 {
 		return OldRanksReqMultiError(errors)
 	}
@@ -1013,6 +1023,8 @@ func (m *OldRank) validate(all bool) error {
 	// no validation rules for UserId
 
 	// no validation rules for Phrase
+
+	// no validation rules for Mp
 
 	if len(errors) > 0 {
 		return OldRankMultiError(errors)
