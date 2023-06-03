@@ -15,7 +15,7 @@ const (
 	addUserPhraseQuery = `INSERT INTO public.mc_user_phrase (user_id, phrase_id) VALUES ($1, $2) ON CONFLICT (user_id, phrase_id) DO NOTHING`
 	addPhraseRankQuery = `INSERT INTO public.ranks (mp, geo, act, user_id, phrase_id, rank, paid_rank, created_at) VALUES ($1, $2, $3, $4, $5, $6, $7, CURRENT_DATE) ON CONFLICT ON CONSTRAINT unique_mp_user_id_phrase_id_created_at DO UPDATE SET rank = EXCLUDED.rank, paid_rank = EXCLUDED.paid_rank WHERE ranks.created_at = CURRENT_DATE`
 	// selectUserPhrases          = `SELECT p.content, COALESCE(r.mp, '') AS mp, COALESCE(r.geo, '') AS geo, COALESCE(r.act, '') AS act, COALESCE(r.rank, 0) AS rank, COALESCE(r.paid_rank, 0) AS paid_rank, COALESCE(r.created_at, '1970-01-01'::date) AS created_at FROM public.mc_user_phrase up JOIN public.phrases p ON up.phrase_id = p.id LEFT JOIN public.ranks r ON up.phrase_id = r.phrase_id AND up.user_id = r.user_id WHERE up.user_id = $1`
-	selectUserPhrases          = `SELECT p.content, COALESCE(r.mp, '') AS mp, COALESCE(r.geo, '') AS geo, COALESCE(r.act, '') AS act, COALESCE(r.rank, 0) AS rank, COALESCE(r.paid_rank, 0) AS paid_rank, COALESCE(r.created_at, '1970-01-01'::date) AS created_at FROM public.mc_user_phrase up JOIN public.phrases p ON up.phrase_id = p.id LEFT JOIN public.ranks r ON up.phrase_id = r.phrase_id AND up.user_id = r.user_id WHERE up.user_id = $1 AND COALESCE(r.mp, '') = $2`
+	selectUserPhrases          = `SELECT p.id, p.content, COALESCE(r.mp, '') AS mp, COALESCE(r.geo, '') AS geo, COALESCE(r.act, '') AS act, COALESCE(r.rank, 0) AS rank, COALESCE(r.paid_rank, 0) AS paid_rank, COALESCE(r.created_at, '1970-01-01'::date) AS created_at FROM public.mc_user_phrase up JOIN public.phrases p ON up.phrase_id = p.id LEFT JOIN public.ranks r ON up.phrase_id = r.phrase_id AND up.user_id = r.user_id WHERE up.user_id = $1 AND COALESCE(r.mp, '') = $2`
 	selectOldRanksByUserAndGeo = `SELECT r.id, r.mp, r.geo, r.user_id, r.phrase_id, r.rank, r.paid_rank, r.created_at, r.updated_at, p.content FROM public.ranks r JOIN public.phrases p ON r.phrase_id = p.id WHERE r.updated_at < NOW() - INTERVAL '23 hours' AND r.user_id BETWEEN $1 AND $2 AND r.geo = $3 ORDER BY updated_at ASC`
 )
 
@@ -59,9 +59,9 @@ func (ps *rankStorage) SelectUserPhrases(ctx context.Context, userID uint64, mp 
 	keyphraseMap := make(map[string]*pb.KeyPhrase)
 	for rows.Next() {
 		var content, mp, geo, act string
-		var rank, paidRank sql.NullInt64
+		var id, rank, paidRank sql.NullInt64
 		var createdAt sql.NullTime
-		if err := rows.Scan(&content, &mp, &geo, &act, &rank, &paidRank, &createdAt); err != nil {
+		if err := rows.Scan(&id, &content, &mp, &geo, &act, &rank, &paidRank, &createdAt); err != nil {
 			return nil, err
 		}
 		if keyphrase, exists := keyphraseMap[content]; exists {
@@ -69,9 +69,9 @@ func (ps *rankStorage) SelectUserPhrases(ctx context.Context, userID uint64, mp 
 				keyphrase.Ranks = append(keyphrase.Ranks, &pb.Rank{Mp: mp, Geo: geo, Action: act, Date: createdAt.Time.String(), Rank: int32(rank.Int64), PaidRank: int32(paidRank.Int64)})
 			}
 		} else {
-			keyphrase := &pb.KeyPhrase{Phrase: &pb.Phrase{Text: content}}
+			keyphrase := &pb.KeyPhrase{Phrase: &pb.Phrase{Id: uint64(id.Int64), Text: content}}
 			if rank.Valid && paidRank.Valid {
-				keyphrase.Ranks = []*pb.Rank{{Date: createdAt.Time.String(), Rank: int32(rank.Int64), PaidRank: int32(paidRank.Int64)}}
+				keyphrase.Ranks = []*pb.Rank{{Mp: mp, Geo: geo, Action: act, Date: createdAt.Time.String(), Rank: int32(rank.Int64), PaidRank: int32(paidRank.Int64)}}
 			} else {
 				keyphrase.Ranks = []*pb.Rank{}
 			}

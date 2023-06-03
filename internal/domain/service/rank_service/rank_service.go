@@ -63,26 +63,6 @@ func (s *RankService) Rank(ctx context.Context, req *pb.RankingReq) (*pb.Ranking
 		return nil, err
 	}
 
-	// Filter for MP
-	// var resKeyPhrases []*pb.KeyPhrase
-
-	// for _, keyPhrase := range keyPhrases {
-	// 	var newRanks []*pb.Rank
-
-	// 	for _, r := range keyPhrase.Ranks {
-	// 		fmt.Println(r.Rank)
-	// 		fmt.Println(r.Rank < 1)
-	// 		if r.Mp != req.Mp || r.Rank < 1 {
-	// 			fmt.Println(r)
-	// 			continue
-	// 		}
-	// 		newRanks = append(newRanks, r)
-	// 	}
-	// 	fmt.Println(newRanks)
-	// 	newKeyPhrase := &pb.KeyPhrase{Phrase: keyPhrase.Phrase, Ranks: newRanks}
-	// 	resKeyPhrases = append(resKeyPhrases, newKeyPhrase)
-	// }
-
 	return &pb.RankingResp{
 		KeyPhrases: keyPhrases,
 	}, nil

@@ -32,7 +32,7 @@ type App struct {
 	pgClient   *pgxpool.Pool
 }
 
-func NewApp(ctx context.Context, config *config.Config) (App, error) {
+func NewApp(config *config.Config) (App, error) {
 	logger := logging.GetLogger(config.AppConfig.LogLevel)
 
 	logger.Print("Postgres initializing")
