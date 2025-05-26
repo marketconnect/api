@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package api.v1;
+
+option go_package = "api/gen/api/v1;apiv1";
+
+// ProductRequest represents the input for product card processing
+message ProductRequest {
+  string product_title = 1;
+  string product_description = 2;
+}
+
+// ProductResponse represents the output with the required fields
+message ProductResponse {
+  string title = 1;
+  string description = 2;
+  bool generate_content = 3;
+  bool ozon = 4;
+  bool wb = 5;
+}
+
+// ProductService provides product card processing functionality
+service ProductService {
+  rpc GetProductCard(ProductRequest) returns (ProductResponse) {}
+} 
