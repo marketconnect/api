@@ -8,9 +8,15 @@ option go_package = "api/gen/api/v1;apiv1";
 message ProductRequest {
   string title = 1;
   string description = 2;
-  bool generate_content = 3;
-  bool ozon = 4;
-  bool wb = 5;
+  int32 parent_id = 3;
+  int32 subject_id = 4;
+  int32 root_id = 5;
+  int32 sub_id = 6;
+  int32 type_id = 7;
+  bool generate_content = 8;
+  bool ozon = 9;
+  bool wb = 10;
+  bool translate = 11;
 }
 
 // ProductResponse represents the output from the Python API
@@ -18,12 +24,16 @@ message ProductResponse {
   string title = 1;
   map<string, string> attributes = 2;
   string description = 3;
-  int32 parent_id = 4;
-  int32 subject_id = 5;
-  int32 type_id = 6;
-  int32 root_id = 7;
-  int32 sub_id = 8;
-  repeated string keywords = 9;
+  string parent_name = 4;
+  int32 parent_id = 5;
+  string subject_name = 6;
+  int32 subject_id = 7;
+  int32 root_id = 8;
+  string root_name = 9;
+  int32 type_id = 10;
+  string type_name = 11;
+  int32 sub_id = 12;
+  string sub_name = 13;
 }
 
 // ProductService provides product card processing functionality

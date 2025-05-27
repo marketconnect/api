@@ -26,9 +26,15 @@ type ProductRequest struct {
 	state           protoimpl.MessageState `protogen:"open.v1"`
 	Title           string                 `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
 	Description     string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
-	GenerateContent bool                   `protobuf:"varint,3,opt,name=generate_content,json=generateContent,proto3" json:"generate_content,omitempty"`
-	Ozon            bool                   `protobuf:"varint,4,opt,name=ozon,proto3" json:"ozon,omitempty"`
-	Wb              bool                   `protobuf:"varint,5,opt,name=wb,proto3" json:"wb,omitempty"`
+	ParentId        int32                  `protobuf:"varint,3,opt,name=parent_id,json=parentId,proto3" json:"parent_id,omitempty"`
+	SubjectId       int32                  `protobuf:"varint,4,opt,name=subject_id,json=subjectId,proto3" json:"subject_id,omitempty"`
+	RootId          int32                  `protobuf:"varint,5,opt,name=root_id,json=rootId,proto3" json:"root_id,omitempty"`
+	SubId           int32                  `protobuf:"varint,6,opt,name=sub_id,json=subId,proto3" json:"sub_id,omitempty"`
+	TypeId          int32                  `protobuf:"varint,7,opt,name=type_id,json=typeId,proto3" json:"type_id,omitempty"`
+	GenerateContent bool                   `protobuf:"varint,8,opt,name=generate_content,json=generateContent,proto3" json:"generate_content,omitempty"`
+	Ozon            bool                   `protobuf:"varint,9,opt,name=ozon,proto3" json:"ozon,omitempty"`
+	Wb              bool                   `protobuf:"varint,10,opt,name=wb,proto3" json:"wb,omitempty"`
+	Translate       bool                   `protobuf:"varint,11,opt,name=translate,proto3" json:"translate,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -77,6 +83,41 @@ func (x *ProductRequest) GetDescription() string {
 	return ""
 }
 
+func (x *ProductRequest) GetParentId() int32 {
+	if x != nil {
+		return x.ParentId
+	}
+	return 0
+}
+
+func (x *ProductRequest) GetSubjectId() int32 {
+	if x != nil {
+		return x.SubjectId
+	}
+	return 0
+}
+
+func (x *ProductRequest) GetRootId() int32 {
+	if x != nil {
+		return x.RootId
+	}
+	return 0
+}
+
+func (x *ProductRequest) GetSubId() int32 {
+	if x != nil {
+		return x.SubId
+	}
+	return 0
+}
+
+func (x *ProductRequest) GetTypeId() int32 {
+	if x != nil {
+		return x.TypeId
+	}
+	return 0
+}
+
 func (x *ProductRequest) GetGenerateContent() bool {
 	if x != nil {
 		return x.GenerateContent
@@ -98,18 +139,29 @@ func (x *ProductRequest) GetWb() bool {
 	return false
 }
 
+func (x *ProductRequest) GetTranslate() bool {
+	if x != nil {
+		return x.Translate
+	}
+	return false
+}
+
 // ProductResponse represents the output from the Python API
 type ProductResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Title         string                 `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
 	Attributes    map[string]string      `protobuf:"bytes,2,rep,name=attributes,proto3" json:"attributes,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
-	ParentId      int32                  `protobuf:"varint,4,opt,name=parent_id,json=parentId,proto3" json:"parent_id,omitempty"`
-	SubjectId     int32                  `protobuf:"varint,5,opt,name=subject_id,json=subjectId,proto3" json:"subject_id,omitempty"`
-	TypeId        int32                  `protobuf:"varint,6,opt,name=type_id,json=typeId,proto3" json:"type_id,omitempty"`
-	RootId        int32                  `protobuf:"varint,7,opt,name=root_id,json=rootId,proto3" json:"root_id,omitempty"`
-	SubId         int32                  `protobuf:"varint,8,opt,name=sub_id,json=subId,proto3" json:"sub_id,omitempty"`
-	Keywords      []string               `protobuf:"bytes,9,rep,name=keywords,proto3" json:"keywords,omitempty"`
+	ParentName    string                 `protobuf:"bytes,4,opt,name=parent_name,json=parentName,proto3" json:"parent_name,omitempty"`
+	ParentId      int32                  `protobuf:"varint,5,opt,name=parent_id,json=parentId,proto3" json:"parent_id,omitempty"`
+	SubjectName   string                 `protobuf:"bytes,6,opt,name=subject_name,json=subjectName,proto3" json:"subject_name,omitempty"`
+	SubjectId     int32                  `protobuf:"varint,7,opt,name=subject_id,json=subjectId,proto3" json:"subject_id,omitempty"`
+	RootId        int32                  `protobuf:"varint,8,opt,name=root_id,json=rootId,proto3" json:"root_id,omitempty"`
+	RootName      string                 `protobuf:"bytes,9,opt,name=root_name,json=rootName,proto3" json:"root_name,omitempty"`
+	TypeId        int32                  `protobuf:"varint,10,opt,name=type_id,json=typeId,proto3" json:"type_id,omitempty"`
+	TypeName      string                 `protobuf:"bytes,11,opt,name=type_name,json=typeName,proto3" json:"type_name,omitempty"`
+	SubId         int32                  `protobuf:"varint,12,opt,name=sub_id,json=subId,proto3" json:"sub_id,omitempty"`
+	SubName       string                 `protobuf:"bytes,13,opt,name=sub_name,json=subName,proto3" json:"sub_name,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -165,6 +217,13 @@ func (x *ProductResponse) GetDescription() string {
 	return ""
 }
 
+func (x *ProductResponse) GetParentName() string {
+	if x != nil {
+		return x.ParentName
+	}
+	return ""
+}
+
 func (x *ProductResponse) GetParentId() int32 {
 	if x != nil {
 		return x.ParentId
@@ -172,16 +231,16 @@ func (x *ProductResponse) GetParentId() int32 {
 	return 0
 }
 
+func (x *ProductResponse) GetSubjectName() string {
+	if x != nil {
+		return x.SubjectName
+	}
+	return ""
+}
+
 func (x *ProductResponse) GetSubjectId() int32 {
 	if x != nil {
 		return x.SubjectId
-	}
-	return 0
-}
-
-func (x *ProductResponse) GetTypeId() int32 {
-	if x != nil {
-		return x.TypeId
 	}
 	return 0
 }
@@ -193,6 +252,27 @@ func (x *ProductResponse) GetRootId() int32 {
 	return 0
 }
 
+func (x *ProductResponse) GetRootName() string {
+	if x != nil {
+		return x.RootName
+	}
+	return ""
+}
+
+func (x *ProductResponse) GetTypeId() int32 {
+	if x != nil {
+		return x.TypeId
+	}
+	return 0
+}
+
+func (x *ProductResponse) GetTypeName() string {
+	if x != nil {
+		return x.TypeName
+	}
+	return ""
+}
+
 func (x *ProductResponse) GetSubId() int32 {
 	if x != nil {
 		return x.SubId
@@ -200,37 +280,51 @@ func (x *ProductResponse) GetSubId() int32 {
 	return 0
 }
 
-func (x *ProductResponse) GetKeywords() []string {
+func (x *ProductResponse) GetSubName() string {
 	if x != nil {
-		return x.Keywords
+		return x.SubName
 	}
-	return nil
+	return ""
 }
 
 var File_api_v1_product_proto protoreflect.FileDescriptor
 
 const file_api_v1_product_proto_rawDesc = "" +
 	"\n" +
-	"\x14api/v1/product.proto\x12\x06api.v1\"\x97\x01\n" +
+	"\x14api/v1/product.proto\x12\x06api.v1\"\xba\x02\n" +
 	"\x0eProductRequest\x12\x14\n" +
 	"\x05title\x18\x01 \x01(\tR\x05title\x12 \n" +
-	"\vdescription\x18\x02 \x01(\tR\vdescription\x12)\n" +
-	"\x10generate_content\x18\x03 \x01(\bR\x0fgenerateContent\x12\x12\n" +
-	"\x04ozon\x18\x04 \x01(\bR\x04ozon\x12\x0e\n" +
-	"\x02wb\x18\x05 \x01(\bR\x02wb\"\xf2\x02\n" +
+	"\vdescription\x18\x02 \x01(\tR\vdescription\x12\x1b\n" +
+	"\tparent_id\x18\x03 \x01(\x05R\bparentId\x12\x1d\n" +
+	"\n" +
+	"subject_id\x18\x04 \x01(\x05R\tsubjectId\x12\x17\n" +
+	"\aroot_id\x18\x05 \x01(\x05R\x06rootId\x12\x15\n" +
+	"\x06sub_id\x18\x06 \x01(\x05R\x05subId\x12\x17\n" +
+	"\atype_id\x18\a \x01(\x05R\x06typeId\x12)\n" +
+	"\x10generate_content\x18\b \x01(\bR\x0fgenerateContent\x12\x12\n" +
+	"\x04ozon\x18\t \x01(\bR\x04ozon\x12\x0e\n" +
+	"\x02wb\x18\n" +
+	" \x01(\bR\x02wb\x12\x1c\n" +
+	"\ttranslate\x18\v \x01(\bR\ttranslate\"\xef\x03\n" +
 	"\x0fProductResponse\x12\x14\n" +
 	"\x05title\x18\x01 \x01(\tR\x05title\x12G\n" +
 	"\n" +
 	"attributes\x18\x02 \x03(\v2'.api.v1.ProductResponse.AttributesEntryR\n" +
 	"attributes\x12 \n" +
-	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x1b\n" +
-	"\tparent_id\x18\x04 \x01(\x05R\bparentId\x12\x1d\n" +
+	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x1f\n" +
+	"\vparent_name\x18\x04 \x01(\tR\n" +
+	"parentName\x12\x1b\n" +
+	"\tparent_id\x18\x05 \x01(\x05R\bparentId\x12!\n" +
+	"\fsubject_name\x18\x06 \x01(\tR\vsubjectName\x12\x1d\n" +
 	"\n" +
-	"subject_id\x18\x05 \x01(\x05R\tsubjectId\x12\x17\n" +
-	"\atype_id\x18\x06 \x01(\x05R\x06typeId\x12\x17\n" +
-	"\aroot_id\x18\a \x01(\x05R\x06rootId\x12\x15\n" +
-	"\x06sub_id\x18\b \x01(\x05R\x05subId\x12\x1a\n" +
-	"\bkeywords\x18\t \x03(\tR\bkeywords\x1a=\n" +
+	"subject_id\x18\a \x01(\x05R\tsubjectId\x12\x17\n" +
+	"\aroot_id\x18\b \x01(\x05R\x06rootId\x12\x1b\n" +
+	"\troot_name\x18\t \x01(\tR\brootName\x12\x17\n" +
+	"\atype_id\x18\n" +
+	" \x01(\x05R\x06typeId\x12\x1b\n" +
+	"\ttype_name\x18\v \x01(\tR\btypeName\x12\x15\n" +
+	"\x06sub_id\x18\f \x01(\x05R\x05subId\x12\x19\n" +
+	"\bsub_name\x18\r \x01(\tR\asubName\x1a=\n" +
 	"\x0fAttributesEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x012U\n" +

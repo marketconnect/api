@@ -22,6 +22,11 @@ import (
 type PythonAPIRequest struct {
 	ProductTitle       string `json:"product_title"`
 	ProductDescription string `json:"product_description"`
+	ParentID           int32  `json:"parent_id"`
+	SubjectID          int32  `json:"subject_id"`
+	Translate          bool   `json:"translate"`
+	Ozon               bool   `json:"ozon"`
+	GenerateContent    bool   `json:"generate_content"`
 }
 
 // PythonAPIResponse represents the response structure from the Python API
@@ -30,18 +35,15 @@ type PythonAPIResponse struct {
 	Attributes  map[string]string `json:"attributes"`
 	Description string            `json:"description"`
 	ParentID    *int32            `json:"parent_id"`
+	Subject     *string           `json:"subject"`
+	ParentName  *string           `json:"parent_name"`
 	SubjectID   *int32            `json:"subject_id"`
 	TypeID      *int32            `json:"type_id"`
+	TypeName    *string           `json:"type_name"`
 	RootID      *int32            `json:"root_id"`
+	RootName    *string           `json:"root_name"`
 	SubID       *int32            `json:"sub_id"`
-	Keywords    []KeywordObject   `json:"keywords"`
-}
-
-// KeywordObject represents a keyword object from the Python API
-type KeywordObject struct {
-	Kw          string `json:"kw"`
-	Frequency   int    `json:"frequency"`
-	NormQueryID int    `json:"normquery_id"`
+	SubName     *string           `json:"sub_name"`
 }
 
 // ProductServer implements the ProductService
@@ -70,6 +72,11 @@ func (s *ProductServer) GetProductCard(
 	pythonReq := PythonAPIRequest{
 		ProductTitle:       req.Msg.Title,
 		ProductDescription: req.Msg.Description,
+		ParentID:           req.Msg.ParentId,
+		SubjectID:          req.Msg.SubjectId,
+		Translate:          req.Msg.Translate,
+		Ozon:               req.Msg.Ozon,
+		GenerateContent:    req.Msg.GenerateContent,
 	}
 
 	// Marshal request to JSON
@@ -117,14 +124,19 @@ func (s *ProductServer) GetProductCard(
 		Title:       pythonResp.Title,
 		Attributes:  pythonResp.Attributes,
 		Description: pythonResp.Description,
+		ParentId:    *pythonResp.ParentID,
+		SubjectId:   *pythonResp.SubjectID,
+		TypeId:      *pythonResp.TypeID,
+		RootId:      *pythonResp.RootID,
+		SubId:       *pythonResp.SubID,
 	}
 
 	// Extract keywords from keyword objects
-	keywords := make([]string, len(pythonResp.Keywords))
-	for i, kwObj := range pythonResp.Keywords {
-		keywords[i] = kwObj.Kw
-	}
-	response.Keywords = keywords
+	// keywords := make([]string, len(pythonResp.Keywords))
+	// for i, kwObj := range pythonResp.Keywords {
+	// 	keywords[i] = kwObj.Kw
+	// }
+	// response.Keywords = keywords
 
 	// Handle nullable int32 fields
 	if pythonResp.ParentID != nil {

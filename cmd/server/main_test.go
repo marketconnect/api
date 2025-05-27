@@ -52,7 +52,6 @@ func TestProductResponse_Fields(t *testing.T) {
 		TypeId:      789,
 		RootId:      101,
 		SubId:       112,
-		Keywords:    []string{"keyword1", "keyword2"},
 	}
 
 	if resp.Title != "Response Title" {

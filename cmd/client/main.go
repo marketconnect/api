@@ -54,7 +54,6 @@ func main() {
 	log.Printf("  Type ID: %d", res.Msg.TypeId)
 	log.Printf("  Root ID: %d", res.Msg.RootId)
 	log.Printf("  Sub ID: %d", res.Msg.SubId)
-	log.Printf("  Keywords: %v", res.Msg.Keywords)
 
 	// Print response headers
 	log.Printf("Response headers:")

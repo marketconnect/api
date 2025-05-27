@@ -1,0 +1,1 @@
+1. Add check for requred fields in the python server response
