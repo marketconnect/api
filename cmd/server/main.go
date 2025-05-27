@@ -34,7 +34,14 @@ type PythonAPIResponse struct {
 	TypeID      *int32            `json:"type_id"`
 	RootID      *int32            `json:"root_id"`
 	SubID       *int32            `json:"sub_id"`
-	Keywords    []string          `json:"keywords"`
+	Keywords    []KeywordObject   `json:"keywords"`
+}
+
+// KeywordObject represents a keyword object from the Python API
+type KeywordObject struct {
+	Kw          string `json:"kw"`
+	Frequency   int    `json:"frequency"`
+	NormQueryID int    `json:"normquery_id"`
 }
 
 // ProductServer implements the ProductService
@@ -94,7 +101,7 @@ func (s *ProductServer) GetProductCard(
 
 	// Check HTTP status
 	if resp.StatusCode != http.StatusOK {
-		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("Python API returned status %d: %s", resp.StatusCode, string(respBody)))
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("python API returned status %d: %s", resp.StatusCode, string(respBody)))
 	}
 
 	// Parse Python API response
@@ -110,8 +117,14 @@ func (s *ProductServer) GetProductCard(
 		Title:       pythonResp.Title,
 		Attributes:  pythonResp.Attributes,
 		Description: pythonResp.Description,
-		Keywords:    pythonResp.Keywords,
 	}
+
+	// Extract keywords from keyword objects
+	keywords := make([]string, len(pythonResp.Keywords))
+	for i, kwObj := range pythonResp.Keywords {
+		keywords[i] = kwObj.Kw
+	}
+	response.Keywords = keywords
 
 	// Handle nullable int32 fields
 	if pythonResp.ParentID != nil {
