@@ -1,20 +1,16 @@
 # ConnectRPC Product API
 
-This is a ConnectRPC API that retrieves product information with the following fields:
-- `title` (string)
-- `description` (string) 
-- `generate_content` (boolean)
-- `ozon` (boolean)
-- `wb` (boolean)
-
-The API acts as a proxy to a Python API endpoint and transforms the response into the required format.
+This is a ConnectRPC proxy server for the Python CardCraftAI service. It provides a REST API with one endpoint that:
+- **Receives** JSON input with 5 fields: `title`, `description`, `generate_content`, `ozon`, `wb`
+- **Makes requests** to the Python CardCraftAI service
+- **Returns** the comprehensive response from CardCraftAI
 
 ## Features
 
 - **ConnectRPC Protocol**: Supports Connect, gRPC, and gRPC-Web protocols
 - **Type-Safe**: Generated from Protocol Buffer schema
 - **HTTP/2 Support**: Built-in HTTP/2 support with h2c
-- **Python API Integration**: Makes requests to your Python API endpoint
+- **Python CardCraftAI Integration**: Proxy server for CardCraftAI service
 - **Health Check**: Includes a `/health` endpoint for monitoring
 
 ## Project Structure
@@ -66,7 +62,7 @@ buf generate
 
 ### Environment Variables
 
-- `PYTHON_API_URL`: URL of the Python API endpoint (default: `http://localhost:8000/v1/product_card_comprehensive`)
+- `PYTHON_API_URL`: URL of the Python CardCraftAI endpoint (default: `http://localhost:8000/v1/product_card_comprehensive`)
 - `PORT`: Port to run the server on (default: `8080`)
 
 ### Start the server:
@@ -77,7 +73,7 @@ go run cmd/server/main.go
 
 Or with custom configuration:
 ```bash
-PYTHON_API_URL=http://your-python-api:8000/v1/product_card_comprehensive PORT=9090 go run cmd/server/main.go
+PYTHON_API_URL=http://your-cardcraft-api:8000/v1/product_card_comprehensive PORT=9090 go run cmd/server/main.go
 ```
 
 ## API Usage
@@ -89,24 +85,33 @@ The API exposes one endpoint:
 - **Method**: `GetProductCard`
 - **URL**: `/api.v1.ProductService/GetProductCard`
 
-### Request Format
+### Request Format (Input)
 
 ```json
 {
-  "product_title": "Product Title",
-  "product_description": "Product Description"
+  "title": "Product Title",
+  "description": "Product Description",
+  "generate_content": true,
+  "ozon": true,
+  "wb": false
 }
 ```
 
-### Response Format
+### Response Format (Output)
+
+Returns the comprehensive response from Python CardCraftAI:
 
 ```json
 {
   "title": "Optimized Product Title",
-  "description": "Optimized Product Description", 
-  "generate_content": true,
-  "ozon": true,
-  "wb": false
+  "description": "Optimized Product Description",
+  "attributes": {"key": "value"},
+  "parent_id": 123,
+  "subject_id": 456,
+  "type_id": 789,
+  "root_id": 101,
+  "sub_id": 112,
+  "keywords": ["keyword1", "keyword2"]
 }
 ```
 
@@ -115,7 +120,13 @@ The API exposes one endpoint:
 ```bash
 curl \
   --header "Content-Type: application/json" \
-  --data '{"product_title": "Wireless Headphones", "product_description": "High-quality audio device"}' \
+  --data '{
+    "title": "Wireless Headphones", 
+    "description": "High-quality audio device",
+    "generate_content": true,
+    "ozon": true,
+    "wb": false
+  }' \
   http://localhost:8080/api.v1.ProductService/GetProductCard
 ```
 
@@ -124,7 +135,13 @@ curl \
 ```bash
 grpcurl \
   -plaintext \
-  -d '{"product_title": "Wireless Headphones", "product_description": "High-quality audio device"}' \
+  -d '{
+    "title": "Wireless Headphones", 
+    "description": "High-quality audio device",
+    "generate_content": true,
+    "ozon": true,
+    "wb": false
+  }' \
   localhost:8080 \
   api.v1.ProductService/GetProductCard
 ```
@@ -140,19 +157,22 @@ Or with custom server URL:
 SERVER_URL=http://localhost:9090 go run cmd/client/main.go
 ```
 
-## Python API Integration
+## Python CardCraftAI Integration
 
-The ConnectRPC server makes POST requests to your Python API with the following structure:
+The ConnectRPC proxy server:
 
-### Request to Python API:
-```json
-{
-  "product_title": "Product Title",
-  "product_description": "Product Description"
-}
-```
+1. **Receives ConnectRPC request** with 5 input fields
+2. **Extracts** `title` and `description` from the input
+3. **Makes HTTP POST request** to CardCraftAI with:
+   ```json
+   {
+     "product_title": "title_from_input",
+     "product_description": "description_from_input"
+   }
+   ```
+4. **Returns** the comprehensive CardCraftAI response directly
 
-### Expected Response from Python API:
+### Expected CardCraftAI Response:
 ```json
 {
   "title": "Optimized Title",
@@ -166,15 +186,6 @@ The ConnectRPC server makes POST requests to your Python API with the following 
   "keywords": ["keyword1", "keyword2"]
 }
 ```
-
-### Business Logic
-
-The ConnectRPC API transforms the Python API response as follows:
-- `title`: Direct mapping from Python API
-- `description`: Direct mapping from Python API  
-- `generate_content`: Always set to `true` (can be customized)
-- `ozon`: Set to `true` if `type_id`, `root_id`, and `sub_id` are present
-- `wb`: Set to `true` if `subject_id` and `parent_id` are present
 
 ## Health Check
 
@@ -203,7 +214,11 @@ go build -o client cmd/client/main.go
 
 ### Testing
 
-You can test the API without the Python backend by modifying the server to return mock data, or by setting up a mock HTTP server.
+```bash
+go test ./...
+```
+
+Use the demo script: `./demo.sh`
 
 ## Protocol Support
 
@@ -219,7 +234,7 @@ Clients can choose which protocol to use when making requests.
 
 The API returns appropriate ConnectRPC error codes:
 - `CodeInternal`: For internal server errors
-- `CodeUnavailable`: When the Python API is unreachable
+- `CodeUnavailable`: When the Python CardCraftAI API is unreachable
 - `CodeInvalidArgument`: For malformed requests
 
 ## License

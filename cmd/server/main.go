@@ -29,11 +29,11 @@ type PythonAPIResponse struct {
 	Title       string            `json:"title"`
 	Attributes  map[string]string `json:"attributes"`
 	Description string            `json:"description"`
-	ParentID    *int              `json:"parent_id"`
-	SubjectID   *int              `json:"subject_id"`
-	TypeID      *int              `json:"type_id"`
-	RootID      *int              `json:"root_id"`
-	SubID       *int              `json:"sub_id"`
+	ParentID    *int32            `json:"parent_id"`
+	SubjectID   *int32            `json:"subject_id"`
+	TypeID      *int32            `json:"type_id"`
+	RootID      *int32            `json:"root_id"`
+	SubID       *int32            `json:"sub_id"`
 	Keywords    []string          `json:"keywords"`
 }
 
@@ -56,12 +56,13 @@ func (s *ProductServer) GetProductCard(
 	ctx context.Context,
 	req *connect.Request[apiv1.ProductRequest],
 ) (*connect.Response[apiv1.ProductResponse], error) {
-	log.Printf("Received request: title=%s, description=%s", req.Msg.ProductTitle, req.Msg.ProductDescription)
+	log.Printf("Received request: title=%s, description=%s, generate_content=%t, ozon=%t, wb=%t",
+		req.Msg.Title, req.Msg.Description, req.Msg.GenerateContent, req.Msg.Ozon, req.Msg.Wb)
 
-	// Prepare request for Python API
+	// Prepare request for Python API using the title and description from input
 	pythonReq := PythonAPIRequest{
-		ProductTitle:       req.Msg.ProductTitle,
-		ProductDescription: req.Msg.ProductDescription,
+		ProductTitle:       req.Msg.Title,
+		ProductDescription: req.Msg.Description,
 	}
 
 	// Marshal request to JSON
@@ -104,13 +105,29 @@ func (s *ProductServer) GetProductCard(
 
 	log.Printf("Python API response: title=%s, description=%s", pythonResp.Title, pythonResp.Description)
 
-	// Create ConnectRPC response with the required fields
+	// Create ConnectRPC response with the comprehensive data from Python API
 	response := &apiv1.ProductResponse{
-		Title:           pythonResp.Title,
-		Description:     pythonResp.Description,
-		GenerateContent: true, // Set based on your business logic
-		Ozon:            pythonResp.TypeID != nil && pythonResp.RootID != nil && pythonResp.SubID != nil,
-		Wb:              pythonResp.SubjectID != nil && pythonResp.ParentID != nil,
+		Title:       pythonResp.Title,
+		Attributes:  pythonResp.Attributes,
+		Description: pythonResp.Description,
+		Keywords:    pythonResp.Keywords,
+	}
+
+	// Handle nullable int32 fields
+	if pythonResp.ParentID != nil {
+		response.ParentId = *pythonResp.ParentID
+	}
+	if pythonResp.SubjectID != nil {
+		response.SubjectId = *pythonResp.SubjectID
+	}
+	if pythonResp.TypeID != nil {
+		response.TypeId = *pythonResp.TypeID
+	}
+	if pythonResp.RootID != nil {
+		response.RootId = *pythonResp.RootID
+	}
+	if pythonResp.SubID != nil {
+		response.SubId = *pythonResp.SubID
 	}
 
 	// Create and return the Connect response

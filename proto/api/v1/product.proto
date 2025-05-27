@@ -4,19 +4,26 @@ package api.v1;
 
 option go_package = "api/gen/api/v1;apiv1";
 
-// ProductRequest represents the input for product card processing
+// ProductRequest represents the input with the 5 required fields
 message ProductRequest {
-  string product_title = 1;
-  string product_description = 2;
-}
-
-// ProductResponse represents the output with the required fields
-message ProductResponse {
   string title = 1;
   string description = 2;
   bool generate_content = 3;
   bool ozon = 4;
   bool wb = 5;
+}
+
+// ProductResponse represents the output from the Python API
+message ProductResponse {
+  string title = 1;
+  map<string, string> attributes = 2;
+  string description = 3;
+  int32 parent_id = 4;
+  int32 subject_id = 5;
+  int32 type_id = 6;
+  int32 root_id = 7;
+  int32 sub_id = 8;
+  repeated string keywords = 9;
 }
 
 // ProductService provides product card processing functionality

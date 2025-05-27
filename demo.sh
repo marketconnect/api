@@ -22,12 +22,15 @@ echo "----------------------------------------------"
 curl -v \
   --header "Content-Type: application/json" \
   --data '{
-    "product_title": "Wireless Bluetooth Headphones", 
-    "product_description": "High-quality wireless headphones with noise cancellation and long battery life."
+    "title": "Wireless Bluetooth Headphones", 
+    "description": "High-quality wireless headphones with noise cancellation and long battery life.",
+    "generate_content": true,
+    "ozon": true,
+    "wb": false
   }' \
   http://localhost:8080/api.v1.ProductService/GetProductCard
 
 echo ""
 echo ""
-echo "Note: This will fail if the Python API is not running."
-echo "To test without the Python API, you can modify the server to return mock data." 
+echo "Note: This will fail if the Python CardCraftAI API is not running."
+echo "The API expects a Python service at the configured URL (default: http://localhost:8000/v1/product_card_comprehensive)" 

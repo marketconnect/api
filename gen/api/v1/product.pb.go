@@ -21,13 +21,16 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// ProductRequest represents the input for product card processing
+// ProductRequest represents the input with the 5 required fields
 type ProductRequest struct {
-	state              protoimpl.MessageState `protogen:"open.v1"`
-	ProductTitle       string                 `protobuf:"bytes,1,opt,name=product_title,json=productTitle,proto3" json:"product_title,omitempty"`
-	ProductDescription string                 `protobuf:"bytes,2,opt,name=product_description,json=productDescription,proto3" json:"product_description,omitempty"`
-	unknownFields      protoimpl.UnknownFields
-	sizeCache          protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Title           string                 `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
+	Description     string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	GenerateContent bool                   `protobuf:"varint,3,opt,name=generate_content,json=generateContent,proto3" json:"generate_content,omitempty"`
+	Ozon            bool                   `protobuf:"varint,4,opt,name=ozon,proto3" json:"ozon,omitempty"`
+	Wb              bool                   `protobuf:"varint,5,opt,name=wb,proto3" json:"wb,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *ProductRequest) Reset() {
@@ -60,30 +63,55 @@ func (*ProductRequest) Descriptor() ([]byte, []int) {
 	return file_api_v1_product_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ProductRequest) GetProductTitle() string {
+func (x *ProductRequest) GetTitle() string {
 	if x != nil {
-		return x.ProductTitle
+		return x.Title
 	}
 	return ""
 }
 
-func (x *ProductRequest) GetProductDescription() string {
+func (x *ProductRequest) GetDescription() string {
 	if x != nil {
-		return x.ProductDescription
+		return x.Description
 	}
 	return ""
 }
 
-// ProductResponse represents the output with the required fields
+func (x *ProductRequest) GetGenerateContent() bool {
+	if x != nil {
+		return x.GenerateContent
+	}
+	return false
+}
+
+func (x *ProductRequest) GetOzon() bool {
+	if x != nil {
+		return x.Ozon
+	}
+	return false
+}
+
+func (x *ProductRequest) GetWb() bool {
+	if x != nil {
+		return x.Wb
+	}
+	return false
+}
+
+// ProductResponse represents the output from the Python API
 type ProductResponse struct {
-	state           protoimpl.MessageState `protogen:"open.v1"`
-	Title           string                 `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
-	Description     string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
-	GenerateContent bool                   `protobuf:"varint,3,opt,name=generate_content,json=generateContent,proto3" json:"generate_content,omitempty"`
-	Ozon            bool                   `protobuf:"varint,4,opt,name=ozon,proto3" json:"ozon,omitempty"`
-	Wb              bool                   `protobuf:"varint,5,opt,name=wb,proto3" json:"wb,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Title         string                 `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
+	Attributes    map[string]string      `protobuf:"bytes,2,rep,name=attributes,proto3" json:"attributes,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	ParentId      int32                  `protobuf:"varint,4,opt,name=parent_id,json=parentId,proto3" json:"parent_id,omitempty"`
+	SubjectId     int32                  `protobuf:"varint,5,opt,name=subject_id,json=subjectId,proto3" json:"subject_id,omitempty"`
+	TypeId        int32                  `protobuf:"varint,6,opt,name=type_id,json=typeId,proto3" json:"type_id,omitempty"`
+	RootId        int32                  `protobuf:"varint,7,opt,name=root_id,json=rootId,proto3" json:"root_id,omitempty"`
+	SubId         int32                  `protobuf:"varint,8,opt,name=sub_id,json=subId,proto3" json:"sub_id,omitempty"`
+	Keywords      []string               `protobuf:"bytes,9,rep,name=keywords,proto3" json:"keywords,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ProductResponse) Reset() {
@@ -123,6 +151,13 @@ func (x *ProductResponse) GetTitle() string {
 	return ""
 }
 
+func (x *ProductResponse) GetAttributes() map[string]string {
+	if x != nil {
+		return x.Attributes
+	}
+	return nil
+}
+
 func (x *ProductResponse) GetDescription() string {
 	if x != nil {
 		return x.Description
@@ -130,41 +165,75 @@ func (x *ProductResponse) GetDescription() string {
 	return ""
 }
 
-func (x *ProductResponse) GetGenerateContent() bool {
+func (x *ProductResponse) GetParentId() int32 {
 	if x != nil {
-		return x.GenerateContent
+		return x.ParentId
 	}
-	return false
+	return 0
 }
 
-func (x *ProductResponse) GetOzon() bool {
+func (x *ProductResponse) GetSubjectId() int32 {
 	if x != nil {
-		return x.Ozon
+		return x.SubjectId
 	}
-	return false
+	return 0
 }
 
-func (x *ProductResponse) GetWb() bool {
+func (x *ProductResponse) GetTypeId() int32 {
 	if x != nil {
-		return x.Wb
+		return x.TypeId
 	}
-	return false
+	return 0
+}
+
+func (x *ProductResponse) GetRootId() int32 {
+	if x != nil {
+		return x.RootId
+	}
+	return 0
+}
+
+func (x *ProductResponse) GetSubId() int32 {
+	if x != nil {
+		return x.SubId
+	}
+	return 0
+}
+
+func (x *ProductResponse) GetKeywords() []string {
+	if x != nil {
+		return x.Keywords
+	}
+	return nil
 }
 
 var File_api_v1_product_proto protoreflect.FileDescriptor
 
 const file_api_v1_product_proto_rawDesc = "" +
 	"\n" +
-	"\x14api/v1/product.proto\x12\x06api.v1\"f\n" +
-	"\x0eProductRequest\x12#\n" +
-	"\rproduct_title\x18\x01 \x01(\tR\fproductTitle\x12/\n" +
-	"\x13product_description\x18\x02 \x01(\tR\x12productDescription\"\x98\x01\n" +
-	"\x0fProductResponse\x12\x14\n" +
+	"\x14api/v1/product.proto\x12\x06api.v1\"\x97\x01\n" +
+	"\x0eProductRequest\x12\x14\n" +
 	"\x05title\x18\x01 \x01(\tR\x05title\x12 \n" +
 	"\vdescription\x18\x02 \x01(\tR\vdescription\x12)\n" +
 	"\x10generate_content\x18\x03 \x01(\bR\x0fgenerateContent\x12\x12\n" +
 	"\x04ozon\x18\x04 \x01(\bR\x04ozon\x12\x0e\n" +
-	"\x02wb\x18\x05 \x01(\bR\x02wb2U\n" +
+	"\x02wb\x18\x05 \x01(\bR\x02wb\"\xf2\x02\n" +
+	"\x0fProductResponse\x12\x14\n" +
+	"\x05title\x18\x01 \x01(\tR\x05title\x12G\n" +
+	"\n" +
+	"attributes\x18\x02 \x03(\v2'.api.v1.ProductResponse.AttributesEntryR\n" +
+	"attributes\x12 \n" +
+	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x1b\n" +
+	"\tparent_id\x18\x04 \x01(\x05R\bparentId\x12\x1d\n" +
+	"\n" +
+	"subject_id\x18\x05 \x01(\x05R\tsubjectId\x12\x17\n" +
+	"\atype_id\x18\x06 \x01(\x05R\x06typeId\x12\x17\n" +
+	"\aroot_id\x18\a \x01(\x05R\x06rootId\x12\x15\n" +
+	"\x06sub_id\x18\b \x01(\x05R\x05subId\x12\x1a\n" +
+	"\bkeywords\x18\t \x03(\tR\bkeywords\x1a=\n" +
+	"\x0fAttributesEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x012U\n" +
 	"\x0eProductService\x12C\n" +
 	"\x0eGetProductCard\x12\x16.api.v1.ProductRequest\x1a\x17.api.v1.ProductResponse\"\x00B\x16Z\x14api/gen/api/v1;apiv1b\x06proto3"
 
@@ -180,19 +249,21 @@ func file_api_v1_product_proto_rawDescGZIP() []byte {
 	return file_api_v1_product_proto_rawDescData
 }
 
-var file_api_v1_product_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_api_v1_product_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_api_v1_product_proto_goTypes = []any{
 	(*ProductRequest)(nil),  // 0: api.v1.ProductRequest
 	(*ProductResponse)(nil), // 1: api.v1.ProductResponse
+	nil,                     // 2: api.v1.ProductResponse.AttributesEntry
 }
 var file_api_v1_product_proto_depIdxs = []int32{
-	0, // 0: api.v1.ProductService.GetProductCard:input_type -> api.v1.ProductRequest
-	1, // 1: api.v1.ProductService.GetProductCard:output_type -> api.v1.ProductResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	2, // 0: api.v1.ProductResponse.attributes:type_name -> api.v1.ProductResponse.AttributesEntry
+	0, // 1: api.v1.ProductService.GetProductCard:input_type -> api.v1.ProductRequest
+	1, // 2: api.v1.ProductService.GetProductCard:output_type -> api.v1.ProductResponse
+	2, // [2:3] is the sub-list for method output_type
+	1, // [1:2] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_api_v1_product_proto_init() }
@@ -206,7 +277,7 @@ func file_api_v1_product_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_v1_product_proto_rawDesc), len(file_api_v1_product_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

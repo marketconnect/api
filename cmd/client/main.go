@@ -25,10 +25,13 @@ func main() {
 		serverURL,
 	)
 
-	// Create a request
+	// Create a request with the 5 required input fields
 	req := connect.NewRequest(&apiv1.ProductRequest{
-		ProductTitle:       "Wireless Bluetooth Headphones",
-		ProductDescription: "High-quality wireless headphones with noise cancellation and long battery life.",
+		Title:           "Wireless Bluetooth Headphones",
+		Description:     "High-quality wireless headphones with noise cancellation and long battery life.",
+		GenerateContent: true,
+		Ozon:            true,
+		Wb:              false,
 	})
 
 	// Set headers if needed
@@ -41,13 +44,17 @@ func main() {
 		log.Fatalf("Request failed: %v", err)
 	}
 
-	// Print the response
+	// Print the comprehensive response from Python API
 	log.Printf("Response received:")
 	log.Printf("  Title: %s", res.Msg.Title)
 	log.Printf("  Description: %s", res.Msg.Description)
-	log.Printf("  Generate Content: %t", res.Msg.GenerateContent)
-	log.Printf("  Ozon: %t", res.Msg.Ozon)
-	log.Printf("  WB: %t", res.Msg.Wb)
+	log.Printf("  Attributes: %v", res.Msg.Attributes)
+	log.Printf("  Parent ID: %d", res.Msg.ParentId)
+	log.Printf("  Subject ID: %d", res.Msg.SubjectId)
+	log.Printf("  Type ID: %d", res.Msg.TypeId)
+	log.Printf("  Root ID: %d", res.Msg.RootId)
+	log.Printf("  Sub ID: %d", res.Msg.SubId)
+	log.Printf("  Keywords: %v", res.Msg.Keywords)
 
 	// Print response headers
 	log.Printf("Response headers:")

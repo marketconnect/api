@@ -18,25 +18,41 @@ func TestProductServer_NewProductServer(t *testing.T) {
 
 func TestProductRequest_Fields(t *testing.T) {
 	req := &apiv1.ProductRequest{
-		ProductTitle:       "Test Title",
-		ProductDescription: "Test Description",
+		Title:           "Test Title",
+		Description:     "Test Description",
+		GenerateContent: true,
+		Ozon:            true,
+		Wb:              false,
 	}
 
-	if req.ProductTitle != "Test Title" {
-		t.Errorf("Expected ProductTitle to be 'Test Title', got '%s'", req.ProductTitle)
+	if req.Title != "Test Title" {
+		t.Errorf("Expected Title to be 'Test Title', got '%s'", req.Title)
 	}
-	if req.ProductDescription != "Test Description" {
-		t.Errorf("Expected ProductDescription to be 'Test Description', got '%s'", req.ProductDescription)
+	if req.Description != "Test Description" {
+		t.Errorf("Expected Description to be 'Test Description', got '%s'", req.Description)
+	}
+	if !req.GenerateContent {
+		t.Error("Expected GenerateContent to be true")
+	}
+	if !req.Ozon {
+		t.Error("Expected Ozon to be true")
+	}
+	if req.Wb {
+		t.Error("Expected Wb to be false")
 	}
 }
 
 func TestProductResponse_Fields(t *testing.T) {
 	resp := &apiv1.ProductResponse{
-		Title:           "Response Title",
-		Description:     "Response Description",
-		GenerateContent: true,
-		Ozon:            true,
-		Wb:              false,
+		Title:       "Response Title",
+		Description: "Response Description",
+		Attributes:  map[string]string{"key": "value"},
+		ParentId:    123,
+		SubjectId:   456,
+		TypeId:      789,
+		RootId:      101,
+		SubId:       112,
+		Keywords:    []string{"keyword1", "keyword2"},
 	}
 
 	if resp.Title != "Response Title" {
@@ -45,13 +61,13 @@ func TestProductResponse_Fields(t *testing.T) {
 	if resp.Description != "Response Description" {
 		t.Errorf("Expected Description to be 'Response Description', got '%s'", resp.Description)
 	}
-	if !resp.GenerateContent {
-		t.Error("Expected GenerateContent to be true")
+	if resp.Attributes["key"] != "value" {
+		t.Errorf("Expected Attributes[key] to be 'value', got '%s'", resp.Attributes["key"])
 	}
-	if !resp.Ozon {
-		t.Error("Expected Ozon to be true")
+	if resp.ParentId != 123 {
+		t.Errorf("Expected ParentId to be 123, got %d", resp.ParentId)
 	}
-	if resp.Wb {
-		t.Error("Expected Wb to be false")
+	if resp.SubjectId != 456 {
+		t.Errorf("Expected SubjectId to be 456, got %d", resp.SubjectId)
 	}
 }
