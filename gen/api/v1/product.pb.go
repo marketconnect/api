@@ -22,37 +22,44 @@ const (
 )
 
 // ProductRequest represents the input with the 5 required fields
-type ProductRequest struct {
-	state           protoimpl.MessageState `protogen:"open.v1"`
-	Title           string                 `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
-	Description     string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
-	ParentId        int32                  `protobuf:"varint,3,opt,name=parent_id,json=parentId,proto3" json:"parent_id,omitempty"`
-	SubjectId       int32                  `protobuf:"varint,4,opt,name=subject_id,json=subjectId,proto3" json:"subject_id,omitempty"`
-	RootId          int32                  `protobuf:"varint,5,opt,name=root_id,json=rootId,proto3" json:"root_id,omitempty"`
-	SubId           int32                  `protobuf:"varint,6,opt,name=sub_id,json=subId,proto3" json:"sub_id,omitempty"`
-	TypeId          int32                  `protobuf:"varint,7,opt,name=type_id,json=typeId,proto3" json:"type_id,omitempty"`
-	GenerateContent bool                   `protobuf:"varint,8,opt,name=generate_content,json=generateContent,proto3" json:"generate_content,omitempty"`
-	Ozon            bool                   `protobuf:"varint,9,opt,name=ozon,proto3" json:"ozon,omitempty"`
-	Wb              bool                   `protobuf:"varint,10,opt,name=wb,proto3" json:"wb,omitempty"`
-	Translate       bool                   `protobuf:"varint,11,opt,name=translate,proto3" json:"translate,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+type CreateProductCardRequest struct {
+	state                protoimpl.MessageState `protogen:"open.v1"`
+	ProductTitle         string                 `protobuf:"bytes,1,opt,name=product_title,json=productTitle,proto3" json:"product_title,omitempty"`
+	ProductDescription   string                 `protobuf:"bytes,2,opt,name=product_description,json=productDescription,proto3" json:"product_description,omitempty"`
+	ParentId             int32                  `protobuf:"varint,3,opt,name=parent_id,json=parentId,proto3" json:"parent_id,omitempty"`
+	SubjectId            int32                  `protobuf:"varint,4,opt,name=subject_id,json=subjectId,proto3" json:"subject_id,omitempty"`
+	RootId               int32                  `protobuf:"varint,5,opt,name=root_id,json=rootId,proto3" json:"root_id,omitempty"`
+	SubId                int32                  `protobuf:"varint,6,opt,name=sub_id,json=subId,proto3" json:"sub_id,omitempty"`
+	TypeId               int32                  `protobuf:"varint,7,opt,name=type_id,json=typeId,proto3" json:"type_id,omitempty"`
+	GenerateContent      bool                   `protobuf:"varint,8,opt,name=generate_content,json=generateContent,proto3" json:"generate_content,omitempty"`
+	Ozon                 bool                   `protobuf:"varint,9,opt,name=ozon,proto3" json:"ozon,omitempty"`
+	Wb                   bool                   `protobuf:"varint,10,opt,name=wb,proto3" json:"wb,omitempty"`
+	Translate            bool                   `protobuf:"varint,11,opt,name=translate,proto3" json:"translate,omitempty"`
+	VendorCode           string                 `protobuf:"bytes,12,opt,name=vendor_code,json=vendorCode,proto3" json:"vendor_code,omitempty"`
+	Dimensions           *Dimensions            `protobuf:"bytes,13,opt,name=dimensions,proto3" json:"dimensions,omitempty"`
+	Brand                string                 `protobuf:"bytes,14,opt,name=brand,proto3" json:"brand,omitempty"`
+	Sizes                []*Size                `protobuf:"bytes,15,rep,name=sizes,proto3" json:"sizes,omitempty"`
+	WbApiKey             string                 `protobuf:"bytes,16,opt,name=wb_api_key,json=wbApiKey,proto3" json:"wb_api_key,omitempty"`                                         // API key for Wildberries, provided by user
+	WbMediaToUploadFiles []*WBMediaFileToUpload `protobuf:"bytes,17,rep,name=wb_media_to_upload_files,json=wbMediaToUploadFiles,proto3" json:"wb_media_to_upload_files,omitempty"` // List of files to upload
+	WbMediaToSaveLinks   []string               `protobuf:"bytes,18,rep,name=wb_media_to_save_links,json=wbMediaToSaveLinks,proto3" json:"wb_media_to_save_links,omitempty"`       // List of URLs for media_save
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
 }
 
-func (x *ProductRequest) Reset() {
-	*x = ProductRequest{}
+func (x *CreateProductCardRequest) Reset() {
+	*x = CreateProductCardRequest{}
 	mi := &file_api_v1_product_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ProductRequest) String() string {
+func (x *CreateProductCardRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ProductRequest) ProtoMessage() {}
+func (*CreateProductCardRequest) ProtoMessage() {}
 
-func (x *ProductRequest) ProtoReflect() protoreflect.Message {
+func (x *CreateProductCardRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_api_v1_product_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,122 +71,161 @@ func (x *ProductRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ProductRequest.ProtoReflect.Descriptor instead.
-func (*ProductRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use CreateProductCardRequest.ProtoReflect.Descriptor instead.
+func (*CreateProductCardRequest) Descriptor() ([]byte, []int) {
 	return file_api_v1_product_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ProductRequest) GetTitle() string {
+func (x *CreateProductCardRequest) GetProductTitle() string {
 	if x != nil {
-		return x.Title
+		return x.ProductTitle
 	}
 	return ""
 }
 
-func (x *ProductRequest) GetDescription() string {
+func (x *CreateProductCardRequest) GetProductDescription() string {
 	if x != nil {
-		return x.Description
+		return x.ProductDescription
 	}
 	return ""
 }
 
-func (x *ProductRequest) GetParentId() int32 {
+func (x *CreateProductCardRequest) GetParentId() int32 {
 	if x != nil {
 		return x.ParentId
 	}
 	return 0
 }
 
-func (x *ProductRequest) GetSubjectId() int32 {
+func (x *CreateProductCardRequest) GetSubjectId() int32 {
 	if x != nil {
 		return x.SubjectId
 	}
 	return 0
 }
 
-func (x *ProductRequest) GetRootId() int32 {
+func (x *CreateProductCardRequest) GetRootId() int32 {
 	if x != nil {
 		return x.RootId
 	}
 	return 0
 }
 
-func (x *ProductRequest) GetSubId() int32 {
+func (x *CreateProductCardRequest) GetSubId() int32 {
 	if x != nil {
 		return x.SubId
 	}
 	return 0
 }
 
-func (x *ProductRequest) GetTypeId() int32 {
+func (x *CreateProductCardRequest) GetTypeId() int32 {
 	if x != nil {
 		return x.TypeId
 	}
 	return 0
 }
 
-func (x *ProductRequest) GetGenerateContent() bool {
+func (x *CreateProductCardRequest) GetGenerateContent() bool {
 	if x != nil {
 		return x.GenerateContent
 	}
 	return false
 }
 
-func (x *ProductRequest) GetOzon() bool {
+func (x *CreateProductCardRequest) GetOzon() bool {
 	if x != nil {
 		return x.Ozon
 	}
 	return false
 }
 
-func (x *ProductRequest) GetWb() bool {
+func (x *CreateProductCardRequest) GetWb() bool {
 	if x != nil {
 		return x.Wb
 	}
 	return false
 }
 
-func (x *ProductRequest) GetTranslate() bool {
+func (x *CreateProductCardRequest) GetTranslate() bool {
 	if x != nil {
 		return x.Translate
 	}
 	return false
 }
 
-// ProductResponse represents the output from the Python API
-type ProductResponse struct {
+func (x *CreateProductCardRequest) GetVendorCode() string {
+	if x != nil {
+		return x.VendorCode
+	}
+	return ""
+}
+
+func (x *CreateProductCardRequest) GetDimensions() *Dimensions {
+	if x != nil {
+		return x.Dimensions
+	}
+	return nil
+}
+
+func (x *CreateProductCardRequest) GetBrand() string {
+	if x != nil {
+		return x.Brand
+	}
+	return ""
+}
+
+func (x *CreateProductCardRequest) GetSizes() []*Size {
+	if x != nil {
+		return x.Sizes
+	}
+	return nil
+}
+
+func (x *CreateProductCardRequest) GetWbApiKey() string {
+	if x != nil {
+		return x.WbApiKey
+	}
+	return ""
+}
+
+func (x *CreateProductCardRequest) GetWbMediaToUploadFiles() []*WBMediaFileToUpload {
+	if x != nil {
+		return x.WbMediaToUploadFiles
+	}
+	return nil
+}
+
+func (x *CreateProductCardRequest) GetWbMediaToSaveLinks() []string {
+	if x != nil {
+		return x.WbMediaToSaveLinks
+	}
+	return nil
+}
+
+type Dimensions struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Title         string                 `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
-	Attributes    map[string]string      `protobuf:"bytes,2,rep,name=attributes,proto3" json:"attributes,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
-	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
-	ParentName    string                 `protobuf:"bytes,4,opt,name=parent_name,json=parentName,proto3" json:"parent_name,omitempty"`
-	ParentId      int32                  `protobuf:"varint,5,opt,name=parent_id,json=parentId,proto3" json:"parent_id,omitempty"`
-	SubjectName   string                 `protobuf:"bytes,6,opt,name=subject_name,json=subjectName,proto3" json:"subject_name,omitempty"`
-	SubjectId     int32                  `protobuf:"varint,7,opt,name=subject_id,json=subjectId,proto3" json:"subject_id,omitempty"`
-	RootId        int32                  `protobuf:"varint,8,opt,name=root_id,json=rootId,proto3" json:"root_id,omitempty"`
-	RootName      string                 `protobuf:"bytes,9,opt,name=root_name,json=rootName,proto3" json:"root_name,omitempty"`
-	TypeId        int32                  `protobuf:"varint,10,opt,name=type_id,json=typeId,proto3" json:"type_id,omitempty"`
-	TypeName      string                 `protobuf:"bytes,11,opt,name=type_name,json=typeName,proto3" json:"type_name,omitempty"`
-	SubId         int32                  `protobuf:"varint,12,opt,name=sub_id,json=subId,proto3" json:"sub_id,omitempty"`
-	SubName       string                 `protobuf:"bytes,13,opt,name=sub_name,json=subName,proto3" json:"sub_name,omitempty"`
+	Length        int32                  `protobuf:"varint,1,opt,name=length,proto3" json:"length,omitempty"`
+	Width         int32                  `protobuf:"varint,2,opt,name=width,proto3" json:"width,omitempty"`
+	Height        int32                  `protobuf:"varint,3,opt,name=height,proto3" json:"height,omitempty"`
+	WeightBrutto  float64                `protobuf:"fixed64,4,opt,name=weight_brutto,json=weightBrutto,proto3" json:"weight_brutto,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ProductResponse) Reset() {
-	*x = ProductResponse{}
+func (x *Dimensions) Reset() {
+	*x = Dimensions{}
 	mi := &file_api_v1_product_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ProductResponse) String() string {
+func (x *Dimensions) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ProductResponse) ProtoMessage() {}
+func (*Dimensions) ProtoMessage() {}
 
-func (x *ProductResponse) ProtoReflect() protoreflect.Message {
+func (x *Dimensions) ProtoReflect() protoreflect.Message {
 	mi := &file_api_v1_product_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -191,98 +237,456 @@ func (x *ProductResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ProductResponse.ProtoReflect.Descriptor instead.
-func (*ProductResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use Dimensions.ProtoReflect.Descriptor instead.
+func (*Dimensions) Descriptor() ([]byte, []int) {
 	return file_api_v1_product_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *ProductResponse) GetTitle() string {
+func (x *Dimensions) GetLength() int32 {
+	if x != nil {
+		return x.Length
+	}
+	return 0
+}
+
+func (x *Dimensions) GetWidth() int32 {
+	if x != nil {
+		return x.Width
+	}
+	return 0
+}
+
+func (x *Dimensions) GetHeight() int32 {
+	if x != nil {
+		return x.Height
+	}
+	return 0
+}
+
+func (x *Dimensions) GetWeightBrutto() float64 {
+	if x != nil {
+		return x.WeightBrutto
+	}
+	return 0
+}
+
+type Size struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TechSize      string                 `protobuf:"bytes,1,opt,name=tech_size,json=techSize,proto3" json:"tech_size,omitempty"`
+	WbSize        string                 `protobuf:"bytes,2,opt,name=wb_size,json=wbSize,proto3" json:"wb_size,omitempty"`
+	Price         int32                  `protobuf:"varint,3,opt,name=price,proto3" json:"price,omitempty"`
+	Skus          []string               `protobuf:"bytes,4,rep,name=skus,proto3" json:"skus,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Size) Reset() {
+	*x = Size{}
+	mi := &file_api_v1_product_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Size) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Size) ProtoMessage() {}
+
+func (x *Size) ProtoReflect() protoreflect.Message {
+	mi := &file_api_v1_product_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Size.ProtoReflect.Descriptor instead.
+func (*Size) Descriptor() ([]byte, []int) {
+	return file_api_v1_product_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *Size) GetTechSize() string {
+	if x != nil {
+		return x.TechSize
+	}
+	return ""
+}
+
+func (x *Size) GetWbSize() string {
+	if x != nil {
+		return x.WbSize
+	}
+	return ""
+}
+
+func (x *Size) GetPrice() int32 {
+	if x != nil {
+		return x.Price
+	}
+	return 0
+}
+
+func (x *Size) GetSkus() []string {
+	if x != nil {
+		return x.Skus
+	}
+	return nil
+}
+
+type WBMediaFileToUpload struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Content       []byte                 `protobuf:"bytes,1,opt,name=content,proto3" json:"content,omitempty"`                             // File content
+	Filename      string                 `protobuf:"bytes,2,opt,name=filename,proto3" json:"filename,omitempty"`                           // Original filename, e.g. "photo.jpg"
+	PhotoNumber   int32                  `protobuf:"varint,3,opt,name=photo_number,json=photoNumber,proto3" json:"photo_number,omitempty"` // Value for X-Photo-Number header
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *WBMediaFileToUpload) Reset() {
+	*x = WBMediaFileToUpload{}
+	mi := &file_api_v1_product_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *WBMediaFileToUpload) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WBMediaFileToUpload) ProtoMessage() {}
+
+func (x *WBMediaFileToUpload) ProtoReflect() protoreflect.Message {
+	mi := &file_api_v1_product_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WBMediaFileToUpload.ProtoReflect.Descriptor instead.
+func (*WBMediaFileToUpload) Descriptor() ([]byte, []int) {
+	return file_api_v1_product_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *WBMediaFileToUpload) GetContent() []byte {
+	if x != nil {
+		return x.Content
+	}
+	return nil
+}
+
+func (x *WBMediaFileToUpload) GetFilename() string {
+	if x != nil {
+		return x.Filename
+	}
+	return ""
+}
+
+func (x *WBMediaFileToUpload) GetPhotoNumber() int32 {
+	if x != nil {
+		return x.PhotoNumber
+	}
+	return 0
+}
+
+// ProductResponse represents the output from the Python API
+type CreateProductCardResponse struct {
+	state                            protoimpl.MessageState             `protogen:"open.v1"`
+	Title                            string                             `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
+	Attributes                       map[string]string                  `protobuf:"bytes,2,rep,name=attributes,proto3" json:"attributes,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Description                      string                             `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	ParentName                       string                             `protobuf:"bytes,4,opt,name=parent_name,json=parentName,proto3" json:"parent_name,omitempty"`
+	ParentId                         int32                              `protobuf:"varint,5,opt,name=parent_id,json=parentId,proto3" json:"parent_id,omitempty"`
+	SubjectName                      string                             `protobuf:"bytes,6,opt,name=subject_name,json=subjectName,proto3" json:"subject_name,omitempty"`
+	SubjectId                        int32                              `protobuf:"varint,7,opt,name=subject_id,json=subjectId,proto3" json:"subject_id,omitempty"`
+	RootId                           int32                              `protobuf:"varint,8,opt,name=root_id,json=rootId,proto3" json:"root_id,omitempty"`
+	RootName                         string                             `protobuf:"bytes,9,opt,name=root_name,json=rootName,proto3" json:"root_name,omitempty"`
+	TypeId                           int32                              `protobuf:"varint,10,opt,name=type_id,json=typeId,proto3" json:"type_id,omitempty"`
+	TypeName                         string                             `protobuf:"bytes,11,opt,name=type_name,json=typeName,proto3" json:"type_name,omitempty"`
+	SubId                            int32                              `protobuf:"varint,12,opt,name=sub_id,json=subId,proto3" json:"sub_id,omitempty"`
+	SubName                          string                             `protobuf:"bytes,13,opt,name=sub_name,json=subName,proto3" json:"sub_name,omitempty"`
+	WbApiResponseJson                *string                            `protobuf:"bytes,14,opt,name=wb_api_response_json,json=wbApiResponseJson,proto3,oneof" json:"wb_api_response_json,omitempty"`             // JSON string of the WB API response if attempted
+	WbPreparedRequestJson            *string                            `protobuf:"bytes,15,opt,name=wb_prepared_request_json,json=wbPreparedRequestJson,proto3,oneof" json:"wb_prepared_request_json,omitempty"` // JSON string of the prepared WB request if API key not provided
+	WbRequestAttempted               *bool                              `protobuf:"varint,16,opt,name=wb_request_attempted,json=wbRequestAttempted,proto3,oneof" json:"wb_request_attempted,omitempty"`           // True if WB API call was made, False if JSON prepared, Null if wb=false
+	WbMediaUploadIndividualResponses []*WBMediaUploadIndividualResponse `protobuf:"bytes,17,rep,name=wb_media_upload_individual_responses,json=wbMediaUploadIndividualResponses,proto3" json:"wb_media_upload_individual_responses,omitempty"`
+	WbMediaSaveByLinksResponse       *WBMediaSaveByLinksResponse        `protobuf:"bytes,18,opt,name=wb_media_save_by_links_response,json=wbMediaSaveByLinksResponse,proto3,oneof" json:"wb_media_save_by_links_response,omitempty"`
+	unknownFields                    protoimpl.UnknownFields
+	sizeCache                        protoimpl.SizeCache
+}
+
+func (x *CreateProductCardResponse) Reset() {
+	*x = CreateProductCardResponse{}
+	mi := &file_api_v1_product_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateProductCardResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateProductCardResponse) ProtoMessage() {}
+
+func (x *CreateProductCardResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_v1_product_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateProductCardResponse.ProtoReflect.Descriptor instead.
+func (*CreateProductCardResponse) Descriptor() ([]byte, []int) {
+	return file_api_v1_product_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *CreateProductCardResponse) GetTitle() string {
 	if x != nil {
 		return x.Title
 	}
 	return ""
 }
 
-func (x *ProductResponse) GetAttributes() map[string]string {
+func (x *CreateProductCardResponse) GetAttributes() map[string]string {
 	if x != nil {
 		return x.Attributes
 	}
 	return nil
 }
 
-func (x *ProductResponse) GetDescription() string {
+func (x *CreateProductCardResponse) GetDescription() string {
 	if x != nil {
 		return x.Description
 	}
 	return ""
 }
 
-func (x *ProductResponse) GetParentName() string {
+func (x *CreateProductCardResponse) GetParentName() string {
 	if x != nil {
 		return x.ParentName
 	}
 	return ""
 }
 
-func (x *ProductResponse) GetParentId() int32 {
+func (x *CreateProductCardResponse) GetParentId() int32 {
 	if x != nil {
 		return x.ParentId
 	}
 	return 0
 }
 
-func (x *ProductResponse) GetSubjectName() string {
+func (x *CreateProductCardResponse) GetSubjectName() string {
 	if x != nil {
 		return x.SubjectName
 	}
 	return ""
 }
 
-func (x *ProductResponse) GetSubjectId() int32 {
+func (x *CreateProductCardResponse) GetSubjectId() int32 {
 	if x != nil {
 		return x.SubjectId
 	}
 	return 0
 }
 
-func (x *ProductResponse) GetRootId() int32 {
+func (x *CreateProductCardResponse) GetRootId() int32 {
 	if x != nil {
 		return x.RootId
 	}
 	return 0
 }
 
-func (x *ProductResponse) GetRootName() string {
+func (x *CreateProductCardResponse) GetRootName() string {
 	if x != nil {
 		return x.RootName
 	}
 	return ""
 }
 
-func (x *ProductResponse) GetTypeId() int32 {
+func (x *CreateProductCardResponse) GetTypeId() int32 {
 	if x != nil {
 		return x.TypeId
 	}
 	return 0
 }
 
-func (x *ProductResponse) GetTypeName() string {
+func (x *CreateProductCardResponse) GetTypeName() string {
 	if x != nil {
 		return x.TypeName
 	}
 	return ""
 }
 
-func (x *ProductResponse) GetSubId() int32 {
+func (x *CreateProductCardResponse) GetSubId() int32 {
 	if x != nil {
 		return x.SubId
 	}
 	return 0
 }
 
-func (x *ProductResponse) GetSubName() string {
+func (x *CreateProductCardResponse) GetSubName() string {
 	if x != nil {
 		return x.SubName
+	}
+	return ""
+}
+
+func (x *CreateProductCardResponse) GetWbApiResponseJson() string {
+	if x != nil && x.WbApiResponseJson != nil {
+		return *x.WbApiResponseJson
+	}
+	return ""
+}
+
+func (x *CreateProductCardResponse) GetWbPreparedRequestJson() string {
+	if x != nil && x.WbPreparedRequestJson != nil {
+		return *x.WbPreparedRequestJson
+	}
+	return ""
+}
+
+func (x *CreateProductCardResponse) GetWbRequestAttempted() bool {
+	if x != nil && x.WbRequestAttempted != nil {
+		return *x.WbRequestAttempted
+	}
+	return false
+}
+
+func (x *CreateProductCardResponse) GetWbMediaUploadIndividualResponses() []*WBMediaUploadIndividualResponse {
+	if x != nil {
+		return x.WbMediaUploadIndividualResponses
+	}
+	return nil
+}
+
+func (x *CreateProductCardResponse) GetWbMediaSaveByLinksResponse() *WBMediaSaveByLinksResponse {
+	if x != nil {
+		return x.WbMediaSaveByLinksResponse
+	}
+	return nil
+}
+
+type WBMediaUploadIndividualResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PhotoNumber   int32                  `protobuf:"varint,1,opt,name=photo_number,json=photoNumber,proto3" json:"photo_number,omitempty"`         // Corresponds to the photo_number from WBMediaFileToUpload
+	ResponseJson  *string                `protobuf:"bytes,2,opt,name=response_json,json=responseJson,proto3,oneof" json:"response_json,omitempty"` // JSON string of WBMediaGenericResponse
+	ErrorMessage  *string                `protobuf:"bytes,3,opt,name=error_message,json=errorMessage,proto3,oneof" json:"error_message,omitempty"` // Error message if this specific upload failed
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *WBMediaUploadIndividualResponse) Reset() {
+	*x = WBMediaUploadIndividualResponse{}
+	mi := &file_api_v1_product_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *WBMediaUploadIndividualResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WBMediaUploadIndividualResponse) ProtoMessage() {}
+
+func (x *WBMediaUploadIndividualResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_v1_product_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WBMediaUploadIndividualResponse.ProtoReflect.Descriptor instead.
+func (*WBMediaUploadIndividualResponse) Descriptor() ([]byte, []int) {
+	return file_api_v1_product_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *WBMediaUploadIndividualResponse) GetPhotoNumber() int32 {
+	if x != nil {
+		return x.PhotoNumber
+	}
+	return 0
+}
+
+func (x *WBMediaUploadIndividualResponse) GetResponseJson() string {
+	if x != nil && x.ResponseJson != nil {
+		return *x.ResponseJson
+	}
+	return ""
+}
+
+func (x *WBMediaUploadIndividualResponse) GetErrorMessage() string {
+	if x != nil && x.ErrorMessage != nil {
+		return *x.ErrorMessage
+	}
+	return ""
+}
+
+type WBMediaSaveByLinksResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ResponseJson  *string                `protobuf:"bytes,1,opt,name=response_json,json=responseJson,proto3,oneof" json:"response_json,omitempty"` // JSON string of WBMediaGenericResponse
+	ErrorMessage  *string                `protobuf:"bytes,2,opt,name=error_message,json=errorMessage,proto3,oneof" json:"error_message,omitempty"` // Error message if save by links operation failed
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *WBMediaSaveByLinksResponse) Reset() {
+	*x = WBMediaSaveByLinksResponse{}
+	mi := &file_api_v1_product_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *WBMediaSaveByLinksResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WBMediaSaveByLinksResponse) ProtoMessage() {}
+
+func (x *WBMediaSaveByLinksResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_v1_product_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WBMediaSaveByLinksResponse.ProtoReflect.Descriptor instead.
+func (*WBMediaSaveByLinksResponse) Descriptor() ([]byte, []int) {
+	return file_api_v1_product_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *WBMediaSaveByLinksResponse) GetResponseJson() string {
+	if x != nil && x.ResponseJson != nil {
+		return *x.ResponseJson
+	}
+	return ""
+}
+
+func (x *WBMediaSaveByLinksResponse) GetErrorMessage() string {
+	if x != nil && x.ErrorMessage != nil {
+		return *x.ErrorMessage
 	}
 	return ""
 }
@@ -291,10 +695,10 @@ var File_api_v1_product_proto protoreflect.FileDescriptor
 
 const file_api_v1_product_proto_rawDesc = "" +
 	"\n" +
-	"\x14api/v1/product.proto\x12\x06api.v1\"\xba\x02\n" +
-	"\x0eProductRequest\x12\x14\n" +
-	"\x05title\x18\x01 \x01(\tR\x05title\x12 \n" +
-	"\vdescription\x18\x02 \x01(\tR\vdescription\x12\x1b\n" +
+	"\x14api/v1/product.proto\x12\x06api.v1\"\x98\x05\n" +
+	"\x18CreateProductCardRequest\x12#\n" +
+	"\rproduct_title\x18\x01 \x01(\tR\fproductTitle\x12/\n" +
+	"\x13product_description\x18\x02 \x01(\tR\x12productDescription\x12\x1b\n" +
 	"\tparent_id\x18\x03 \x01(\x05R\bparentId\x12\x1d\n" +
 	"\n" +
 	"subject_id\x18\x04 \x01(\x05R\tsubjectId\x12\x17\n" +
@@ -305,11 +709,37 @@ const file_api_v1_product_proto_rawDesc = "" +
 	"\x04ozon\x18\t \x01(\bR\x04ozon\x12\x0e\n" +
 	"\x02wb\x18\n" +
 	" \x01(\bR\x02wb\x12\x1c\n" +
-	"\ttranslate\x18\v \x01(\bR\ttranslate\"\xef\x03\n" +
-	"\x0fProductResponse\x12\x14\n" +
-	"\x05title\x18\x01 \x01(\tR\x05title\x12G\n" +
+	"\ttranslate\x18\v \x01(\bR\ttranslate\x12\x1f\n" +
+	"\vvendor_code\x18\f \x01(\tR\n" +
+	"vendorCode\x122\n" +
 	"\n" +
-	"attributes\x18\x02 \x03(\v2'.api.v1.ProductResponse.AttributesEntryR\n" +
+	"dimensions\x18\r \x01(\v2\x12.api.v1.DimensionsR\n" +
+	"dimensions\x12\x14\n" +
+	"\x05brand\x18\x0e \x01(\tR\x05brand\x12\"\n" +
+	"\x05sizes\x18\x0f \x03(\v2\f.api.v1.SizeR\x05sizes\x12\x1c\n" +
+	"\n" +
+	"wb_api_key\x18\x10 \x01(\tR\bwbApiKey\x12S\n" +
+	"\x18wb_media_to_upload_files\x18\x11 \x03(\v2\x1b.api.v1.WBMediaFileToUploadR\x14wbMediaToUploadFiles\x122\n" +
+	"\x16wb_media_to_save_links\x18\x12 \x03(\tR\x12wbMediaToSaveLinks\"w\n" +
+	"\n" +
+	"Dimensions\x12\x16\n" +
+	"\x06length\x18\x01 \x01(\x05R\x06length\x12\x14\n" +
+	"\x05width\x18\x02 \x01(\x05R\x05width\x12\x16\n" +
+	"\x06height\x18\x03 \x01(\x05R\x06height\x12#\n" +
+	"\rweight_brutto\x18\x04 \x01(\x01R\fweightBrutto\"f\n" +
+	"\x04Size\x12\x1b\n" +
+	"\ttech_size\x18\x01 \x01(\tR\btechSize\x12\x17\n" +
+	"\awb_size\x18\x02 \x01(\tR\x06wbSize\x12\x14\n" +
+	"\x05price\x18\x03 \x01(\x05R\x05price\x12\x12\n" +
+	"\x04skus\x18\x04 \x03(\tR\x04skus\"n\n" +
+	"\x13WBMediaFileToUpload\x12\x18\n" +
+	"\acontent\x18\x01 \x01(\fR\acontent\x12\x1a\n" +
+	"\bfilename\x18\x02 \x01(\tR\bfilename\x12!\n" +
+	"\fphoto_number\x18\x03 \x01(\x05R\vphotoNumber\"\x88\b\n" +
+	"\x19CreateProductCardResponse\x12\x14\n" +
+	"\x05title\x18\x01 \x01(\tR\x05title\x12Q\n" +
+	"\n" +
+	"attributes\x18\x02 \x03(\v21.api.v1.CreateProductCardResponse.AttributesEntryR\n" +
 	"attributes\x12 \n" +
 	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x1f\n" +
 	"\vparent_name\x18\x04 \x01(\tR\n" +
@@ -324,12 +754,32 @@ const file_api_v1_product_proto_rawDesc = "" +
 	" \x01(\x05R\x06typeId\x12\x1b\n" +
 	"\ttype_name\x18\v \x01(\tR\btypeName\x12\x15\n" +
 	"\x06sub_id\x18\f \x01(\x05R\x05subId\x12\x19\n" +
-	"\bsub_name\x18\r \x01(\tR\asubName\x1a=\n" +
+	"\bsub_name\x18\r \x01(\tR\asubName\x124\n" +
+	"\x14wb_api_response_json\x18\x0e \x01(\tH\x00R\x11wbApiResponseJson\x88\x01\x01\x12<\n" +
+	"\x18wb_prepared_request_json\x18\x0f \x01(\tH\x01R\x15wbPreparedRequestJson\x88\x01\x01\x125\n" +
+	"\x14wb_request_attempted\x18\x10 \x01(\bH\x02R\x12wbRequestAttempted\x88\x01\x01\x12w\n" +
+	"$wb_media_upload_individual_responses\x18\x11 \x03(\v2'.api.v1.WBMediaUploadIndividualResponseR wbMediaUploadIndividualResponses\x12l\n" +
+	"\x1fwb_media_save_by_links_response\x18\x12 \x01(\v2\".api.v1.WBMediaSaveByLinksResponseH\x03R\x1awbMediaSaveByLinksResponse\x88\x01\x01\x1a=\n" +
 	"\x0fAttributesEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x012U\n" +
-	"\x0eProductService\x12C\n" +
-	"\x0eGetProductCard\x12\x16.api.v1.ProductRequest\x1a\x17.api.v1.ProductResponse\"\x00B\x16Z\x14api/gen/api/v1;apiv1b\x06proto3"
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x17\n" +
+	"\x15_wb_api_response_jsonB\x1b\n" +
+	"\x19_wb_prepared_request_jsonB\x17\n" +
+	"\x15_wb_request_attemptedB\"\n" +
+	" _wb_media_save_by_links_response\"\xbc\x01\n" +
+	"\x1fWBMediaUploadIndividualResponse\x12!\n" +
+	"\fphoto_number\x18\x01 \x01(\x05R\vphotoNumber\x12(\n" +
+	"\rresponse_json\x18\x02 \x01(\tH\x00R\fresponseJson\x88\x01\x01\x12(\n" +
+	"\rerror_message\x18\x03 \x01(\tH\x01R\ferrorMessage\x88\x01\x01B\x10\n" +
+	"\x0e_response_jsonB\x10\n" +
+	"\x0e_error_message\"\x94\x01\n" +
+	"\x1aWBMediaSaveByLinksResponse\x12(\n" +
+	"\rresponse_json\x18\x01 \x01(\tH\x00R\fresponseJson\x88\x01\x01\x12(\n" +
+	"\rerror_message\x18\x02 \x01(\tH\x01R\ferrorMessage\x88\x01\x01B\x10\n" +
+	"\x0e_response_jsonB\x10\n" +
+	"\x0e_error_message2v\n" +
+	"\x18CreateProductCardService\x12Z\n" +
+	"\x11CreateProductCard\x12 .api.v1.CreateProductCardRequest\x1a!.api.v1.CreateProductCardResponse\"\x00B\x16Z\x14api/gen/api/v1;apiv1b\x06proto3"
 
 var (
 	file_api_v1_product_proto_rawDescOnce sync.Once
@@ -343,21 +793,31 @@ func file_api_v1_product_proto_rawDescGZIP() []byte {
 	return file_api_v1_product_proto_rawDescData
 }
 
-var file_api_v1_product_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_api_v1_product_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_api_v1_product_proto_goTypes = []any{
-	(*ProductRequest)(nil),  // 0: api.v1.ProductRequest
-	(*ProductResponse)(nil), // 1: api.v1.ProductResponse
-	nil,                     // 2: api.v1.ProductResponse.AttributesEntry
+	(*CreateProductCardRequest)(nil),        // 0: api.v1.CreateProductCardRequest
+	(*Dimensions)(nil),                      // 1: api.v1.Dimensions
+	(*Size)(nil),                            // 2: api.v1.Size
+	(*WBMediaFileToUpload)(nil),             // 3: api.v1.WBMediaFileToUpload
+	(*CreateProductCardResponse)(nil),       // 4: api.v1.CreateProductCardResponse
+	(*WBMediaUploadIndividualResponse)(nil), // 5: api.v1.WBMediaUploadIndividualResponse
+	(*WBMediaSaveByLinksResponse)(nil),      // 6: api.v1.WBMediaSaveByLinksResponse
+	nil,                                     // 7: api.v1.CreateProductCardResponse.AttributesEntry
 }
 var file_api_v1_product_proto_depIdxs = []int32{
-	2, // 0: api.v1.ProductResponse.attributes:type_name -> api.v1.ProductResponse.AttributesEntry
-	0, // 1: api.v1.ProductService.GetProductCard:input_type -> api.v1.ProductRequest
-	1, // 2: api.v1.ProductService.GetProductCard:output_type -> api.v1.ProductResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	1, // 0: api.v1.CreateProductCardRequest.dimensions:type_name -> api.v1.Dimensions
+	2, // 1: api.v1.CreateProductCardRequest.sizes:type_name -> api.v1.Size
+	3, // 2: api.v1.CreateProductCardRequest.wb_media_to_upload_files:type_name -> api.v1.WBMediaFileToUpload
+	7, // 3: api.v1.CreateProductCardResponse.attributes:type_name -> api.v1.CreateProductCardResponse.AttributesEntry
+	5, // 4: api.v1.CreateProductCardResponse.wb_media_upload_individual_responses:type_name -> api.v1.WBMediaUploadIndividualResponse
+	6, // 5: api.v1.CreateProductCardResponse.wb_media_save_by_links_response:type_name -> api.v1.WBMediaSaveByLinksResponse
+	0, // 6: api.v1.CreateProductCardService.CreateProductCard:input_type -> api.v1.CreateProductCardRequest
+	4, // 7: api.v1.CreateProductCardService.CreateProductCard:output_type -> api.v1.CreateProductCardResponse
+	7, // [7:8] is the sub-list for method output_type
+	6, // [6:7] is the sub-list for method input_type
+	6, // [6:6] is the sub-list for extension type_name
+	6, // [6:6] is the sub-list for extension extendee
+	0, // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_api_v1_product_proto_init() }
@@ -365,13 +825,16 @@ func file_api_v1_product_proto_init() {
 	if File_api_v1_product_proto != nil {
 		return
 	}
+	file_api_v1_product_proto_msgTypes[4].OneofWrappers = []any{}
+	file_api_v1_product_proto_msgTypes[5].OneofWrappers = []any{}
+	file_api_v1_product_proto_msgTypes[6].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_v1_product_proto_rawDesc), len(file_api_v1_product_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

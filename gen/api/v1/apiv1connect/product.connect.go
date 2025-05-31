@@ -21,8 +21,8 @@ import (
 const _ = connect.IsAtLeastVersion1_13_0
 
 const (
-	// ProductServiceName is the fully-qualified name of the ProductService service.
-	ProductServiceName = "api.v1.ProductService"
+	// CreateProductCardServiceName is the fully-qualified name of the CreateProductCardService service.
+	CreateProductCardServiceName = "api.v1.CreateProductCardService"
 )
 
 // These constants are the fully-qualified names of the RPCs defined in this package. They're
@@ -33,77 +33,78 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
-	// ProductServiceGetProductCardProcedure is the fully-qualified name of the ProductService's
-	// GetProductCard RPC.
-	ProductServiceGetProductCardProcedure = "/api.v1.ProductService/GetProductCard"
+	// CreateProductCardServiceCreateProductCardProcedure is the fully-qualified name of the
+	// CreateProductCardService's CreateProductCard RPC.
+	CreateProductCardServiceCreateProductCardProcedure = "/api.v1.CreateProductCardService/CreateProductCard"
 )
 
-// ProductServiceClient is a client for the api.v1.ProductService service.
-type ProductServiceClient interface {
-	GetProductCard(context.Context, *connect.Request[v1.ProductRequest]) (*connect.Response[v1.ProductResponse], error)
+// CreateProductCardServiceClient is a client for the api.v1.CreateProductCardService service.
+type CreateProductCardServiceClient interface {
+	CreateProductCard(context.Context, *connect.Request[v1.CreateProductCardRequest]) (*connect.Response[v1.CreateProductCardResponse], error)
 }
 
-// NewProductServiceClient constructs a client for the api.v1.ProductService service. By default, it
-// uses the Connect protocol with the binary Protobuf Codec, asks for gzipped responses, and sends
-// uncompressed requests. To use the gRPC or gRPC-Web protocols, supply the connect.WithGRPC() or
-// connect.WithGRPCWeb() options.
+// NewCreateProductCardServiceClient constructs a client for the api.v1.CreateProductCardService
+// service. By default, it uses the Connect protocol with the binary Protobuf Codec, asks for
+// gzipped responses, and sends uncompressed requests. To use the gRPC or gRPC-Web protocols, supply
+// the connect.WithGRPC() or connect.WithGRPCWeb() options.
 //
 // The URL supplied here should be the base URL for the Connect or gRPC server (for example,
 // http://api.acme.com or https://acme.com/grpc).
-func NewProductServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) ProductServiceClient {
+func NewCreateProductCardServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) CreateProductCardServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
-	productServiceMethods := v1.File_api_v1_product_proto.Services().ByName("ProductService").Methods()
-	return &productServiceClient{
-		getProductCard: connect.NewClient[v1.ProductRequest, v1.ProductResponse](
+	createProductCardServiceMethods := v1.File_api_v1_product_proto.Services().ByName("CreateProductCardService").Methods()
+	return &createProductCardServiceClient{
+		createProductCard: connect.NewClient[v1.CreateProductCardRequest, v1.CreateProductCardResponse](
 			httpClient,
-			baseURL+ProductServiceGetProductCardProcedure,
-			connect.WithSchema(productServiceMethods.ByName("GetProductCard")),
+			baseURL+CreateProductCardServiceCreateProductCardProcedure,
+			connect.WithSchema(createProductCardServiceMethods.ByName("CreateProductCard")),
 			connect.WithClientOptions(opts...),
 		),
 	}
 }
 
-// productServiceClient implements ProductServiceClient.
-type productServiceClient struct {
-	getProductCard *connect.Client[v1.ProductRequest, v1.ProductResponse]
+// createProductCardServiceClient implements CreateProductCardServiceClient.
+type createProductCardServiceClient struct {
+	createProductCard *connect.Client[v1.CreateProductCardRequest, v1.CreateProductCardResponse]
 }
 
-// GetProductCard calls api.v1.ProductService.GetProductCard.
-func (c *productServiceClient) GetProductCard(ctx context.Context, req *connect.Request[v1.ProductRequest]) (*connect.Response[v1.ProductResponse], error) {
-	return c.getProductCard.CallUnary(ctx, req)
+// CreateProductCard calls api.v1.CreateProductCardService.CreateProductCard.
+func (c *createProductCardServiceClient) CreateProductCard(ctx context.Context, req *connect.Request[v1.CreateProductCardRequest]) (*connect.Response[v1.CreateProductCardResponse], error) {
+	return c.createProductCard.CallUnary(ctx, req)
 }
 
-// ProductServiceHandler is an implementation of the api.v1.ProductService service.
-type ProductServiceHandler interface {
-	GetProductCard(context.Context, *connect.Request[v1.ProductRequest]) (*connect.Response[v1.ProductResponse], error)
+// CreateProductCardServiceHandler is an implementation of the api.v1.CreateProductCardService
+// service.
+type CreateProductCardServiceHandler interface {
+	CreateProductCard(context.Context, *connect.Request[v1.CreateProductCardRequest]) (*connect.Response[v1.CreateProductCardResponse], error)
 }
 
-// NewProductServiceHandler builds an HTTP handler from the service implementation. It returns the
-// path on which to mount the handler and the handler itself.
+// NewCreateProductCardServiceHandler builds an HTTP handler from the service implementation. It
+// returns the path on which to mount the handler and the handler itself.
 //
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
-func NewProductServiceHandler(svc ProductServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
-	productServiceMethods := v1.File_api_v1_product_proto.Services().ByName("ProductService").Methods()
-	productServiceGetProductCardHandler := connect.NewUnaryHandler(
-		ProductServiceGetProductCardProcedure,
-		svc.GetProductCard,
-		connect.WithSchema(productServiceMethods.ByName("GetProductCard")),
+func NewCreateProductCardServiceHandler(svc CreateProductCardServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	createProductCardServiceMethods := v1.File_api_v1_product_proto.Services().ByName("CreateProductCardService").Methods()
+	createProductCardServiceCreateProductCardHandler := connect.NewUnaryHandler(
+		CreateProductCardServiceCreateProductCardProcedure,
+		svc.CreateProductCard,
+		connect.WithSchema(createProductCardServiceMethods.ByName("CreateProductCard")),
 		connect.WithHandlerOptions(opts...),
 	)
-	return "/api.v1.ProductService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return "/api.v1.CreateProductCardService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
-		case ProductServiceGetProductCardProcedure:
-			productServiceGetProductCardHandler.ServeHTTP(w, r)
+		case CreateProductCardServiceCreateProductCardProcedure:
+			createProductCardServiceCreateProductCardHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
 	})
 }
 
-// UnimplementedProductServiceHandler returns CodeUnimplemented from all methods.
-type UnimplementedProductServiceHandler struct{}
+// UnimplementedCreateProductCardServiceHandler returns CodeUnimplemented from all methods.
+type UnimplementedCreateProductCardServiceHandler struct{}
 
-func (UnimplementedProductServiceHandler) GetProductCard(context.Context, *connect.Request[v1.ProductRequest]) (*connect.Response[v1.ProductResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("api.v1.ProductService.GetProductCard is not implemented"))
+func (UnimplementedCreateProductCardServiceHandler) CreateProductCard(context.Context, *connect.Request[v1.CreateProductCardRequest]) (*connect.Response[v1.CreateProductCardResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("api.v1.CreateProductCardService.CreateProductCard is not implemented"))
 }

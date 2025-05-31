@@ -5,9 +5,9 @@ package api.v1;
 option go_package = "api/gen/api/v1;apiv1";
 
 // ProductRequest represents the input with the 5 required fields
-message ProductRequest {
-  string title = 1;
-  string description = 2;
+message CreateProductCardRequest {
+  string product_title = 1;
+  string product_description = 2;
   int32 parent_id = 3;
   int32 subject_id = 4;
   int32 root_id = 5;
@@ -17,10 +17,37 @@ message ProductRequest {
   bool ozon = 9;
   bool wb = 10;
   bool translate = 11;
+  string vendor_code = 12;
+  Dimensions dimensions = 13;
+  string brand = 14;
+  repeated Size sizes = 15;
+  string wb_api_key = 16; // API key for Wildberries, provided by user
+  repeated WBMediaFileToUpload wb_media_to_upload_files = 17; // List of files to upload
+  repeated string wb_media_to_save_links = 18;     // List of URLs for media_save
+}
+
+message Dimensions {
+  int32 length = 1;
+  int32 width = 2;
+  int32 height = 3;
+  double weight_brutto = 4;
+}
+
+message Size {
+  string tech_size = 1;
+  string wb_size = 2;
+  int32 price = 3;
+  repeated string skus = 4;
+}
+
+message WBMediaFileToUpload {
+  bytes content = 1;    // File content
+  string filename = 2;  // Original filename, e.g. "photo.jpg"
+  int32 photo_number = 3; // Value for X-Photo-Number header
 }
 
 // ProductResponse represents the output from the Python API
-message ProductResponse {
+message CreateProductCardResponse {
   string title = 1;
   map<string, string> attributes = 2;
   string description = 3;
@@ -34,9 +61,25 @@ message ProductResponse {
   string type_name = 11;
   int32 sub_id = 12;
   string sub_name = 13;
+  optional string wb_api_response_json = 14;     // JSON string of the WB API response if attempted
+  optional string wb_prepared_request_json = 15; // JSON string of the prepared WB request if API key not provided
+  optional bool wb_request_attempted = 16;       // True if WB API call was made, False if JSON prepared, Null if wb=false
+  repeated WBMediaUploadIndividualResponse wb_media_upload_individual_responses = 17;
+  optional WBMediaSaveByLinksResponse wb_media_save_by_links_response = 18;
 }
 
-// ProductService provides product card processing functionality
-service ProductService {
-  rpc GetProductCard(ProductRequest) returns (ProductResponse) {}
+message WBMediaUploadIndividualResponse {
+  int32 photo_number = 1; // Corresponds to the photo_number from WBMediaFileToUpload
+  optional string response_json = 2; // JSON string of WBMediaGenericResponse
+  optional string error_message = 3; // Error message if this specific upload failed
+}
+
+message WBMediaSaveByLinksResponse {
+  optional string response_json = 1; // JSON string of WBMediaGenericResponse
+  optional string error_message = 2; // Error message if save by links operation failed
+}
+
+// CreateProductCardService provides product card processing functionality
+service CreateProductCardService {
+  rpc CreateProductCard(CreateProductCardRequest) returns (CreateProductCardResponse) {}
 } 
