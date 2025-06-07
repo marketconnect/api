@@ -5,8 +5,9 @@ go 1.24.2
 require (
 	connectrpc.com/connect v1.18.1
 	github.com/ilyakaznacheev/cleanenv v1.5.0
-	github.com/prometheus/client_golang v1.22.0
-	google.golang.org/protobuf v1.36.5
+        github.com/prometheus/client_golang v1.22.0
+       github.com/marketconnect/db_client v0.0.0
+        google.golang.org/protobuf v1.36.5
 )
 
 require (

@@ -2,9 +2,11 @@ package app
 
 import (
 	"api/gen/api/v1/apiv1connect"
+	"context"
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"api/app/domain/services"
 	"api/app/domain/usecases"
@@ -13,10 +15,12 @@ import (
 
 	"api/app/internal/infrastructure/card_craft_ai"
 	"api/app/internal/infrastructure/ozon"
+	pgstorage "api/app/internal/infrastructure/postgres"
 	"api/app/internal/infrastructure/wb"
 
 	"api/metrics"
 
+	"github.com/marketconnect/db_client/postgresql"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
@@ -26,12 +30,26 @@ type App struct {
 	httpClient        *http.Client
 	cfg               *config.Config
 	mux               *http.ServeMux
+	balanceStorage    *pgstorage.BalanceStorage
 }
 
 // NewApp creates a new ProductServer instance
 func NewApp() *App {
 
 	cfg := config.GetConfig()
+
+	pgCfg := postgresql.NewPgConfig(
+		cfg.PostgreSQL.Username,
+		cfg.PostgreSQL.Password,
+		cfg.PostgreSQL.Host,
+		cfg.PostgreSQL.Port,
+		cfg.PostgreSQL.Database,
+	)
+	pgClient, err := postgresql.NewClient(context.Background(), 3, time.Second, pgCfg)
+	if err != nil {
+		log.Fatalf("failed to init postgres client: %v", err)
+	}
+	balanceStorage := pgstorage.NewBalanceStorage(pgClient)
 
 	// clients
 	cardCraftAiClient := card_craft_ai.NewCardCraftAiClient(cfg.CardCraftAi.APIURL)
@@ -69,6 +87,7 @@ func NewApp() *App {
 		httpClient:        &http.Client{},
 		cfg:               cfg,
 		mux:               mux,
+		balanceStorage:    balanceStorage,
 	}
 }
 
