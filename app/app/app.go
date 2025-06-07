@@ -15,6 +15,7 @@ import (
 
 	"api/app/internal/infrastructure/external/card_craft_ai"
 	"api/app/internal/infrastructure/external/ozon"
+	"api/app/internal/infrastructure/external/token_counter"
 	"api/app/internal/infrastructure/external/wb"
 	pgstorage "api/app/internal/infrastructure/persistence/postgres"
 
@@ -55,17 +56,21 @@ func NewApp() *App {
 	cardCraftAiClient := card_craft_ai.NewCardCraftAiClient(cfg.CardCraftAi.APIURL)
 	wbClient := wb.NewWBClient()
 	ozonClient := ozon.NewClient()
+	tokenCounterClient := token_counter.NewClient(cfg.TokenCounter.APIURL)
 
 	// services
 	cardCraftAiService := services.NewCardCraftAiService(cardCraftAiClient)
+	tokenBillingService := services.NewTokenBillingService(tokenCounterClient, balanceStorage)
 	wbService := services.NewWbService(cfg.WB.GetCardListMaxAttempts, wbClient)
 	ozonService := services.NewOzonService(ozonClient)
 
 	// usecases
-	createCardUsecase := usecases.NewCreateCardUsecase(cardCraftAiService, wbService, ozonService)
+	createCardUsecase := usecases.NewCreateCardUsecase(cardCraftAiService, wbService, ozonService, tokenBillingService)
+	getBalanceUsecase := usecases.NewGetBalanceUsecase(balanceStorage)
 
 	// handlers
 	createProductCardHandler := presentation.NewCreateProductCardHandler(createCardUsecase)
+	balanceHandler := presentation.NewBalanceHandler(getBalanceUsecase)
 
 	// mux
 	mux := http.NewServeMux()
@@ -81,6 +86,7 @@ func NewApp() *App {
 	)
 	mux.Handle(path, metricsWrappedHandler)
 	mux.Handle("/metrics", promhttp.Handler()) // Expose Prometheus metrics
+	mux.HandleFunc("/balance", balanceHandler.GetBalance)
 
 	return &App{
 		cardCraftAiAPIURL: cfg.CardCraftAi.APIURL,

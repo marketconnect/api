@@ -35,3 +35,14 @@ func (s *BalanceStorage) SetBalance(ctx context.Context, apiKey string, balance 
 	_, err := s.client.Exec(ctx, query, apiKey, balance)
 	return err
 }
+
+// GetTokenCost returns token cost for the specified token type.
+func (s *BalanceStorage) GetTokenCost(ctx context.Context, tokenType string) (int, error) {
+	const query = "SELECT cost FROM token_costs WHERE token_type = $1"
+	row := s.client.QueryRow(ctx, query, tokenType)
+	var cost int
+	if err := row.Scan(&cost); err != nil {
+		return 0, err
+	}
+	return cost, nil
+}

@@ -11,7 +11,7 @@ import (
 )
 
 type CreateCardUsecase interface {
-	CreateProductCard(ctx context.Context, req entities.ProductCard) (*entities.CreateProductCardResult, error)
+	CreateProductCard(ctx context.Context, apiKey string, req entities.ProductCard) (*entities.CreateProductCardResult, error)
 }
 
 type CreateProductCardHandler struct {
@@ -72,7 +72,14 @@ func (h *CreateProductCardHandler) CreateProductCard(ctx context.Context, req *c
 		OzonApiKey:           req.Msg.OzonApiKey,
 	}
 
-	createProductCardResult, err := h.createCardUsecase.CreateProductCard(ctx, productCard)
+	authHeader := req.Header().Get("Authorization")
+	const bearerPrefix = "Bearer "
+	apiKey := ""
+	if len(authHeader) > len(bearerPrefix) && authHeader[:len(bearerPrefix)] == bearerPrefix {
+		apiKey = authHeader[len(bearerPrefix):]
+	}
+
+	createProductCardResult, err := h.createCardUsecase.CreateProductCard(ctx, apiKey, productCard)
 	if err != nil {
 		return nil, err
 	}
