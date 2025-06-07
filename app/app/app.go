@@ -13,10 +13,10 @@ import (
 	"api/app/internal/config"
 	"api/app/internal/presentation"
 
-	"api/app/internal/infrastructure/card_craft_ai"
-	"api/app/internal/infrastructure/ozon"
-	pgstorage "api/app/internal/infrastructure/postgres"
-	"api/app/internal/infrastructure/wb"
+	"api/app/internal/infrastructure/external/card_craft_ai"
+	"api/app/internal/infrastructure/external/ozon"
+	"api/app/internal/infrastructure/external/wb"
+	pgstorage "api/app/internal/infrastructure/persistence/postgres"
 
 	"api/metrics"
 
