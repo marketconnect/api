@@ -21,21 +21,27 @@ type cardCraftAiService interface {
 	GetCardContent(ctx context.Context, cardCraftAiAPIRequest entities.ProductCard) (*entities.CardCraftAiGeneratedContent, error)
 }
 
-type CreateCardUsecase struct {
-	cardCraftAiService cardCraftAiService
-	wbService          wbService
-	ozonService        ozonService
+type tokenBillingService interface {
+	UpdateBalanceForSession(ctx context.Context, apiKey, sessionID string) error
 }
 
-func NewCreateCardUsecase(cardCraftAiService cardCraftAiService, wbService wbService, ozonService ozonService) *CreateCardUsecase {
+type CreateCardUsecase struct {
+	cardCraftAiService  cardCraftAiService
+	wbService           wbService
+	ozonService         ozonService
+	tokenBillingService tokenBillingService
+}
+
+func NewCreateCardUsecase(cardCraftAiService cardCraftAiService, wbService wbService, ozonService ozonService, tokenBillingService tokenBillingService) *CreateCardUsecase {
 	return &CreateCardUsecase{
-		cardCraftAiService: cardCraftAiService,
-		wbService:          wbService,
-		ozonService:        ozonService,
+		cardCraftAiService:  cardCraftAiService,
+		wbService:           wbService,
+		ozonService:         ozonService,
+		tokenBillingService: tokenBillingService,
 	}
 }
 
-func (uc *CreateCardUsecase) CreateProductCard(ctx context.Context, req entities.ProductCard) (*entities.CreateProductCardResult, error) {
+func (uc *CreateCardUsecase) CreateProductCard(ctx context.Context, apiKey string, req entities.ProductCard) (*entities.CreateProductCardResult, error) {
 
 	var createProductCardResult entities.CreateProductCardResult
 
@@ -46,6 +52,11 @@ func (uc *CreateCardUsecase) CreateProductCard(ctx context.Context, req entities
 		return nil, err
 	}
 	createProductCardResult.CardCraftAiGeneratedContent = cardCraftAiGeneratedContent
+
+	if err := uc.tokenBillingService.UpdateBalanceForSession(ctx, apiKey, cardCraftAiGeneratedContent.SessionID); err != nil {
+		log.Printf("failed to update balance: %v", err)
+	}
+
 	metrics.AppCardCreationsTotal.Inc() // Core content generation successful
 
 	// Create card in Wildberries

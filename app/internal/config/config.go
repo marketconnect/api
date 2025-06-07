@@ -14,10 +14,13 @@ type Config struct {
 	CardCraftAi struct {
 		APIURL string `env:"CARD_CRAFT_AI_API_URL" env-required:"true"`
 	}
-	WB struct {
-		GetCardListMaxAttempts int `env:"WB_GET_CARD_LIST_MAX_ATTEMPTS" env-default:"3"`
-	}
-	HTTP struct {
+       WB struct {
+               GetCardListMaxAttempts int `env:"WB_GET_CARD_LIST_MAX_ATTEMPTS" env-default:"3"`
+       }
+       TokenCounter struct {
+               APIURL string `env:"TOKEN_COUNTER_API_URL" env-required:"true"`
+       }
+       HTTP struct {
 		Port int `env:"PORT" env-default:"8080"`
 	}
 	PostgreSQL struct {
