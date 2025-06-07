@@ -2,10 +2,10 @@ package entities
 
 // WBDimensions represents product dimensions for the Wildberries API.
 type WBDimensions struct {
-	Length       int     `json:"length"`
-	Width        int     `json:"width"`
-	Height       int     `json:"height"`
-	WeightBrutto float64 `json:"weightBrutto"`
+	Length       *int32   `json:"length"`
+	Width        *int32   `json:"width"`
+	Height       *int32   `json:"height"`
+	WeightBrutto *float64 `json:"weightBrutto"`
 }
 
 // WBSize represents product size information for the Wildberries API.
@@ -35,7 +35,7 @@ type WBVariant struct {
 
 // WBCardRequestItem represents a single item in the card creation request for Wildberries API.
 type WBCardRequestItem struct {
-	SubjectID int         `json:"subjectID"`
+	SubjectID int32       `json:"subjectID"`
 	Variants  []WBVariant `json:"variants"`
 }
 

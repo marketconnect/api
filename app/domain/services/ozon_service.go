@@ -1,0 +1,128 @@
+package services
+
+import (
+	"api/app/domain/entities"
+	"api/metrics"
+	"context"
+	"encoding/json"
+	"fmt"
+	"log"
+)
+
+type ozonClient interface {
+	ImportProductsV3(ctx context.Context, clientID, apiKey string, request entities.OzonProductImportRequest) (*entities.OzonProductImportResponse, error)
+}
+type ozonService struct {
+	ozonClient ozonClient
+}
+
+func NewOzonService(ozonClient ozonClient) *ozonService {
+	return &ozonService{
+		ozonClient: ozonClient,
+	}
+}
+
+func (ozs *ozonService) CreateCard(ctx context.Context, req *entities.ProductCard, ccaApiResponse *entities.CardCraftAiGeneratedContent) (*string, *bool, error) {
+	var ozonApiResponseJSON *string
+	var ozonRequestAttempted *bool
+
+	attemptAPICall := req.GetOzon() && req.GetOzonApiKey() != "" && req.GetOzonApiClientId() != ""
+	ozonRequestAttempted = &attemptAPICall
+
+	if !attemptAPICall {
+		if req.GetOzon() {
+			log.Printf("Ozon integration requested but API key or Client ID is missing. Skipping Ozon API call.")
+		}
+		// No API call will be made, so response JSON is empty.
+		emptyStr := ""
+		ozonApiResponseJSON = &emptyStr
+		return ozonApiResponseJSON, ozonRequestAttempted, nil
+	}
+
+	// Validate required fields for Ozon
+	if req.GetVendorCode() == "" {
+		log.Printf("Ozon integration: vendor_code (for offer_id) is missing. Skipping Ozon API call.")
+		errMsg := `{"error":true,"errorText":"vendor_code (for offer_id) is required for Ozon integration"}`
+		ozonApiResponseJSON = &errMsg
+		return ozonApiResponseJSON, ozonRequestAttempted, fmt.Errorf("vendor_code (for offer_id) is required for Ozon integration")
+	}
+	if ccaApiResponse.Title == "" {
+		log.Printf("Ozon integration: CardCraftAI title (for name) is missing. Skipping Ozon API call.")
+		errMsg := `{"error":true,"errorText":"CardCraftAI title (for name) is required for Ozon integration"}`
+		ozonApiResponseJSON = &errMsg
+		return ozonApiResponseJSON, ozonRequestAttempted, fmt.Errorf("CardCraftAI title (for name) is required for Ozon integration")
+	}
+	if ccaApiResponse.SubjectID == nil {
+		log.Printf("Ozon integration: CardCraftAI SubjectID (for description_category_id) is missing. Skipping Ozon API call.")
+		errMsg := `{"error":true,"errorText":"CardCraftAI SubjectID (for description_category_id) is required for Ozon integration"}`
+		ozonApiResponseJSON = &errMsg
+		return ozonApiResponseJSON, ozonRequestAttempted, fmt.Errorf("CardCraftAI SubjectID (for description_category_id) is required for Ozon integration")
+	}
+	if req.Dimensions == nil || req.Dimensions.Length == nil || req.Dimensions.Width == nil || req.Dimensions.Height == nil || req.Dimensions.WeightBrutto == nil {
+		log.Printf("Ozon integration: Dimensions (length, width, height, weight_brutto) are required and must be non-zero. Skipping Ozon API call.")
+		errMsg := `{"error":true,"errorText":"Dimensions (length, width, height, weight_brutto) are required and must be non-zero for Ozon integration"}`
+		ozonApiResponseJSON = &errMsg
+		return ozonApiResponseJSON, ozonRequestAttempted, fmt.Errorf("dimensions (length, width, height, weight_brutto) are required and must be non-zero for Ozon integration")
+	}
+	if len(req.Sizes) == 0 || req.Sizes[0].Price == 0 {
+		log.Printf("Ozon integration: Price from Sizes[0] is required. Skipping Ozon API call.")
+		errMsg := `{"error":true,"errorText":"Price from Sizes[0] is required for Ozon integration"}`
+		ozonApiResponseJSON = &errMsg
+		return ozonApiResponseJSON, ozonRequestAttempted, fmt.Errorf("price from Sizes[0] is required for Ozon integration")
+	}
+
+	ozonItem := entities.OzonProductImportItem{
+		Name:                  ccaApiResponse.Title,
+		OfferID:               req.VendorCode,
+		DescriptionCategoryID: int64(*ccaApiResponse.SubjectID),
+		Price:                 fmt.Sprintf("%d", req.Sizes[0].Price),
+		Vat:                   "0.1", // Default VAT, consider making configurable
+		CurrencyCode:          "RUB", // Default currency
+		Depth:                 int64(*req.Dimensions.Length),
+		Width:                 int64(*req.Dimensions.Width),
+		Height:                int64(*req.Dimensions.Height),
+		DimensionUnit:         "mm",                                // Default unit
+		Weight:                int64(*req.Dimensions.WeightBrutto), // Assuming WeightBrutto is in grams
+		WeightUnit:            "g",                                 // Default unit
+		Images:                req.WbMediaToSaveLinks,              // Use WB media links if available
+		Attributes:            []entities.OzonProductAttribute{},
+	}
+
+	if len(req.Sizes[0].Skus) > 0 {
+		ozonItem.Barcode = req.Sizes[0].Skus[0]
+	}
+
+	if req.Brand != "" {
+		ozonItem.Attributes = append(ozonItem.Attributes, entities.OzonProductAttribute{
+			ID:        85, // Standard Ozon ID for "Brand"
+			ComplexID: 0,
+			Values:    []entities.OzonProductAttributeValue{{Value: req.Brand}},
+		})
+	}
+
+	ozonPayload := entities.OzonProductImportRequest{Items: []entities.OzonProductImportItem{ozonItem}}
+
+	log.Printf("Attempting to import product to Ozon with ClientID: %s", req.GetOzonApiClientId())
+	ozonResp, ozonErr := ozs.ozonClient.ImportProductsV3(ctx, req.GetOzonApiClientId(), req.GetOzonApiKey(), ozonPayload)
+
+	var responseStringToStore string
+	if ozonErr != nil {
+		log.Printf("Error importing product to Ozon: %v", ozonErr)
+		metrics.AppExternalAPIErrorsTotal.WithLabelValues("ozon_product_import").Inc()
+		// Use a generic error structure for the JSON string
+		errorResponse := map[string]interface{}{"error": true, "errorText": ozonErr.Error()}
+		errBytes, _ := json.Marshal(errorResponse) // Ignore marshalling error for error response
+		responseStringToStore = string(errBytes)
+		ozonApiResponseJSON = &responseStringToStore
+		return ozonApiResponseJSON, ozonRequestAttempted, fmt.Errorf("Ozon product import failed: %w", ozonErr)
+	} else {
+		log.Printf("Successfully called Ozon API. Response: %+v", ozonResp)
+		// Ozon's v3/product/import response doesn't have a top-level error field like WB.
+		// Errors are typically indicated by non-200 HTTP status, handled by the ozonClient.
+		// If specific task-level errors need to be parsed from the response, that logic would go here.
+		respBytes, _ := json.Marshal(ozonResp) // Ignore marshalling error for success response
+		responseStringToStore = string(respBytes)
+	}
+	ozonApiResponseJSON = &responseStringToStore
+	return ozonApiResponseJSON, ozonRequestAttempted, nil
+}

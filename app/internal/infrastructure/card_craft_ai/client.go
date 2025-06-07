@@ -57,7 +57,9 @@ func (c *CardCraftAiClient) GetSessionID(ctx context.Context) (string, error) {
 	}
 
 	// Parse session response
-	var sessionResp entities.CardCraftAiSessionResponse
+	var sessionResp struct {
+		SessionID string `json:"session_id"`
+	}
 	if err := json.Unmarshal(respBody, &sessionResp); err != nil {
 		return "", fmt.Errorf("failed to unmarshal session response: %w", err)
 	}
@@ -66,11 +68,18 @@ func (c *CardCraftAiClient) GetSessionID(ctx context.Context) (string, error) {
 	return sessionResp.SessionID, nil
 }
 
-func (c *CardCraftAiClient) GetCardContent(ctx context.Context, sessionID string, cardCraftAiAPIRequest entities.CardCraftAiAPIRequest) (*entities.CardCraftAiAPIResponse, error) {
+func (c *CardCraftAiClient) GetCardContent(ctx context.Context, sessionID string, productCard entities.ProductCard) (*entities.CardCraftAiGeneratedContent, error) {
 	log.Printf("Got session ID: %s", sessionID)
 
-	// Step 2: Use session ID to make the product card request
-
+	cardCraftAiAPIRequest := map[string]interface{}{
+		"product_title":       productCard.ProductTitle,
+		"product_description": productCard.ProductDescription,
+		"parent_id":           productCard.ParentId,
+		"subject_id":          productCard.SubjectId,
+		"translate":           productCard.Translate,
+		"ozon":                productCard.Ozon,
+		"generate_content":    productCard.GenerateContent,
+	}
 	// Marshal request to JSON
 	reqBody, err := json.Marshal(cardCraftAiAPIRequest)
 	if err != nil {
@@ -107,7 +116,7 @@ func (c *CardCraftAiClient) GetCardContent(ctx context.Context, sessionID string
 	}
 
 	// Parse CardCraftAI API response
-	var cardCraftAiResp entities.CardCraftAiAPIResponse
+	var cardCraftAiResp entities.CardCraftAiGeneratedContent
 	if err := json.Unmarshal(respBody, &cardCraftAiResp); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal CardCraftAI API response: %w", err)
 	}
@@ -127,7 +136,7 @@ func (c *CardCraftAiClient) GetCardContent(ctx context.Context, sessionID string
 		cardCraftAiResp.SubName)
 
 	// Create ConnectRPC response with the comprehensive data from Python API
-	response := &entities.CardCraftAiAPIResponse{
+	response := &entities.CardCraftAiGeneratedContent{
 		Title:       cardCraftAiResp.Title,
 		Attributes:  cardCraftAiResp.Attributes,
 		Description: cardCraftAiResp.Description,

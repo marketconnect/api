@@ -1,0 +1,62 @@
+version: '3.7'
+
+services:
+  go-service:
+    build: ..
+    container_name: go-service
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    networks:
+      - monitoring
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring
+
+  loki:
+    image: grafana/loki:2.9.3
+    container_name: loki
+    command: -config.file=/etc/loki/local-config.yaml
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki-config.yaml:/etc/loki/local-config.yaml
+      - ./loki-data:/tmp/loki
+    networks:
+      - monitoring
+
+  promtail:
+    image: grafana/promtail:2.9.3
+    container_name: promtail
+    volumes:
+      - ./promtail-config.yaml:/etc/promtail/promtail.yaml
+      - /var/log:/var/log
+    command: -config.file=/etc/promtail/promtail.yaml
+    networks:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - monitoring
+
+volumes:
+  grafana-data:
+
+networks:
+  monitoring:

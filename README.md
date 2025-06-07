@@ -220,6 +220,35 @@ go test ./...
 
 Use the demo script: `./demo.sh`
 
+## Monitoring stack
+
+install
+```bash
+mkdir -p loki-data/{cache,chunks,index,compactor,wal}
+touch .env
+sudo chmod -R 777 loki-data
+```
+
+start
+```bash
+docker compose up -d
+```
+
+restart
+```bash
+git pull
+cd monitoring-stack
+docker compose up -d --build go-service
+docker ps
+docker logs -f go-service
+```
+
+clean
+```bash
+docker system prune -f
+```
+
+
 ## Protocol Support
 
 This API supports three protocols:

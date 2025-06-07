@@ -24,6 +24,8 @@ message CreateProductCardRequest {
   string wb_api_key = 16; // API key for Wildberries, provided by user
   repeated WBMediaFileToUpload wb_media_to_upload_files = 17; // List of files to upload
   repeated string wb_media_to_save_links = 18;     // List of URLs for media_save
+  string ozon_api_client_id = 19; // Client ID for Ozon API
+  string ozon_api_key = 20;       // API Key for Ozon API
 }
 
 message Dimensions {
@@ -66,6 +68,8 @@ message CreateProductCardResponse {
   optional bool wb_request_attempted = 16;       // True if WB API call was made, False if JSON prepared, Null if wb=false
   repeated WBMediaUploadIndividualResponse wb_media_upload_individual_responses = 17;
   optional WBMediaSaveByLinksResponse wb_media_save_by_links_response = 18;
+  optional string ozon_api_response_json = 19;    // JSON string of the Ozon API response if attempted
+  optional bool ozon_request_attempted = 20;      // True if Ozon API call was made
 }
 
 message WBMediaUploadIndividualResponse {

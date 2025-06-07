@@ -28,3 +28,11 @@ alwaysApply: true
 
 6. **Extensibility and Isolation**:  
    - To add new storage or integration types, implement the relevant interface in a new file under `internal/repository/` and register it for construction via configuration in `app.go`.
+
+7. **Handlers are part of the Presentation Layer**.
+   - They accept incoming requests (HTTP, gRPC, GraphQL — it doesn't matter).
+   - They decode the request (for example: json.Unmarshal, proto.Unmarshal).
+   - They validate the request (sometimes at this level, sometimes through middleware).
+   - They call the business logic (use case).
+   - They receive the result and return a response (HTTP Response, gRPC Response, etc.).
+   - There should be NO business logic in Handlers!

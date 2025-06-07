@@ -15,8 +15,7 @@ type Config struct {
 		APIURL string `env:"CARD_CRAFT_AI_API_URL" env-required:"true"`
 	}
 	WB struct {
-		APIKey                 string `env:"WB_API_KEY" env-default:""`
-		GetCardListMaxAttempts int    `env:"WB_GET_CARD_LIST_MAX_ATTEMPTS" env-default:"3"`
+		GetCardListMaxAttempts int `env:"WB_GET_CARD_LIST_MAX_ATTEMPTS" env-default:"3"`
 	}
 	HTTP struct {
 		Port int `env:"PORT" env-default:"8080"`

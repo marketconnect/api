@@ -42,6 +42,8 @@ type CreateProductCardRequest struct {
 	WbApiKey             string                 `protobuf:"bytes,16,opt,name=wb_api_key,json=wbApiKey,proto3" json:"wb_api_key,omitempty"`                                         // API key for Wildberries, provided by user
 	WbMediaToUploadFiles []*WBMediaFileToUpload `protobuf:"bytes,17,rep,name=wb_media_to_upload_files,json=wbMediaToUploadFiles,proto3" json:"wb_media_to_upload_files,omitempty"` // List of files to upload
 	WbMediaToSaveLinks   []string               `protobuf:"bytes,18,rep,name=wb_media_to_save_links,json=wbMediaToSaveLinks,proto3" json:"wb_media_to_save_links,omitempty"`       // List of URLs for media_save
+	OzonApiClientId      string                 `protobuf:"bytes,19,opt,name=ozon_api_client_id,json=ozonApiClientId,proto3" json:"ozon_api_client_id,omitempty"`                  // Client ID for Ozon API
+	OzonApiKey           string                 `protobuf:"bytes,20,opt,name=ozon_api_key,json=ozonApiKey,proto3" json:"ozon_api_key,omitempty"`                                   // API Key for Ozon API
 	unknownFields        protoimpl.UnknownFields
 	sizeCache            protoimpl.SizeCache
 }
@@ -200,6 +202,20 @@ func (x *CreateProductCardRequest) GetWbMediaToSaveLinks() []string {
 		return x.WbMediaToSaveLinks
 	}
 	return nil
+}
+
+func (x *CreateProductCardRequest) GetOzonApiClientId() string {
+	if x != nil {
+		return x.OzonApiClientId
+	}
+	return ""
+}
+
+func (x *CreateProductCardRequest) GetOzonApiKey() string {
+	if x != nil {
+		return x.OzonApiKey
+	}
+	return ""
 }
 
 type Dimensions struct {
@@ -419,6 +435,8 @@ type CreateProductCardResponse struct {
 	WbRequestAttempted               *bool                              `protobuf:"varint,16,opt,name=wb_request_attempted,json=wbRequestAttempted,proto3,oneof" json:"wb_request_attempted,omitempty"`           // True if WB API call was made, False if JSON prepared, Null if wb=false
 	WbMediaUploadIndividualResponses []*WBMediaUploadIndividualResponse `protobuf:"bytes,17,rep,name=wb_media_upload_individual_responses,json=wbMediaUploadIndividualResponses,proto3" json:"wb_media_upload_individual_responses,omitempty"`
 	WbMediaSaveByLinksResponse       *WBMediaSaveByLinksResponse        `protobuf:"bytes,18,opt,name=wb_media_save_by_links_response,json=wbMediaSaveByLinksResponse,proto3,oneof" json:"wb_media_save_by_links_response,omitempty"`
+	OzonApiResponseJson              *string                            `protobuf:"bytes,19,opt,name=ozon_api_response_json,json=ozonApiResponseJson,proto3,oneof" json:"ozon_api_response_json,omitempty"`   // JSON string of the Ozon API response if attempted
+	OzonRequestAttempted             *bool                              `protobuf:"varint,20,opt,name=ozon_request_attempted,json=ozonRequestAttempted,proto3,oneof" json:"ozon_request_attempted,omitempty"` // True if Ozon API call was made
 	unknownFields                    protoimpl.UnknownFields
 	sizeCache                        protoimpl.SizeCache
 }
@@ -579,6 +597,20 @@ func (x *CreateProductCardResponse) GetWbMediaSaveByLinksResponse() *WBMediaSave
 	return nil
 }
 
+func (x *CreateProductCardResponse) GetOzonApiResponseJson() string {
+	if x != nil && x.OzonApiResponseJson != nil {
+		return *x.OzonApiResponseJson
+	}
+	return ""
+}
+
+func (x *CreateProductCardResponse) GetOzonRequestAttempted() bool {
+	if x != nil && x.OzonRequestAttempted != nil {
+		return *x.OzonRequestAttempted
+	}
+	return false
+}
+
 type WBMediaUploadIndividualResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	PhotoNumber   int32                  `protobuf:"varint,1,opt,name=photo_number,json=photoNumber,proto3" json:"photo_number,omitempty"`         // Corresponds to the photo_number from WBMediaFileToUpload
@@ -695,7 +727,7 @@ var File_api_v1_product_proto protoreflect.FileDescriptor
 
 const file_api_v1_product_proto_rawDesc = "" +
 	"\n" +
-	"\x14api/v1/product.proto\x12\x06api.v1\"\x98\x05\n" +
+	"\x14api/v1/product.proto\x12\x06api.v1\"\xe7\x05\n" +
 	"\x18CreateProductCardRequest\x12#\n" +
 	"\rproduct_title\x18\x01 \x01(\tR\fproductTitle\x12/\n" +
 	"\x13product_description\x18\x02 \x01(\tR\x12productDescription\x12\x1b\n" +
@@ -720,7 +752,10 @@ const file_api_v1_product_proto_rawDesc = "" +
 	"\n" +
 	"wb_api_key\x18\x10 \x01(\tR\bwbApiKey\x12S\n" +
 	"\x18wb_media_to_upload_files\x18\x11 \x03(\v2\x1b.api.v1.WBMediaFileToUploadR\x14wbMediaToUploadFiles\x122\n" +
-	"\x16wb_media_to_save_links\x18\x12 \x03(\tR\x12wbMediaToSaveLinks\"w\n" +
+	"\x16wb_media_to_save_links\x18\x12 \x03(\tR\x12wbMediaToSaveLinks\x12+\n" +
+	"\x12ozon_api_client_id\x18\x13 \x01(\tR\x0fozonApiClientId\x12 \n" +
+	"\fozon_api_key\x18\x14 \x01(\tR\n" +
+	"ozonApiKey\"w\n" +
 	"\n" +
 	"Dimensions\x12\x16\n" +
 	"\x06length\x18\x01 \x01(\x05R\x06length\x12\x14\n" +
@@ -735,7 +770,7 @@ const file_api_v1_product_proto_rawDesc = "" +
 	"\x13WBMediaFileToUpload\x12\x18\n" +
 	"\acontent\x18\x01 \x01(\fR\acontent\x12\x1a\n" +
 	"\bfilename\x18\x02 \x01(\tR\bfilename\x12!\n" +
-	"\fphoto_number\x18\x03 \x01(\x05R\vphotoNumber\"\x88\b\n" +
+	"\fphoto_number\x18\x03 \x01(\x05R\vphotoNumber\"\xb3\t\n" +
 	"\x19CreateProductCardResponse\x12\x14\n" +
 	"\x05title\x18\x01 \x01(\tR\x05title\x12Q\n" +
 	"\n" +
@@ -759,14 +794,18 @@ const file_api_v1_product_proto_rawDesc = "" +
 	"\x18wb_prepared_request_json\x18\x0f \x01(\tH\x01R\x15wbPreparedRequestJson\x88\x01\x01\x125\n" +
 	"\x14wb_request_attempted\x18\x10 \x01(\bH\x02R\x12wbRequestAttempted\x88\x01\x01\x12w\n" +
 	"$wb_media_upload_individual_responses\x18\x11 \x03(\v2'.api.v1.WBMediaUploadIndividualResponseR wbMediaUploadIndividualResponses\x12l\n" +
-	"\x1fwb_media_save_by_links_response\x18\x12 \x01(\v2\".api.v1.WBMediaSaveByLinksResponseH\x03R\x1awbMediaSaveByLinksResponse\x88\x01\x01\x1a=\n" +
+	"\x1fwb_media_save_by_links_response\x18\x12 \x01(\v2\".api.v1.WBMediaSaveByLinksResponseH\x03R\x1awbMediaSaveByLinksResponse\x88\x01\x01\x128\n" +
+	"\x16ozon_api_response_json\x18\x13 \x01(\tH\x04R\x13ozonApiResponseJson\x88\x01\x01\x129\n" +
+	"\x16ozon_request_attempted\x18\x14 \x01(\bH\x05R\x14ozonRequestAttempted\x88\x01\x01\x1a=\n" +
 	"\x0fAttributesEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
 	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x17\n" +
 	"\x15_wb_api_response_jsonB\x1b\n" +
 	"\x19_wb_prepared_request_jsonB\x17\n" +
 	"\x15_wb_request_attemptedB\"\n" +
-	" _wb_media_save_by_links_response\"\xbc\x01\n" +
+	" _wb_media_save_by_links_responseB\x19\n" +
+	"\x17_ozon_api_response_jsonB\x19\n" +
+	"\x17_ozon_request_attempted\"\xbc\x01\n" +
 	"\x1fWBMediaUploadIndividualResponse\x12!\n" +
 	"\fphoto_number\x18\x01 \x01(\x05R\vphotoNumber\x12(\n" +
 	"\rresponse_json\x18\x02 \x01(\tH\x00R\fresponseJson\x88\x01\x01\x12(\n" +
