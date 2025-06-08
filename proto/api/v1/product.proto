@@ -23,9 +23,9 @@ message CreateProductCardRequest {
   repeated Size sizes = 15;
   string wb_api_key = 16; // API key for Wildberries, provided by user
   repeated WBMediaFileToUpload wb_media_to_upload_files = 17; // List of files to upload
-  repeated string wb_media_to_save_links = 18;     // List of URLs for media_save
+  repeated string wb_media_to_save_links = 18; // List of URLs for media_save
   string ozon_api_client_id = 19; // Client ID for Ozon API
-  string ozon_api_key = 20;       // API Key for Ozon API
+  string ozon_api_key = 20; // API Key for Ozon API
 }
 
 message Dimensions {
@@ -43,8 +43,8 @@ message Size {
 }
 
 message WBMediaFileToUpload {
-  bytes content = 1;    // File content
-  string filename = 2;  // Original filename, e.g. "photo.jpg"
+  bytes content = 1; // File content
+  string filename = 2; // Original filename, e.g. "photo.jpg"
   int32 photo_number = 3; // Value for X-Photo-Number header
 }
 
@@ -63,13 +63,13 @@ message CreateProductCardResponse {
   string type_name = 11;
   int32 sub_id = 12;
   string sub_name = 13;
-  optional string wb_api_response_json = 14;     // JSON string of the WB API response if attempted
+  optional string wb_api_response_json = 14; // JSON string of the WB API response if attempted
   optional string wb_prepared_request_json = 15; // JSON string of the prepared WB request if API key not provided
-  optional bool wb_request_attempted = 16;       // True if WB API call was made, False if JSON prepared, Null if wb=false
+  optional bool wb_request_attempted = 16; // True if WB API call was made, False if JSON prepared, Null if wb=false
   repeated WBMediaUploadIndividualResponse wb_media_upload_individual_responses = 17;
   optional WBMediaSaveByLinksResponse wb_media_save_by_links_response = 18;
-  optional string ozon_api_response_json = 19;    // JSON string of the Ozon API response if attempted
-  optional bool ozon_request_attempted = 20;      // True if Ozon API call was made
+  optional string ozon_api_response_json = 19; // JSON string of the Ozon API response if attempted
+  optional bool ozon_request_attempted = 20; // True if Ozon API call was made
 }
 
 message WBMediaUploadIndividualResponse {
@@ -86,4 +86,18 @@ message WBMediaSaveByLinksResponse {
 // CreateProductCardService provides product card processing functionality
 service CreateProductCardService {
   rpc CreateProductCard(CreateProductCardRequest) returns (CreateProductCardResponse) {}
-} 
+}
+
+// Balance request and response messages
+message GetBalanceRequest {
+  // API key will be provided via Authorization header
+}
+
+message GetBalanceResponse {
+  int32 balance = 1; // Current balance amount
+}
+
+// BalanceService provides balance management functionality
+service BalanceService {
+  rpc GetBalance(GetBalanceRequest) returns (GetBalanceResponse) {}
+}

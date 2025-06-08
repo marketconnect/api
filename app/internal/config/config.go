@@ -12,15 +12,17 @@ type Config struct {
 	IsDebug bool `env:"IS_DEBUG" env-default:"false"`
 
 	CardCraftAi struct {
-		APIURL string `env:"CARD_CRAFT_AI_API_URL" env-required:"true"`
+		URL  string `env:"CARD_CRAFT_AI_API_URL" env-required:"true"`
+		Port int    `env:"CARD_CRAFT_AI_PORT" env-default:"8080"`
 	}
-       WB struct {
-               GetCardListMaxAttempts int `env:"WB_GET_CARD_LIST_MAX_ATTEMPTS" env-default:"3"`
-       }
-       TokenCounter struct {
-               APIURL string `env:"TOKEN_COUNTER_API_URL" env-required:"true"`
-       }
-       HTTP struct {
+	WB struct {
+		GetCardListMaxAttempts int `env:"WB_GET_CARD_LIST_MAX_ATTEMPTS" env-default:"3"`
+	}
+	TokenCounter struct {
+		APIURL string `env:"TOKEN_COUNTER_API_URL" env-required:"true"`
+		Port   int    `env:"TOKEN_COUNTER_PORT" env-default:"8080"`
+	}
+	HTTP struct {
 		Port int `env:"PORT" env-default:"8080"`
 	}
 	PostgreSQL struct {

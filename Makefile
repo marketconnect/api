@@ -1,14 +1,15 @@
-.PHONY: help install generate build run-server run-client test clean
+.PHONY: help install generate build run test clean lint format
 
 help:
 	@echo "Available targets:"
-	@echo "  install     - Install required tools and dependencies"
-	@echo "  generate    - Generate code from protobuf schema"
-	@echo "  build       - Build server and client binaries"
-	@echo "  run-server  - Run the ConnectRPC server"
-	@echo "  run-client  - Run the example client"
-	@echo "  test        - Run tests"
-	@echo "  clean       - Clean generated files and binaries"
+	@echo "  install   - Install required tools and dependencies"
+	@echo "  generate  - Generate code from protobuf schema"
+	@echo "  build     - Build server and client binaries"
+	@echo "  run       - Run the server"
+	@echo "  test      - Run tests"
+	@echo "  clean     - Clean generated files and binaries"
+	@echo "  lint      - Lint protobuf files"
+	@echo "  format    - Format protobuf files"
 
 install:
 	go mod tidy
@@ -27,7 +28,6 @@ build:
 run:
 	go run cmd/server/main.go
 
-
 test:
 	go test ./...
 
@@ -39,5 +39,5 @@ lint:
 	buf lint
 
 format:
-	buf format -w 
+	buf format -w
 

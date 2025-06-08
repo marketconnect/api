@@ -26,6 +26,13 @@ func NewCreateProductCardHandler(createCardUsecase CreateCardUsecase) *CreatePro
 
 func (h *CreateProductCardHandler) CreateProductCard(ctx context.Context, req *connect.Request[apiv1.CreateProductCardRequest]) (*connect.Response[apiv1.CreateProductCardResponse], error) {
 	log.Printf("CreateProductCard request: %+v", req.Msg)
+
+	// Extract API key from Authorization header
+	apiKey, err := ExtractAPIKeyFromHeader(req.Header())
+	if err != nil {
+		return nil, connect.NewError(connect.CodeUnauthenticated, err)
+	}
+
 	if req.Msg.GetWb() && req.Msg.GetVendorCode() == "" {
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("vendor_code is required when wb is true"))
 	}
@@ -72,16 +79,14 @@ func (h *CreateProductCardHandler) CreateProductCard(ctx context.Context, req *c
 		OzonApiKey:           req.Msg.OzonApiKey,
 	}
 
-	authHeader := req.Header().Get("Authorization")
-	const bearerPrefix = "Bearer "
-	apiKey := ""
-	if len(authHeader) > len(bearerPrefix) && authHeader[:len(bearerPrefix)] == bearerPrefix {
-		apiKey = authHeader[len(bearerPrefix):]
-	}
-
 	createProductCardResult, err := h.createCardUsecase.CreateProductCard(ctx, apiKey, productCard)
 	if err != nil {
 		return nil, err
+	}
+
+	// Check if CardCraftAiGeneratedContent is nil (defensive programming)
+	if createProductCardResult.CardCraftAiGeneratedContent == nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("card craft AI generated content is nil"))
 	}
 
 	wbMediaUploadIndividualResponses := make([]*apiv1.WBMediaUploadIndividualResponse, len(createProductCardResult.WbMediaUploadResponses))

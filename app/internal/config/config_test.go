@@ -35,8 +35,8 @@ func TestGetConfig_SingletonAndDefaults(t *testing.T) {
 		t.Errorf("GetConfig() returned different instances (%p vs %p), expected singleton behavior", cfg1, cfg2)
 	}
 
-	if cfg1.CardCraftAi.APIURL != testApiUrl {
-		t.Errorf("Expected CardCraftAi.APIURL to be '%s', got '%s'", testApiUrl, cfg1.CardCraftAi.APIURL)
+	if cfg1.CardCraftAi.URL != testApiUrl {
+		t.Errorf("Expected CardCraftAi.APIURL to be '%s', got '%s'", testApiUrl, cfg1.CardCraftAi.URL)
 	}
 
 	// Check default port (env-default:"8080")

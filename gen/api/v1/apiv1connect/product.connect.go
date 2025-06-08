@@ -23,6 +23,8 @@ const _ = connect.IsAtLeastVersion1_13_0
 const (
 	// CreateProductCardServiceName is the fully-qualified name of the CreateProductCardService service.
 	CreateProductCardServiceName = "api.v1.CreateProductCardService"
+	// BalanceServiceName is the fully-qualified name of the BalanceService service.
+	BalanceServiceName = "api.v1.BalanceService"
 )
 
 // These constants are the fully-qualified names of the RPCs defined in this package. They're
@@ -36,6 +38,9 @@ const (
 	// CreateProductCardServiceCreateProductCardProcedure is the fully-qualified name of the
 	// CreateProductCardService's CreateProductCard RPC.
 	CreateProductCardServiceCreateProductCardProcedure = "/api.v1.CreateProductCardService/CreateProductCard"
+	// BalanceServiceGetBalanceProcedure is the fully-qualified name of the BalanceService's GetBalance
+	// RPC.
+	BalanceServiceGetBalanceProcedure = "/api.v1.BalanceService/GetBalance"
 )
 
 // CreateProductCardServiceClient is a client for the api.v1.CreateProductCardService service.
@@ -107,4 +112,74 @@ type UnimplementedCreateProductCardServiceHandler struct{}
 
 func (UnimplementedCreateProductCardServiceHandler) CreateProductCard(context.Context, *connect.Request[v1.CreateProductCardRequest]) (*connect.Response[v1.CreateProductCardResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("api.v1.CreateProductCardService.CreateProductCard is not implemented"))
+}
+
+// BalanceServiceClient is a client for the api.v1.BalanceService service.
+type BalanceServiceClient interface {
+	GetBalance(context.Context, *connect.Request[v1.GetBalanceRequest]) (*connect.Response[v1.GetBalanceResponse], error)
+}
+
+// NewBalanceServiceClient constructs a client for the api.v1.BalanceService service. By default, it
+// uses the Connect protocol with the binary Protobuf Codec, asks for gzipped responses, and sends
+// uncompressed requests. To use the gRPC or gRPC-Web protocols, supply the connect.WithGRPC() or
+// connect.WithGRPCWeb() options.
+//
+// The URL supplied here should be the base URL for the Connect or gRPC server (for example,
+// http://api.acme.com or https://acme.com/grpc).
+func NewBalanceServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) BalanceServiceClient {
+	baseURL = strings.TrimRight(baseURL, "/")
+	balanceServiceMethods := v1.File_api_v1_product_proto.Services().ByName("BalanceService").Methods()
+	return &balanceServiceClient{
+		getBalance: connect.NewClient[v1.GetBalanceRequest, v1.GetBalanceResponse](
+			httpClient,
+			baseURL+BalanceServiceGetBalanceProcedure,
+			connect.WithSchema(balanceServiceMethods.ByName("GetBalance")),
+			connect.WithClientOptions(opts...),
+		),
+	}
+}
+
+// balanceServiceClient implements BalanceServiceClient.
+type balanceServiceClient struct {
+	getBalance *connect.Client[v1.GetBalanceRequest, v1.GetBalanceResponse]
+}
+
+// GetBalance calls api.v1.BalanceService.GetBalance.
+func (c *balanceServiceClient) GetBalance(ctx context.Context, req *connect.Request[v1.GetBalanceRequest]) (*connect.Response[v1.GetBalanceResponse], error) {
+	return c.getBalance.CallUnary(ctx, req)
+}
+
+// BalanceServiceHandler is an implementation of the api.v1.BalanceService service.
+type BalanceServiceHandler interface {
+	GetBalance(context.Context, *connect.Request[v1.GetBalanceRequest]) (*connect.Response[v1.GetBalanceResponse], error)
+}
+
+// NewBalanceServiceHandler builds an HTTP handler from the service implementation. It returns the
+// path on which to mount the handler and the handler itself.
+//
+// By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
+// and JSON codecs. They also support gzip compression.
+func NewBalanceServiceHandler(svc BalanceServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	balanceServiceMethods := v1.File_api_v1_product_proto.Services().ByName("BalanceService").Methods()
+	balanceServiceGetBalanceHandler := connect.NewUnaryHandler(
+		BalanceServiceGetBalanceProcedure,
+		svc.GetBalance,
+		connect.WithSchema(balanceServiceMethods.ByName("GetBalance")),
+		connect.WithHandlerOptions(opts...),
+	)
+	return "/api.v1.BalanceService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case BalanceServiceGetBalanceProcedure:
+			balanceServiceGetBalanceHandler.ServeHTTP(w, r)
+		default:
+			http.NotFound(w, r)
+		}
+	})
+}
+
+// UnimplementedBalanceServiceHandler returns CodeUnimplemented from all methods.
+type UnimplementedBalanceServiceHandler struct{}
+
+func (UnimplementedBalanceServiceHandler) GetBalance(context.Context, *connect.Request[v1.GetBalanceRequest]) (*connect.Response[v1.GetBalanceResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("api.v1.BalanceService.GetBalance is not implemented"))
 }

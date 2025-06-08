@@ -723,6 +723,87 @@ func (x *WBMediaSaveByLinksResponse) GetErrorMessage() string {
 	return ""
 }
 
+// Balance request and response messages
+type GetBalanceRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetBalanceRequest) Reset() {
+	*x = GetBalanceRequest{}
+	mi := &file_api_v1_product_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetBalanceRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetBalanceRequest) ProtoMessage() {}
+
+func (x *GetBalanceRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_v1_product_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetBalanceRequest.ProtoReflect.Descriptor instead.
+func (*GetBalanceRequest) Descriptor() ([]byte, []int) {
+	return file_api_v1_product_proto_rawDescGZIP(), []int{7}
+}
+
+type GetBalanceResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Balance       int32                  `protobuf:"varint,1,opt,name=balance,proto3" json:"balance,omitempty"` // Current balance amount
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetBalanceResponse) Reset() {
+	*x = GetBalanceResponse{}
+	mi := &file_api_v1_product_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetBalanceResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetBalanceResponse) ProtoMessage() {}
+
+func (x *GetBalanceResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_v1_product_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetBalanceResponse.ProtoReflect.Descriptor instead.
+func (*GetBalanceResponse) Descriptor() ([]byte, []int) {
+	return file_api_v1_product_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *GetBalanceResponse) GetBalance() int32 {
+	if x != nil {
+		return x.Balance
+	}
+	return 0
+}
+
 var File_api_v1_product_proto protoreflect.FileDescriptor
 
 const file_api_v1_product_proto_rawDesc = "" +
@@ -816,9 +897,15 @@ const file_api_v1_product_proto_rawDesc = "" +
 	"\rresponse_json\x18\x01 \x01(\tH\x00R\fresponseJson\x88\x01\x01\x12(\n" +
 	"\rerror_message\x18\x02 \x01(\tH\x01R\ferrorMessage\x88\x01\x01B\x10\n" +
 	"\x0e_response_jsonB\x10\n" +
-	"\x0e_error_message2v\n" +
+	"\x0e_error_message\"\x13\n" +
+	"\x11GetBalanceRequest\".\n" +
+	"\x12GetBalanceResponse\x12\x18\n" +
+	"\abalance\x18\x01 \x01(\x05R\abalance2v\n" +
 	"\x18CreateProductCardService\x12Z\n" +
-	"\x11CreateProductCard\x12 .api.v1.CreateProductCardRequest\x1a!.api.v1.CreateProductCardResponse\"\x00B\x16Z\x14api/gen/api/v1;apiv1b\x06proto3"
+	"\x11CreateProductCard\x12 .api.v1.CreateProductCardRequest\x1a!.api.v1.CreateProductCardResponse\"\x002W\n" +
+	"\x0eBalanceService\x12E\n" +
+	"\n" +
+	"GetBalance\x12\x19.api.v1.GetBalanceRequest\x1a\x1a.api.v1.GetBalanceResponse\"\x00B\x16Z\x14api/gen/api/v1;apiv1b\x06proto3"
 
 var (
 	file_api_v1_product_proto_rawDescOnce sync.Once
@@ -832,7 +919,7 @@ func file_api_v1_product_proto_rawDescGZIP() []byte {
 	return file_api_v1_product_proto_rawDescData
 }
 
-var file_api_v1_product_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
+var file_api_v1_product_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_api_v1_product_proto_goTypes = []any{
 	(*CreateProductCardRequest)(nil),        // 0: api.v1.CreateProductCardRequest
 	(*Dimensions)(nil),                      // 1: api.v1.Dimensions
@@ -841,19 +928,23 @@ var file_api_v1_product_proto_goTypes = []any{
 	(*CreateProductCardResponse)(nil),       // 4: api.v1.CreateProductCardResponse
 	(*WBMediaUploadIndividualResponse)(nil), // 5: api.v1.WBMediaUploadIndividualResponse
 	(*WBMediaSaveByLinksResponse)(nil),      // 6: api.v1.WBMediaSaveByLinksResponse
-	nil,                                     // 7: api.v1.CreateProductCardResponse.AttributesEntry
+	(*GetBalanceRequest)(nil),               // 7: api.v1.GetBalanceRequest
+	(*GetBalanceResponse)(nil),              // 8: api.v1.GetBalanceResponse
+	nil,                                     // 9: api.v1.CreateProductCardResponse.AttributesEntry
 }
 var file_api_v1_product_proto_depIdxs = []int32{
 	1, // 0: api.v1.CreateProductCardRequest.dimensions:type_name -> api.v1.Dimensions
 	2, // 1: api.v1.CreateProductCardRequest.sizes:type_name -> api.v1.Size
 	3, // 2: api.v1.CreateProductCardRequest.wb_media_to_upload_files:type_name -> api.v1.WBMediaFileToUpload
-	7, // 3: api.v1.CreateProductCardResponse.attributes:type_name -> api.v1.CreateProductCardResponse.AttributesEntry
+	9, // 3: api.v1.CreateProductCardResponse.attributes:type_name -> api.v1.CreateProductCardResponse.AttributesEntry
 	5, // 4: api.v1.CreateProductCardResponse.wb_media_upload_individual_responses:type_name -> api.v1.WBMediaUploadIndividualResponse
 	6, // 5: api.v1.CreateProductCardResponse.wb_media_save_by_links_response:type_name -> api.v1.WBMediaSaveByLinksResponse
 	0, // 6: api.v1.CreateProductCardService.CreateProductCard:input_type -> api.v1.CreateProductCardRequest
-	4, // 7: api.v1.CreateProductCardService.CreateProductCard:output_type -> api.v1.CreateProductCardResponse
-	7, // [7:8] is the sub-list for method output_type
-	6, // [6:7] is the sub-list for method input_type
+	7, // 7: api.v1.BalanceService.GetBalance:input_type -> api.v1.GetBalanceRequest
+	4, // 8: api.v1.CreateProductCardService.CreateProductCard:output_type -> api.v1.CreateProductCardResponse
+	8, // 9: api.v1.BalanceService.GetBalance:output_type -> api.v1.GetBalanceResponse
+	8, // [8:10] is the sub-list for method output_type
+	6, // [6:8] is the sub-list for method input_type
 	6, // [6:6] is the sub-list for extension type_name
 	6, // [6:6] is the sub-list for extension extendee
 	0, // [0:6] is the sub-list for field type_name
@@ -873,9 +964,9 @@ func file_api_v1_product_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_v1_product_proto_rawDesc), len(file_api_v1_product_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   8,
+			NumMessages:   10,
 			NumExtensions: 0,
-			NumServices:   1,
+			NumServices:   2,
 		},
 		GoTypes:           file_api_v1_product_proto_goTypes,
 		DependencyIndexes: file_api_v1_product_proto_depIdxs,

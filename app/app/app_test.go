@@ -37,8 +37,8 @@ func TestNewApp(t *testing.T) {
 	if appInstance.httpClient == nil {
 		t.Error("NewApp().httpClient is nil")
 	}
-	if appInstance.cardCraftAiAPIURL != appInstance.cfg.CardCraftAi.APIURL {
+	if appInstance.cardCraftAiAPIURL != appInstance.cfg.CardCraftAi.URL {
 		t.Errorf("Expected appInstance.cardCraftAiAPIURL (%s) to match cfg.CardCraftAi.APIURL (%s)",
-			appInstance.cardCraftAiAPIURL, appInstance.cfg.CardCraftAi.APIURL)
+			appInstance.cardCraftAiAPIURL, appInstance.cfg.CardCraftAi.URL)
 	}
 }

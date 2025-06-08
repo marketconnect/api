@@ -53,10 +53,10 @@ func NewApp() *App {
 	balanceStorage := pgstorage.NewBalanceStorage(pgClient)
 
 	// clients
-	cardCraftAiClient := card_craft_ai.NewCardCraftAiClient(cfg.CardCraftAi.APIURL)
+	cardCraftAiClient := card_craft_ai.NewCardCraftAiClient(cfg.CardCraftAi.URL + ":" + strconv.Itoa(cfg.CardCraftAi.Port))
 	wbClient := wb.NewWBClient()
 	ozonClient := ozon.NewClient()
-	tokenCounterClient := token_counter.NewClient(cfg.TokenCounter.APIURL)
+	tokenCounterClient := token_counter.NewClient(cfg.TokenCounter.APIURL + ":" + strconv.Itoa(cfg.TokenCounter.Port))
 
 	// services
 	cardCraftAiService := services.NewCardCraftAiService(cardCraftAiClient)
@@ -75,6 +75,7 @@ func NewApp() *App {
 	// mux
 	mux := http.NewServeMux()
 	path, baseHandler := apiv1connect.NewCreateProductCardServiceHandler(createProductCardHandler)
+	balancePath, balanceServiceHandler := apiv1connect.NewBalanceServiceHandler(balanceHandler)
 
 	// Wrap the base handler with Prometheus metrics instrumentation
 	metricsWrappedHandler := promhttp.InstrumentHandlerCounter(
@@ -84,12 +85,23 @@ func NewApp() *App {
 			baseHandler,
 		),
 	)
+
+	balanceMetricsWrappedHandler := promhttp.InstrumentHandlerCounter(
+		metrics.HTTPRequestsTotal.MustCurryWith(prometheus.Labels{"handler": balancePath}),
+		promhttp.InstrumentHandlerDuration(
+			metrics.HTTPRequestDuration.MustCurryWith(prometheus.Labels{"handler": balancePath}),
+			balanceServiceHandler,
+		),
+	)
+
 	mux.Handle(path, metricsWrappedHandler)
+	mux.Handle(balancePath, balanceMetricsWrappedHandler)
 	mux.Handle("/metrics", promhttp.Handler()) // Expose Prometheus metrics
-	mux.HandleFunc("/balance", balanceHandler.GetBalance)
+	mux.HandleFunc("/balance", balanceHandler.GetBalanceHTTP)
+	mux.HandleFunc("/balance-by-token", balanceHandler.GetBalanceByToken)
 
 	return &App{
-		cardCraftAiAPIURL: cfg.CardCraftAi.APIURL,
+		cardCraftAiAPIURL: cfg.CardCraftAi.URL,
 		httpClient:        &http.Client{},
 		cfg:               cfg,
 		mux:               mux,
