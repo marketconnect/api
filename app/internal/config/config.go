@@ -26,11 +26,11 @@ type Config struct {
 		Port int `env:"PORT" env-default:"8080"`
 	}
 	PostgreSQL struct {
+		Database string `env:"PG_DATABASE" env-required:"true"`
 		Username string `env:"PG_USER" env-required:"true"`
 		Password string `env:"PG_PASSWORD" env-required:"true"`
 		Host     string `env:"PG_HOST" env-default:"localhost"`
 		Port     string `env:"PG_PORT" env-default:"5432"`
-		Database string `env:"PG_DATABASE" env-required:"true"`
 	}
 }
 
