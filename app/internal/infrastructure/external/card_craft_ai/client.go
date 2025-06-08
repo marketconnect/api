@@ -74,6 +74,7 @@ func (c *CardCraftAiClient) GetCardContent(ctx context.Context, sessionID string
 	cardCraftAiAPIRequest := map[string]interface{}{
 		"product_title":       productCard.ProductTitle,
 		"product_description": productCard.ProductDescription,
+		"session_id":          sessionID,
 		"parent_id":           productCard.ParentId,
 		"subject_id":          productCard.SubjectId,
 		"translate":           productCard.Translate,
@@ -86,10 +87,10 @@ func (c *CardCraftAiClient) GetCardContent(ctx context.Context, sessionID string
 		return nil, fmt.Errorf("failed to marshal request: %w", err)
 	}
 
-	// Build URL with session ID
-	productCardURL := fmt.Sprintf("%s/v1/sessions/%s/product_card_comprehensive", c.cardCraftAiAPIURL, sessionID)
+	// Build URL for /run endpoint
+	productCardURL := fmt.Sprintf("%s/run", c.cardCraftAiAPIURL)
 
-	// Make request to Python API with session ID
+	// Make request to Python API with session ID in body
 	httpReq, err := http.NewRequestWithContext(ctx, "POST", productCardURL, bytes.NewBuffer(reqBody))
 	if err != nil {
 		return nil, fmt.Errorf("failed to create HTTP request: %w", err)
