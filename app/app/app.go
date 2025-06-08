@@ -53,10 +53,10 @@ func NewApp() *App {
 	balanceStorage := pgstorage.NewBalanceStorage(pgClient)
 
 	// clients
-	cardCraftAiClient := card_craft_ai.NewCardCraftAiClient(cfg.CardCraftAi.URL + ":" + strconv.Itoa(cfg.CardCraftAi.Port))
+	cardCraftAiClient := card_craft_ai.NewCardCraftAiClient("http://" + cfg.CardCraftAi.URL + ":" + strconv.Itoa(cfg.CardCraftAi.Port))
 	wbClient := wb.NewWBClient()
 	ozonClient := ozon.NewClient()
-	tokenCounterClient := token_counter.NewClient(cfg.TokenCounter.APIURL + ":" + strconv.Itoa(cfg.TokenCounter.Port))
+	tokenCounterClient := token_counter.NewClient("http://" + cfg.TokenCounter.APIURL + ":" + strconv.Itoa(cfg.TokenCounter.Port))
 
 	// services
 	cardCraftAiService := services.NewCardCraftAiService(cardCraftAiClient)
