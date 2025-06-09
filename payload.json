@@ -5,6 +5,12 @@
   "ozon_api_key": "31a9f1d1-0035-43dd-affd-d49459ab47ce",
   "ozon_api_client_id": "588869",
   "ozon": true,
+  "dimensions": {
+    "length": 10,
+    "width": 10,
+    "height": 10,
+    "weight_brutto": 10
+  },
   "wb": true,
   "vendor_code": "testCode",
   "wb_media_to_upload_files": [

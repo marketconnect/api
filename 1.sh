@@ -13,6 +13,12 @@ cat > payload.json <<EOF
   "ozon_api_key": "$OZON_API_KEY",
   "ozon_api_client_id": "$OZON_CLIENT_ID",
   "ozon": true,
+  "dimensions": {
+    "length": 10,
+    "width": 10,
+    "height": 10,
+    "weight_brutto": 10
+  },
   "wb": true,
   "vendor_code": "testCode",
   "wb_media_to_upload_files": [

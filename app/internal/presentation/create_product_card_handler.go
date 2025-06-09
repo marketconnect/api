@@ -65,9 +65,9 @@ func (h *CreateProductCardHandler) CreateProductCard(ctx context.Context, req *c
 		}
 
 		// Check for price in sizes
-		if len(req.Msg.Sizes) == 0 || req.Msg.Sizes[0].Price <= 0 {
-			return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("price in sizes[0] is required and must be greater than zero when ozon is true"))
-		}
+		// if len(req.Msg.Sizes) == 0 || req.Msg.Sizes[0].Price <= 0 {
+		// 	return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("price in sizes[0] is required and must be greater than zero when ozon is true"))
+		// }
 	}
 
 	sizes := make([]*entities.WBSize, len(req.Msg.Sizes))
