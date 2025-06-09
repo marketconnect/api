@@ -68,13 +68,21 @@ func (ozs *ozonService) CreateCard(ctx context.Context, req *entities.ProductCar
 	}
 	log.Printf("[OZON DEBUG] Title validation passed: %s", ccaApiResponse.Title)
 
-	if ccaApiResponse.SubjectID == nil {
-		log.Printf("[OZON DEBUG] Validation failed: CardCraftAI SubjectID is missing")
-		errMsg := `{"error":true,"errorText":"CardCraftAI SubjectID (for description_category_id) is required for Ozon integration"}`
+	if ccaApiResponse.SubID == nil {
+		log.Printf("[OZON DEBUG] Validation failed: CardCraftAI SubID is missing")
+		errMsg := `{"error":true,"errorText":"CardCraftAI SubID (for Ozon description_category_id) is required for Ozon integration"}`
 		ozonApiResponseJSON = &errMsg
-		return ozonApiResponseJSON, ozonRequestAttempted, fmt.Errorf("CardCraftAI SubjectID (for description_category_id) is required for Ozon integration")
+		return ozonApiResponseJSON, ozonRequestAttempted, fmt.Errorf("CardCraftAI SubID (for Ozon description_category_id) is required for Ozon integration")
 	}
-	log.Printf("[OZON DEBUG] SubjectID validation passed: %d", *ccaApiResponse.SubjectID)
+	log.Printf("[OZON DEBUG] SubID validation passed: %d", *ccaApiResponse.SubID)
+
+	if ccaApiResponse.TypeID == nil {
+		log.Printf("[OZON DEBUG] Validation failed: CardCraftAI TypeID is missing")
+		errMsg := `{"error":true,"errorText":"CardCraftAI TypeID (for Ozon type_id) is required for Ozon integration"}`
+		ozonApiResponseJSON = &errMsg
+		return ozonApiResponseJSON, ozonRequestAttempted, fmt.Errorf("CardCraftAI TypeID (for Ozon type_id) is required for Ozon integration")
+	}
+	log.Printf("[OZON DEBUG] TypeID validation passed: %d", *ccaApiResponse.TypeID)
 
 	if req.Dimensions == nil || req.Dimensions.Depth == nil || req.Dimensions.Width == nil || req.Dimensions.Height == nil || req.Dimensions.Weight == nil {
 		log.Printf("[OZON DEBUG] Validation failed: Ozon dimensions are incomplete")
@@ -101,7 +109,7 @@ func (ozs *ozonService) CreateCard(ctx context.Context, req *entities.ProductCar
 	ozonItem := entities.OzonProductImportItem{
 		Name:                  ccaApiResponse.Title,
 		OfferID:               req.VendorCode,
-		DescriptionCategoryID: int64(*ccaApiResponse.SubjectID),
+		DescriptionCategoryID: int64(*ccaApiResponse.SubID),
 		TypeID:                int64(*ccaApiResponse.TypeID),
 		Price:                 price,
 		Vat:                   "0.1", // Default VAT, consider making configurable

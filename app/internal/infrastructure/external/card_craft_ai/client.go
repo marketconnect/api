@@ -125,16 +125,16 @@ func (c *CardCraftAiClient) GetCardContent(ctx context.Context, sessionID string
 	log.Printf("CardCraftAI API response: title=%s, description=%s, parentID=%v, parentName=%v, subjectID=%v, subjectName=%v, typeID=%v, typeName=%v, rootID=%v, rootName=%v, subID=%v, subName=%v",
 		cardCraftAiResp.Title,
 		cardCraftAiResp.Description,
-		cardCraftAiResp.ParentID,
-		cardCraftAiResp.ParentName,
-		cardCraftAiResp.SubjectID,
-		cardCraftAiResp.SubjectName,
-		cardCraftAiResp.TypeID,
-		cardCraftAiResp.TypeName,
-		cardCraftAiResp.RootID,
-		cardCraftAiResp.RootName,
-		cardCraftAiResp.SubID,
-		cardCraftAiResp.SubName)
+		safeInt32Value(cardCraftAiResp.ParentID),
+		safeStringValue(cardCraftAiResp.ParentName),
+		safeInt32Value(cardCraftAiResp.SubjectID),
+		safeStringValue(cardCraftAiResp.SubjectName),
+		safeInt32Value(cardCraftAiResp.TypeID),
+		safeStringValue(cardCraftAiResp.TypeName),
+		safeInt32Value(cardCraftAiResp.RootID),
+		safeStringValue(cardCraftAiResp.RootName),
+		safeInt32Value(cardCraftAiResp.SubID),
+		safeStringValue(cardCraftAiResp.SubName))
 
 	// Create ConnectRPC response with the comprehensive data from Python API
 	response := &entities.CardCraftAiGeneratedContent{
@@ -150,7 +150,24 @@ func (c *CardCraftAiClient) GetCardContent(ctx context.Context, sessionID string
 		RootID:      cardCraftAiResp.RootID,
 		RootName:    cardCraftAiResp.RootName,
 		SubID:       cardCraftAiResp.SubID,
+		SubName:     cardCraftAiResp.SubName,
 	}
 
 	return response, nil
+}
+
+// safeInt32Value safely dereferences an *int32 pointer
+func safeInt32Value(ptr *int32) interface{} {
+	if ptr == nil {
+		return nil
+	}
+	return *ptr
+}
+
+// safeStringValue safely dereferences a *string pointer
+func safeStringValue(ptr *string) interface{} {
+	if ptr == nil {
+		return nil
+	}
+	return *ptr
 }
