@@ -100,8 +100,8 @@ func (ozs *ozonService) CreateCard(ctx context.Context, req *entities.ProductCar
 
 	log.Printf("[OZON DEBUG] All validations passed, creating Ozon payload")
 
-	// Determine price from sizes if available, otherwise use a default
-	var price string = "0"
+	// Determine price from sizes if available, otherwise use a default minimum price
+	var price string = "100" // Minimum price 100 kopecks = 1 ruble
 	if len(req.Sizes) > 0 && req.Sizes[0].Price > 0 {
 		price = fmt.Sprintf("%d", req.Sizes[0].Price)
 	}
@@ -112,8 +112,8 @@ func (ozs *ozonService) CreateCard(ctx context.Context, req *entities.ProductCar
 		DescriptionCategoryID: int64(*ccaApiResponse.SubID),
 		TypeID:                int64(*ccaApiResponse.TypeID),
 		Price:                 price,
-		Vat:                   "0.1", // Default VAT, consider making configurable
-		CurrencyCode:          "RUB", // Default currency
+		Vat:                   "0",
+		CurrencyCode:          "RUB",
 		Depth:                 int32(*req.Dimensions.Depth),
 		Width:                 int32(*req.Dimensions.Width),
 		Height:                int32(*req.Dimensions.Height),
@@ -128,6 +128,13 @@ func (ozs *ozonService) CreateCard(ctx context.Context, req *entities.ProductCar
 	if len(req.Sizes) > 0 && len(req.Sizes[0].Skus) > 0 {
 		ozonItem.Barcode = req.Sizes[0].Skus[0]
 	}
+
+	// Add required "Название модели" attribute (Model Name)
+	ozonItem.Attributes = append(ozonItem.Attributes, entities.OzonProductAttribute{
+		ID:        9048, // Required "Название модели (для объединения в одну карточку)"
+		ComplexID: 0,
+		Values:    []entities.OzonProductAttributeValue{{Value: ccaApiResponse.Title}}, // Use title as model name
+	})
 
 	if req.Brand != "" {
 		ozonItem.Attributes = append(ozonItem.Attributes, entities.OzonProductAttribute{
