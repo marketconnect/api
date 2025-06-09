@@ -89,7 +89,18 @@ func (uc *CreateCardUsecase) CreateProductCard(ctx context.Context, apiKey strin
 
 	// Create card in Ozon (parallel)
 	go func() {
+		log.Printf("Starting Ozon card creation for product: %s", req.ProductTitle)
+		log.Printf("Ozon enabled: %t, ClientID: %s, ApiKey length: %d", req.Ozon, req.OzonApiClientId, len(req.OzonApiKey))
+
 		ozonApiResponseJSON, ozonRequestAttempted, ozonErr := uc.ozonService.CreateCard(ctx, &req, cardCraftAiGeneratedContent)
+
+		log.Printf("Ozon card creation completed - attempted: %v, error: %v", ozonRequestAttempted, ozonErr)
+		if ozonApiResponseJSON != nil {
+			log.Printf("Ozon response JSON: %s", *ozonApiResponseJSON)
+		} else {
+			log.Printf("Ozon response JSON is nil")
+		}
+
 		ozonChan <- ozonResult{
 			apiResponseJSON:  ozonApiResponseJSON,
 			requestAttempted: ozonRequestAttempted,

@@ -26,12 +26,22 @@ func (ozs *ozonService) CreateCard(ctx context.Context, req *entities.ProductCar
 	var ozonApiResponseJSON *string
 	var ozonRequestAttempted *bool
 
+	log.Printf("[OZON DEBUG] Starting CreateCard - ProductTitle: %s", req.ProductTitle)
+	log.Printf("[OZON DEBUG] Request flags - Ozon: %t, ApiKey present: %t, ClientID present: %t",
+		req.GetOzon(), req.GetOzonApiKey() != "", req.GetOzonApiClientId() != "")
+
 	attemptAPICall := req.GetOzon() && req.GetOzonApiKey() != "" && req.GetOzonApiClientId() != ""
 	ozonRequestAttempted = &attemptAPICall
 
+	log.Printf("[OZON DEBUG] Will attempt API call: %t", attemptAPICall)
+
 	if !attemptAPICall {
 		if req.GetOzon() {
-			log.Printf("Ozon integration requested but API key or Client ID is missing. Skipping Ozon API call.")
+			log.Printf("[OZON DEBUG] Ozon integration requested but API key or Client ID is missing. Skipping Ozon API call.")
+			log.Printf("[OZON DEBUG] Missing - ClientID: %t, ApiKey: %t",
+				req.GetOzonApiClientId() == "", req.GetOzonApiKey() == "")
+		} else {
+			log.Printf("[OZON DEBUG] Ozon integration not requested (ozon=false)")
 		}
 		// No API call will be made, so response JSON is empty.
 		emptyStr := ""
@@ -39,37 +49,60 @@ func (ozs *ozonService) CreateCard(ctx context.Context, req *entities.ProductCar
 		return ozonApiResponseJSON, ozonRequestAttempted, nil
 	}
 
+	log.Printf("[OZON DEBUG] Starting validation checks")
+
 	// Validate required fields for Ozon
 	if req.GetVendorCode() == "" {
-		log.Printf("Ozon integration: vendor_code (for offer_id) is missing. Skipping Ozon API call.")
+		log.Printf("[OZON DEBUG] Validation failed: vendor_code is missing")
 		errMsg := `{"error":true,"errorText":"vendor_code (for offer_id) is required for Ozon integration"}`
 		ozonApiResponseJSON = &errMsg
 		return ozonApiResponseJSON, ozonRequestAttempted, fmt.Errorf("vendor_code (for offer_id) is required for Ozon integration")
 	}
+	log.Printf("[OZON DEBUG] VendorCode validation passed: %s", req.GetVendorCode())
+
 	if ccaApiResponse.Title == "" {
-		log.Printf("Ozon integration: CardCraftAI title (for name) is missing. Skipping Ozon API call.")
+		log.Printf("[OZON DEBUG] Validation failed: CardCraftAI title is missing")
 		errMsg := `{"error":true,"errorText":"CardCraftAI title (for name) is required for Ozon integration"}`
 		ozonApiResponseJSON = &errMsg
 		return ozonApiResponseJSON, ozonRequestAttempted, fmt.Errorf("CardCraftAI title (for name) is required for Ozon integration")
 	}
+	log.Printf("[OZON DEBUG] Title validation passed: %s", ccaApiResponse.Title)
+
 	if ccaApiResponse.SubjectID == nil {
-		log.Printf("Ozon integration: CardCraftAI SubjectID (for description_category_id) is missing. Skipping Ozon API call.")
+		log.Printf("[OZON DEBUG] Validation failed: CardCraftAI SubjectID is missing")
 		errMsg := `{"error":true,"errorText":"CardCraftAI SubjectID (for description_category_id) is required for Ozon integration"}`
 		ozonApiResponseJSON = &errMsg
 		return ozonApiResponseJSON, ozonRequestAttempted, fmt.Errorf("CardCraftAI SubjectID (for description_category_id) is required for Ozon integration")
 	}
+	log.Printf("[OZON DEBUG] SubjectID validation passed: %d", *ccaApiResponse.SubjectID)
+
 	if req.Dimensions == nil || req.Dimensions.Length == nil || req.Dimensions.Width == nil || req.Dimensions.Height == nil || req.Dimensions.WeightBrutto == nil {
-		log.Printf("Ozon integration: Dimensions (length, width, height, weight_brutto) are required and must be non-zero. Skipping Ozon API call.")
+		log.Printf("[OZON DEBUG] Validation failed: Dimensions are incomplete")
+		log.Printf("[OZON DEBUG] Dimensions present: %t", req.Dimensions != nil)
+		if req.Dimensions != nil {
+			log.Printf("[OZON DEBUG] Length: %v, Width: %v, Height: %v, Weight: %v",
+				req.Dimensions.Length, req.Dimensions.Width, req.Dimensions.Height, req.Dimensions.WeightBrutto)
+		}
 		errMsg := `{"error":true,"errorText":"Dimensions (length, width, height, weight_brutto) are required and must be non-zero for Ozon integration"}`
 		ozonApiResponseJSON = &errMsg
 		return ozonApiResponseJSON, ozonRequestAttempted, fmt.Errorf("dimensions (length, width, height, weight_brutto) are required and must be non-zero for Ozon integration")
 	}
+	log.Printf("[OZON DEBUG] Dimensions validation passed: %dx%dx%d, weight: %f",
+		*req.Dimensions.Length, *req.Dimensions.Width, *req.Dimensions.Height, *req.Dimensions.WeightBrutto)
+
 	if len(req.Sizes) == 0 || req.Sizes[0].Price == 0 {
-		log.Printf("Ozon integration: Price from Sizes[0] is required. Skipping Ozon API call.")
+		log.Printf("[OZON DEBUG] Validation failed: Sizes/Price issue")
+		log.Printf("[OZON DEBUG] Sizes count: %d", len(req.Sizes))
+		if len(req.Sizes) > 0 {
+			log.Printf("[OZON DEBUG] First size price: %d", req.Sizes[0].Price)
+		}
 		errMsg := `{"error":true,"errorText":"Price from Sizes[0] is required for Ozon integration"}`
 		ozonApiResponseJSON = &errMsg
 		return ozonApiResponseJSON, ozonRequestAttempted, fmt.Errorf("price from Sizes[0] is required for Ozon integration")
 	}
+	log.Printf("[OZON DEBUG] Price validation passed: %d", req.Sizes[0].Price)
+
+	log.Printf("[OZON DEBUG] All validations passed, creating Ozon payload")
 
 	ozonItem := entities.OzonProductImportItem{
 		Name:                  ccaApiResponse.Title,
