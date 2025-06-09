@@ -41,6 +41,35 @@ func (h *CreateProductCardHandler) CreateProductCard(ctx context.Context, req *c
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("vendor_code is required when wb is true"))
 	}
 
+	// Validate Ozon required fields
+	if req.Msg.GetOzon() {
+		// Check for required API credentials
+		if req.Msg.GetOzonApiKey() == "" {
+			return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("ozon_api_key is required when ozon is true"))
+		}
+		if req.Msg.GetOzonApiClientId() == "" {
+			return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("ozon_api_client_id is required when ozon is true"))
+		}
+
+		// Check for vendor_code
+		if req.Msg.GetVendorCode() == "" {
+			return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("vendor_code is required when ozon is true"))
+		}
+
+		// Check for dimensions - must be present and non-zero
+		if req.Msg.Dimensions == nil {
+			return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("dimensions (length, width, height, weight_brutto) are required when ozon is true"))
+		}
+		if req.Msg.Dimensions.Length <= 0 || req.Msg.Dimensions.Width <= 0 || req.Msg.Dimensions.Height <= 0 || req.Msg.Dimensions.WeightBrutto <= 0 {
+			return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("dimensions (length, width, height, weight_brutto) must be greater than zero when ozon is true"))
+		}
+
+		// Check for price in sizes
+		if len(req.Msg.Sizes) == 0 || req.Msg.Sizes[0].Price <= 0 {
+			return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("price in sizes[0] is required and must be greater than zero when ozon is true"))
+		}
+	}
+
 	sizes := make([]*entities.WBSize, len(req.Msg.Sizes))
 	for i, s := range req.Msg.Sizes {
 		sizes[i] = &entities.WBSize{
