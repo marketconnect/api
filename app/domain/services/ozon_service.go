@@ -143,7 +143,7 @@ func (ozs *ozonService) CreateCard(ctx context.Context, req *entities.ProductCar
 		ozonApiResponseJSON = &responseStringToStore
 		return ozonApiResponseJSON, ozonRequestAttempted, fmt.Errorf("ozon product import failed: %w", ozonErr)
 	} else {
-		log.Printf("Successfully called Ozon API. Response: %+v", ozonResp)
+		log.Printf("Successfully called Ozon API. Response received.")
 		// Ozon's v3/product/import response doesn't have a top-level error field like WB.
 		// Errors are typically indicated by non-200 HTTP status, handled by the ozonClient.
 		// If specific task-level errors need to be parsed from the response, that logic would go here.

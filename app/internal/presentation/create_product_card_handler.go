@@ -29,7 +29,8 @@ func (h *CreateProductCardHandler) Create(ctx context.Context, req *connect.Requ
 }
 
 func (h *CreateProductCardHandler) CreateProductCard(ctx context.Context, req *connect.Request[apiv1.CreateRequest]) (*connect.Response[apiv1.CreateResponse], error) {
-	log.Printf("CreateProductCard request: %+v", req.Msg)
+	log.Printf("CreateProductCard request - Title: %s, VendorCode: %s, WB: %t, Ozon: %t, MediaFiles: %d",
+		req.Msg.ProductTitle, req.Msg.VendorCode, req.Msg.GetWb(), req.Msg.GetOzon(), len(req.Msg.WbMediaToUploadFiles))
 
 	// Extract API key from Authorization header
 	apiKey, err := ExtractAPIKeyFromHeader(req.Header())

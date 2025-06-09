@@ -276,7 +276,7 @@ func (wbs *WbService) CreateCard(ctx context.Context, req *entities.ProductCard,
 			wbApiResponseJSON = &responseStringToStore
 			return wbApiResponseJSON, wbPreparedRequestJSON, wbRequestAttempted, fmt.Errorf("WB card upload failed: %w", wbUploadErr)
 		} else {
-			log.Printf("Successfully called Wildberries API. Response: %+v", wbResp)
+			log.Printf("Successfully called Wildberries API. Response received.")
 			if wbResp != nil && wbResp.Error {
 				metrics.AppExternalAPIErrorsTotal.WithLabelValues("wb_card_upload").Inc()
 				respBytes, marshalErr := json.Marshal(wbResp)
