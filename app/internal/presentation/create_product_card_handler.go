@@ -24,7 +24,11 @@ func NewCreateProductCardHandler(createCardUsecase CreateCardUsecase) *CreatePro
 	}
 }
 
-func (h *CreateProductCardHandler) CreateProductCard(ctx context.Context, req *connect.Request[apiv1.CreateProductCardRequest]) (*connect.Response[apiv1.CreateProductCardResponse], error) {
+func (h *CreateProductCardHandler) Create(ctx context.Context, req *connect.Request[apiv1.CreateRequest]) (*connect.Response[apiv1.CreateResponse], error) {
+	return h.CreateProductCard(ctx, req)
+}
+
+func (h *CreateProductCardHandler) CreateProductCard(ctx context.Context, req *connect.Request[apiv1.CreateRequest]) (*connect.Response[apiv1.CreateResponse], error) {
 	log.Printf("CreateProductCard request: %+v", req.Msg)
 
 	// Extract API key from Authorization header
@@ -103,7 +107,7 @@ func (h *CreateProductCardHandler) CreateProductCard(ctx context.Context, req *c
 		ErrorMessage: createProductCardResult.WbMediaSaveResponse.ErrorMessage,
 	}
 
-	createProductCardResponse := &apiv1.CreateProductCardResponse{
+	createProductCardResponse := &apiv1.CreateResponse{
 		Title:                            createProductCardResult.CardCraftAiGeneratedContent.Title,
 		Description:                      createProductCardResult.CardCraftAiGeneratedContent.Description,
 		Attributes:                       createProductCardResult.CardCraftAiGeneratedContent.Attributes,
@@ -150,7 +154,7 @@ func (h *CreateProductCardHandler) CreateProductCard(ctx context.Context, req *c
 		createProductCardResponse.SubName = *createProductCardResult.CardCraftAiGeneratedContent.SubName
 	}
 
-	return &connect.Response[apiv1.CreateProductCardResponse]{
+	return &connect.Response[apiv1.CreateResponse]{
 		Msg: createProductCardResponse,
 	}, nil
 }

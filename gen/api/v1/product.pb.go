@@ -22,7 +22,7 @@ const (
 )
 
 // ProductRequest represents the input with the 5 required fields
-type CreateProductCardRequest struct {
+type CreateRequest struct {
 	state                protoimpl.MessageState `protogen:"open.v1"`
 	ProductTitle         string                 `protobuf:"bytes,1,opt,name=product_title,json=productTitle,proto3" json:"product_title,omitempty"`
 	ProductDescription   string                 `protobuf:"bytes,2,opt,name=product_description,json=productDescription,proto3" json:"product_description,omitempty"`
@@ -48,20 +48,20 @@ type CreateProductCardRequest struct {
 	sizeCache            protoimpl.SizeCache
 }
 
-func (x *CreateProductCardRequest) Reset() {
-	*x = CreateProductCardRequest{}
+func (x *CreateRequest) Reset() {
+	*x = CreateRequest{}
 	mi := &file_api_v1_product_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CreateProductCardRequest) String() string {
+func (x *CreateRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CreateProductCardRequest) ProtoMessage() {}
+func (*CreateRequest) ProtoMessage() {}
 
-func (x *CreateProductCardRequest) ProtoReflect() protoreflect.Message {
+func (x *CreateRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_api_v1_product_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -73,145 +73,145 @@ func (x *CreateProductCardRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CreateProductCardRequest.ProtoReflect.Descriptor instead.
-func (*CreateProductCardRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use CreateRequest.ProtoReflect.Descriptor instead.
+func (*CreateRequest) Descriptor() ([]byte, []int) {
 	return file_api_v1_product_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *CreateProductCardRequest) GetProductTitle() string {
+func (x *CreateRequest) GetProductTitle() string {
 	if x != nil {
 		return x.ProductTitle
 	}
 	return ""
 }
 
-func (x *CreateProductCardRequest) GetProductDescription() string {
+func (x *CreateRequest) GetProductDescription() string {
 	if x != nil {
 		return x.ProductDescription
 	}
 	return ""
 }
 
-func (x *CreateProductCardRequest) GetParentId() int32 {
+func (x *CreateRequest) GetParentId() int32 {
 	if x != nil {
 		return x.ParentId
 	}
 	return 0
 }
 
-func (x *CreateProductCardRequest) GetSubjectId() int32 {
+func (x *CreateRequest) GetSubjectId() int32 {
 	if x != nil {
 		return x.SubjectId
 	}
 	return 0
 }
 
-func (x *CreateProductCardRequest) GetRootId() int32 {
+func (x *CreateRequest) GetRootId() int32 {
 	if x != nil {
 		return x.RootId
 	}
 	return 0
 }
 
-func (x *CreateProductCardRequest) GetSubId() int32 {
+func (x *CreateRequest) GetSubId() int32 {
 	if x != nil {
 		return x.SubId
 	}
 	return 0
 }
 
-func (x *CreateProductCardRequest) GetTypeId() int32 {
+func (x *CreateRequest) GetTypeId() int32 {
 	if x != nil {
 		return x.TypeId
 	}
 	return 0
 }
 
-func (x *CreateProductCardRequest) GetGenerateContent() bool {
+func (x *CreateRequest) GetGenerateContent() bool {
 	if x != nil {
 		return x.GenerateContent
 	}
 	return false
 }
 
-func (x *CreateProductCardRequest) GetOzon() bool {
+func (x *CreateRequest) GetOzon() bool {
 	if x != nil {
 		return x.Ozon
 	}
 	return false
 }
 
-func (x *CreateProductCardRequest) GetWb() bool {
+func (x *CreateRequest) GetWb() bool {
 	if x != nil {
 		return x.Wb
 	}
 	return false
 }
 
-func (x *CreateProductCardRequest) GetTranslate() bool {
+func (x *CreateRequest) GetTranslate() bool {
 	if x != nil {
 		return x.Translate
 	}
 	return false
 }
 
-func (x *CreateProductCardRequest) GetVendorCode() string {
+func (x *CreateRequest) GetVendorCode() string {
 	if x != nil {
 		return x.VendorCode
 	}
 	return ""
 }
 
-func (x *CreateProductCardRequest) GetDimensions() *Dimensions {
+func (x *CreateRequest) GetDimensions() *Dimensions {
 	if x != nil {
 		return x.Dimensions
 	}
 	return nil
 }
 
-func (x *CreateProductCardRequest) GetBrand() string {
+func (x *CreateRequest) GetBrand() string {
 	if x != nil {
 		return x.Brand
 	}
 	return ""
 }
 
-func (x *CreateProductCardRequest) GetSizes() []*Size {
+func (x *CreateRequest) GetSizes() []*Size {
 	if x != nil {
 		return x.Sizes
 	}
 	return nil
 }
 
-func (x *CreateProductCardRequest) GetWbApiKey() string {
+func (x *CreateRequest) GetWbApiKey() string {
 	if x != nil {
 		return x.WbApiKey
 	}
 	return ""
 }
 
-func (x *CreateProductCardRequest) GetWbMediaToUploadFiles() []*WBMediaFileToUpload {
+func (x *CreateRequest) GetWbMediaToUploadFiles() []*WBMediaFileToUpload {
 	if x != nil {
 		return x.WbMediaToUploadFiles
 	}
 	return nil
 }
 
-func (x *CreateProductCardRequest) GetWbMediaToSaveLinks() []string {
+func (x *CreateRequest) GetWbMediaToSaveLinks() []string {
 	if x != nil {
 		return x.WbMediaToSaveLinks
 	}
 	return nil
 }
 
-func (x *CreateProductCardRequest) GetOzonApiClientId() string {
+func (x *CreateRequest) GetOzonApiClientId() string {
 	if x != nil {
 		return x.OzonApiClientId
 	}
 	return ""
 }
 
-func (x *CreateProductCardRequest) GetOzonApiKey() string {
+func (x *CreateRequest) GetOzonApiKey() string {
 	if x != nil {
 		return x.OzonApiKey
 	}
@@ -415,7 +415,7 @@ func (x *WBMediaFileToUpload) GetPhotoNumber() int32 {
 }
 
 // ProductResponse represents the output from the Python API
-type CreateProductCardResponse struct {
+type CreateResponse struct {
 	state                            protoimpl.MessageState             `protogen:"open.v1"`
 	Title                            string                             `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
 	Attributes                       map[string]string                  `protobuf:"bytes,2,rep,name=attributes,proto3" json:"attributes,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
@@ -441,20 +441,20 @@ type CreateProductCardResponse struct {
 	sizeCache                        protoimpl.SizeCache
 }
 
-func (x *CreateProductCardResponse) Reset() {
-	*x = CreateProductCardResponse{}
+func (x *CreateResponse) Reset() {
+	*x = CreateResponse{}
 	mi := &file_api_v1_product_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CreateProductCardResponse) String() string {
+func (x *CreateResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CreateProductCardResponse) ProtoMessage() {}
+func (*CreateResponse) ProtoMessage() {}
 
-func (x *CreateProductCardResponse) ProtoReflect() protoreflect.Message {
+func (x *CreateResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_api_v1_product_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -466,145 +466,145 @@ func (x *CreateProductCardResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CreateProductCardResponse.ProtoReflect.Descriptor instead.
-func (*CreateProductCardResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use CreateResponse.ProtoReflect.Descriptor instead.
+func (*CreateResponse) Descriptor() ([]byte, []int) {
 	return file_api_v1_product_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *CreateProductCardResponse) GetTitle() string {
+func (x *CreateResponse) GetTitle() string {
 	if x != nil {
 		return x.Title
 	}
 	return ""
 }
 
-func (x *CreateProductCardResponse) GetAttributes() map[string]string {
+func (x *CreateResponse) GetAttributes() map[string]string {
 	if x != nil {
 		return x.Attributes
 	}
 	return nil
 }
 
-func (x *CreateProductCardResponse) GetDescription() string {
+func (x *CreateResponse) GetDescription() string {
 	if x != nil {
 		return x.Description
 	}
 	return ""
 }
 
-func (x *CreateProductCardResponse) GetParentName() string {
+func (x *CreateResponse) GetParentName() string {
 	if x != nil {
 		return x.ParentName
 	}
 	return ""
 }
 
-func (x *CreateProductCardResponse) GetParentId() int32 {
+func (x *CreateResponse) GetParentId() int32 {
 	if x != nil {
 		return x.ParentId
 	}
 	return 0
 }
 
-func (x *CreateProductCardResponse) GetSubjectName() string {
+func (x *CreateResponse) GetSubjectName() string {
 	if x != nil {
 		return x.SubjectName
 	}
 	return ""
 }
 
-func (x *CreateProductCardResponse) GetSubjectId() int32 {
+func (x *CreateResponse) GetSubjectId() int32 {
 	if x != nil {
 		return x.SubjectId
 	}
 	return 0
 }
 
-func (x *CreateProductCardResponse) GetRootId() int32 {
+func (x *CreateResponse) GetRootId() int32 {
 	if x != nil {
 		return x.RootId
 	}
 	return 0
 }
 
-func (x *CreateProductCardResponse) GetRootName() string {
+func (x *CreateResponse) GetRootName() string {
 	if x != nil {
 		return x.RootName
 	}
 	return ""
 }
 
-func (x *CreateProductCardResponse) GetTypeId() int32 {
+func (x *CreateResponse) GetTypeId() int32 {
 	if x != nil {
 		return x.TypeId
 	}
 	return 0
 }
 
-func (x *CreateProductCardResponse) GetTypeName() string {
+func (x *CreateResponse) GetTypeName() string {
 	if x != nil {
 		return x.TypeName
 	}
 	return ""
 }
 
-func (x *CreateProductCardResponse) GetSubId() int32 {
+func (x *CreateResponse) GetSubId() int32 {
 	if x != nil {
 		return x.SubId
 	}
 	return 0
 }
 
-func (x *CreateProductCardResponse) GetSubName() string {
+func (x *CreateResponse) GetSubName() string {
 	if x != nil {
 		return x.SubName
 	}
 	return ""
 }
 
-func (x *CreateProductCardResponse) GetWbApiResponseJson() string {
+func (x *CreateResponse) GetWbApiResponseJson() string {
 	if x != nil && x.WbApiResponseJson != nil {
 		return *x.WbApiResponseJson
 	}
 	return ""
 }
 
-func (x *CreateProductCardResponse) GetWbPreparedRequestJson() string {
+func (x *CreateResponse) GetWbPreparedRequestJson() string {
 	if x != nil && x.WbPreparedRequestJson != nil {
 		return *x.WbPreparedRequestJson
 	}
 	return ""
 }
 
-func (x *CreateProductCardResponse) GetWbRequestAttempted() bool {
+func (x *CreateResponse) GetWbRequestAttempted() bool {
 	if x != nil && x.WbRequestAttempted != nil {
 		return *x.WbRequestAttempted
 	}
 	return false
 }
 
-func (x *CreateProductCardResponse) GetWbMediaUploadIndividualResponses() []*WBMediaUploadIndividualResponse {
+func (x *CreateResponse) GetWbMediaUploadIndividualResponses() []*WBMediaUploadIndividualResponse {
 	if x != nil {
 		return x.WbMediaUploadIndividualResponses
 	}
 	return nil
 }
 
-func (x *CreateProductCardResponse) GetWbMediaSaveByLinksResponse() *WBMediaSaveByLinksResponse {
+func (x *CreateResponse) GetWbMediaSaveByLinksResponse() *WBMediaSaveByLinksResponse {
 	if x != nil {
 		return x.WbMediaSaveByLinksResponse
 	}
 	return nil
 }
 
-func (x *CreateProductCardResponse) GetOzonApiResponseJson() string {
+func (x *CreateResponse) GetOzonApiResponseJson() string {
 	if x != nil && x.OzonApiResponseJson != nil {
 		return *x.OzonApiResponseJson
 	}
 	return ""
 }
 
-func (x *CreateProductCardResponse) GetOzonRequestAttempted() bool {
+func (x *CreateResponse) GetOzonRequestAttempted() bool {
 	if x != nil && x.OzonRequestAttempted != nil {
 		return *x.OzonRequestAttempted
 	}
@@ -805,7 +805,7 @@ func (x *GetBalanceResponse) GetBalance() int32 {
 }
 
 // Payment system messages
-type PaymentRequestInput struct {
+type PaymentRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Amount        int64                  `protobuf:"varint,1,opt,name=amount,proto3" json:"amount,omitempty"`                              // Amount in kopecks (1 ruble = 100 kopecks)
 	Email         string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`                                 // Customer email
@@ -817,20 +817,20 @@ type PaymentRequestInput struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *PaymentRequestInput) Reset() {
-	*x = PaymentRequestInput{}
+func (x *PaymentRequest) Reset() {
+	*x = PaymentRequest{}
 	mi := &file_api_v1_product_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *PaymentRequestInput) String() string {
+func (x *PaymentRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*PaymentRequestInput) ProtoMessage() {}
+func (*PaymentRequest) ProtoMessage() {}
 
-func (x *PaymentRequestInput) ProtoReflect() protoreflect.Message {
+func (x *PaymentRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_api_v1_product_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -842,47 +842,47 @@ func (x *PaymentRequestInput) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use PaymentRequestInput.ProtoReflect.Descriptor instead.
-func (*PaymentRequestInput) Descriptor() ([]byte, []int) {
+// Deprecated: Use PaymentRequest.ProtoReflect.Descriptor instead.
+func (*PaymentRequest) Descriptor() ([]byte, []int) {
 	return file_api_v1_product_proto_rawDescGZIP(), []int{9}
 }
 
-func (x *PaymentRequestInput) GetAmount() int64 {
+func (x *PaymentRequest) GetAmount() int64 {
 	if x != nil {
 		return x.Amount
 	}
 	return 0
 }
 
-func (x *PaymentRequestInput) GetEmail() string {
+func (x *PaymentRequest) GetEmail() string {
 	if x != nil {
 		return x.Email
 	}
 	return ""
 }
 
-func (x *PaymentRequestInput) GetOrderNumber() int64 {
+func (x *PaymentRequest) GetOrderNumber() int64 {
 	if x != nil {
 		return x.OrderNumber
 	}
 	return 0
 }
 
-func (x *PaymentRequestInput) GetDescription() string {
+func (x *PaymentRequest) GetDescription() string {
 	if x != nil {
 		return x.Description
 	}
 	return ""
 }
 
-func (x *PaymentRequestInput) GetEndDate() string {
+func (x *PaymentRequest) GetEndDate() string {
 	if x != nil {
 		return x.EndDate
 	}
 	return ""
 }
 
-func (x *PaymentRequestInput) GetReceipt() *Receipt {
+func (x *PaymentRequest) GetReceipt() *Receipt {
 	if x != nil {
 		return x.Receipt
 	}
@@ -1273,8 +1273,8 @@ var File_api_v1_product_proto protoreflect.FileDescriptor
 
 const file_api_v1_product_proto_rawDesc = "" +
 	"\n" +
-	"\x14api/v1/product.proto\x12\x06api.v1\"\xe7\x05\n" +
-	"\x18CreateProductCardRequest\x12#\n" +
+	"\x14api/v1/product.proto\x12\x06api.v1\"\xdc\x05\n" +
+	"\rCreateRequest\x12#\n" +
 	"\rproduct_title\x18\x01 \x01(\tR\fproductTitle\x12/\n" +
 	"\x13product_description\x18\x02 \x01(\tR\x12productDescription\x12\x1b\n" +
 	"\tparent_id\x18\x03 \x01(\x05R\bparentId\x12\x1d\n" +
@@ -1316,11 +1316,11 @@ const file_api_v1_product_proto_rawDesc = "" +
 	"\x13WBMediaFileToUpload\x12\x18\n" +
 	"\acontent\x18\x01 \x01(\fR\acontent\x12\x1a\n" +
 	"\bfilename\x18\x02 \x01(\tR\bfilename\x12!\n" +
-	"\fphoto_number\x18\x03 \x01(\x05R\vphotoNumber\"\xb3\t\n" +
-	"\x19CreateProductCardResponse\x12\x14\n" +
-	"\x05title\x18\x01 \x01(\tR\x05title\x12Q\n" +
+	"\fphoto_number\x18\x03 \x01(\x05R\vphotoNumber\"\x9d\t\n" +
+	"\x0eCreateResponse\x12\x14\n" +
+	"\x05title\x18\x01 \x01(\tR\x05title\x12F\n" +
 	"\n" +
-	"attributes\x18\x02 \x03(\v21.api.v1.CreateProductCardResponse.AttributesEntryR\n" +
+	"attributes\x18\x02 \x03(\v2&.api.v1.CreateResponse.AttributesEntryR\n" +
 	"attributes\x12 \n" +
 	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x1f\n" +
 	"\vparent_name\x18\x04 \x01(\tR\n" +
@@ -1365,8 +1365,8 @@ const file_api_v1_product_proto_rawDesc = "" +
 	"\x0e_error_message\"\x13\n" +
 	"\x11GetBalanceRequest\".\n" +
 	"\x12GetBalanceResponse\x12\x18\n" +
-	"\abalance\x18\x01 \x01(\x05R\abalance\"\xce\x01\n" +
-	"\x13PaymentRequestInput\x12\x16\n" +
+	"\abalance\x18\x01 \x01(\x05R\abalance\"\xc9\x01\n" +
+	"\x0ePaymentRequest\x12\x16\n" +
 	"\x06amount\x18\x01 \x01(\x03R\x06amount\x12\x14\n" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12!\n" +
 	"\forder_number\x18\x03 \x01(\x03R\vorderNumber\x12 \n" +
@@ -1407,15 +1407,15 @@ const file_api_v1_product_proto_rawDesc = "" +
 	"\x05token\x18\n" +
 	" \x01(\tR\x05token\"5\n" +
 	"\x1bTinkoffNotificationResponse\x12\x16\n" +
-	"\x06status\x18\x01 \x01(\tR\x06status2v\n" +
-	"\x18CreateProductCardService\x12Z\n" +
-	"\x11CreateProductCard\x12 .api.v1.CreateProductCardRequest\x1a!.api.v1.CreateProductCardResponse\"\x002W\n" +
+	"\x06status\x18\x01 \x01(\tR\x06status2K\n" +
+	"\x0eProductService\x129\n" +
+	"\x06Create\x12\x15.api.v1.CreateRequest\x1a\x16.api.v1.CreateResponse\"\x002W\n" +
 	"\x0eBalanceService\x12E\n" +
 	"\n" +
-	"GetBalance\x12\x19.api.v1.GetBalanceRequest\x1a\x1a.api.v1.GetBalanceResponse\"\x002\xc9\x01\n" +
-	"\x0ePaymentService\x12N\n" +
-	"\x14CreatePaymentRequest\x12\x1b.api.v1.PaymentRequestInput\x1a\x17.api.v1.PaymentResponse\"\x00\x12g\n" +
-	"\x1aProcessTinkoffNotification\x12\".api.v1.TinkoffNotificationRequest\x1a#.api.v1.TinkoffNotificationResponse\"\x00B\x16Z\x14api/gen/api/v1;apiv1b\x06proto3"
+	"GetBalance\x12\x19.api.v1.GetBalanceRequest\x1a\x1a.api.v1.GetBalanceResponse\"\x002\xb0\x01\n" +
+	"\x0ePaymentService\x12<\n" +
+	"\aPayment\x12\x16.api.v1.PaymentRequest\x1a\x17.api.v1.PaymentResponse\"\x00\x12`\n" +
+	"\x13TinkoffNotification\x12\".api.v1.TinkoffNotificationRequest\x1a#.api.v1.TinkoffNotificationResponse\"\x00B\x16Z\x14api/gen/api/v1;apiv1b\x06proto3"
 
 var (
 	file_api_v1_product_proto_rawDescOnce sync.Once
@@ -1431,40 +1431,40 @@ func file_api_v1_product_proto_rawDescGZIP() []byte {
 
 var file_api_v1_product_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
 var file_api_v1_product_proto_goTypes = []any{
-	(*CreateProductCardRequest)(nil),        // 0: api.v1.CreateProductCardRequest
+	(*CreateRequest)(nil),                   // 0: api.v1.CreateRequest
 	(*Dimensions)(nil),                      // 1: api.v1.Dimensions
 	(*Size)(nil),                            // 2: api.v1.Size
 	(*WBMediaFileToUpload)(nil),             // 3: api.v1.WBMediaFileToUpload
-	(*CreateProductCardResponse)(nil),       // 4: api.v1.CreateProductCardResponse
+	(*CreateResponse)(nil),                  // 4: api.v1.CreateResponse
 	(*WBMediaUploadIndividualResponse)(nil), // 5: api.v1.WBMediaUploadIndividualResponse
 	(*WBMediaSaveByLinksResponse)(nil),      // 6: api.v1.WBMediaSaveByLinksResponse
 	(*GetBalanceRequest)(nil),               // 7: api.v1.GetBalanceRequest
 	(*GetBalanceResponse)(nil),              // 8: api.v1.GetBalanceResponse
-	(*PaymentRequestInput)(nil),             // 9: api.v1.PaymentRequestInput
+	(*PaymentRequest)(nil),                  // 9: api.v1.PaymentRequest
 	(*Receipt)(nil),                         // 10: api.v1.Receipt
 	(*ReceiptItem)(nil),                     // 11: api.v1.ReceiptItem
 	(*PaymentResponse)(nil),                 // 12: api.v1.PaymentResponse
 	(*TinkoffNotificationRequest)(nil),      // 13: api.v1.TinkoffNotificationRequest
 	(*TinkoffNotificationResponse)(nil),     // 14: api.v1.TinkoffNotificationResponse
-	nil,                                     // 15: api.v1.CreateProductCardResponse.AttributesEntry
+	nil,                                     // 15: api.v1.CreateResponse.AttributesEntry
 }
 var file_api_v1_product_proto_depIdxs = []int32{
-	1,  // 0: api.v1.CreateProductCardRequest.dimensions:type_name -> api.v1.Dimensions
-	2,  // 1: api.v1.CreateProductCardRequest.sizes:type_name -> api.v1.Size
-	3,  // 2: api.v1.CreateProductCardRequest.wb_media_to_upload_files:type_name -> api.v1.WBMediaFileToUpload
-	15, // 3: api.v1.CreateProductCardResponse.attributes:type_name -> api.v1.CreateProductCardResponse.AttributesEntry
-	5,  // 4: api.v1.CreateProductCardResponse.wb_media_upload_individual_responses:type_name -> api.v1.WBMediaUploadIndividualResponse
-	6,  // 5: api.v1.CreateProductCardResponse.wb_media_save_by_links_response:type_name -> api.v1.WBMediaSaveByLinksResponse
-	10, // 6: api.v1.PaymentRequestInput.receipt:type_name -> api.v1.Receipt
+	1,  // 0: api.v1.CreateRequest.dimensions:type_name -> api.v1.Dimensions
+	2,  // 1: api.v1.CreateRequest.sizes:type_name -> api.v1.Size
+	3,  // 2: api.v1.CreateRequest.wb_media_to_upload_files:type_name -> api.v1.WBMediaFileToUpload
+	15, // 3: api.v1.CreateResponse.attributes:type_name -> api.v1.CreateResponse.AttributesEntry
+	5,  // 4: api.v1.CreateResponse.wb_media_upload_individual_responses:type_name -> api.v1.WBMediaUploadIndividualResponse
+	6,  // 5: api.v1.CreateResponse.wb_media_save_by_links_response:type_name -> api.v1.WBMediaSaveByLinksResponse
+	10, // 6: api.v1.PaymentRequest.receipt:type_name -> api.v1.Receipt
 	11, // 7: api.v1.Receipt.items:type_name -> api.v1.ReceiptItem
-	0,  // 8: api.v1.CreateProductCardService.CreateProductCard:input_type -> api.v1.CreateProductCardRequest
+	0,  // 8: api.v1.ProductService.Create:input_type -> api.v1.CreateRequest
 	7,  // 9: api.v1.BalanceService.GetBalance:input_type -> api.v1.GetBalanceRequest
-	9,  // 10: api.v1.PaymentService.CreatePaymentRequest:input_type -> api.v1.PaymentRequestInput
-	13, // 11: api.v1.PaymentService.ProcessTinkoffNotification:input_type -> api.v1.TinkoffNotificationRequest
-	4,  // 12: api.v1.CreateProductCardService.CreateProductCard:output_type -> api.v1.CreateProductCardResponse
+	9,  // 10: api.v1.PaymentService.Payment:input_type -> api.v1.PaymentRequest
+	13, // 11: api.v1.PaymentService.TinkoffNotification:input_type -> api.v1.TinkoffNotificationRequest
+	4,  // 12: api.v1.ProductService.Create:output_type -> api.v1.CreateResponse
 	8,  // 13: api.v1.BalanceService.GetBalance:output_type -> api.v1.GetBalanceResponse
-	12, // 14: api.v1.PaymentService.CreatePaymentRequest:output_type -> api.v1.PaymentResponse
-	14, // 15: api.v1.PaymentService.ProcessTinkoffNotification:output_type -> api.v1.TinkoffNotificationResponse
+	12, // 14: api.v1.PaymentService.Payment:output_type -> api.v1.PaymentResponse
+	14, // 15: api.v1.PaymentService.TinkoffNotification:output_type -> api.v1.TinkoffNotificationResponse
 	12, // [12:16] is the sub-list for method output_type
 	8,  // [8:12] is the sub-list for method input_type
 	8,  // [8:8] is the sub-list for extension type_name

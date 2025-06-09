@@ -346,7 +346,7 @@ func simpleDecrypt(order string) (string, string, error) {
 }
 
 // CreatePaymentRequest implements PaymentService.CreatePaymentRequest
-func (h *TinkoffNotificationHandler) CreatePaymentRequest(ctx context.Context, req *connect.Request[apiv1.PaymentRequestInput]) (*connect.Response[apiv1.PaymentResponse], error) {
+func (h *TinkoffNotificationHandler) CreatePaymentRequest(ctx context.Context, req *connect.Request[apiv1.PaymentRequest]) (*connect.Response[apiv1.PaymentResponse], error) {
 	// Validate required fields
 	if req.Msg.Amount <= 0 {
 		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("некорректная сумма"))
@@ -472,4 +472,14 @@ func (h *TinkoffNotificationHandler) ProcessTinkoffNotification(ctx context.Cont
 			Status: "OK",
 		},
 	}, nil
+}
+
+// Payment implements PaymentService.Payment (alias for CreatePaymentRequest)
+func (h *TinkoffNotificationHandler) Payment(ctx context.Context, req *connect.Request[apiv1.PaymentRequest]) (*connect.Response[apiv1.PaymentResponse], error) {
+	return h.CreatePaymentRequest(ctx, req)
+}
+
+// TinkoffNotification implements PaymentService.TinkoffNotification (alias for ProcessTinkoffNotification)
+func (h *TinkoffNotificationHandler) TinkoffNotification(ctx context.Context, req *connect.Request[apiv1.TinkoffNotificationRequest]) (*connect.Response[apiv1.TinkoffNotificationResponse], error) {
+	return h.ProcessTinkoffNotification(ctx, req)
 }

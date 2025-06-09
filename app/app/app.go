@@ -85,7 +85,7 @@ func NewApp() *App {
 
 	// mux
 	mux := http.NewServeMux()
-	path, baseHandler := apiv1connect.NewCreateProductCardServiceHandler(createProductCardHandler)
+	path, baseHandler := apiv1connect.NewProductServiceHandler(createProductCardHandler)
 	balancePath, balanceServiceHandler := apiv1connect.NewBalanceServiceHandler(balanceHandler)
 	paymentPath, paymentServiceHandler := apiv1connect.NewPaymentServiceHandler(tinkoffHandler)
 

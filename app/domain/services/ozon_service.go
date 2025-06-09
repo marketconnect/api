@@ -147,7 +147,7 @@ func (ozs *ozonService) CreateCard(ctx context.Context, req *entities.ProductCar
 		errBytes, _ := json.Marshal(errorResponse) // Ignore marshalling error for error response
 		responseStringToStore = string(errBytes)
 		ozonApiResponseJSON = &responseStringToStore
-		return ozonApiResponseJSON, ozonRequestAttempted, fmt.Errorf("Ozon product import failed: %w", ozonErr)
+		return ozonApiResponseJSON, ozonRequestAttempted, fmt.Errorf("ozon product import failed: %w", ozonErr)
 	} else {
 		log.Printf("Successfully called Ozon API. Response: %+v", ozonResp)
 		// Ozon's v3/product/import response doesn't have a top-level error field like WB.

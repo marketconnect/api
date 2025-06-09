@@ -21,8 +21,8 @@ import (
 const _ = connect.IsAtLeastVersion1_13_0
 
 const (
-	// CreateProductCardServiceName is the fully-qualified name of the CreateProductCardService service.
-	CreateProductCardServiceName = "api.v1.CreateProductCardService"
+	// ProductServiceName is the fully-qualified name of the ProductService service.
+	ProductServiceName = "api.v1.ProductService"
 	// BalanceServiceName is the fully-qualified name of the BalanceService service.
 	BalanceServiceName = "api.v1.BalanceService"
 	// PaymentServiceName is the fully-qualified name of the PaymentService service.
@@ -37,89 +37,86 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
-	// CreateProductCardServiceCreateProductCardProcedure is the fully-qualified name of the
-	// CreateProductCardService's CreateProductCard RPC.
-	CreateProductCardServiceCreateProductCardProcedure = "/api.v1.CreateProductCardService/CreateProductCard"
+	// ProductServiceCreateProcedure is the fully-qualified name of the ProductService's Create RPC.
+	ProductServiceCreateProcedure = "/api.v1.ProductService/Create"
 	// BalanceServiceGetBalanceProcedure is the fully-qualified name of the BalanceService's GetBalance
 	// RPC.
 	BalanceServiceGetBalanceProcedure = "/api.v1.BalanceService/GetBalance"
-	// PaymentServiceCreatePaymentRequestProcedure is the fully-qualified name of the PaymentService's
-	// CreatePaymentRequest RPC.
-	PaymentServiceCreatePaymentRequestProcedure = "/api.v1.PaymentService/CreatePaymentRequest"
-	// PaymentServiceProcessTinkoffNotificationProcedure is the fully-qualified name of the
-	// PaymentService's ProcessTinkoffNotification RPC.
-	PaymentServiceProcessTinkoffNotificationProcedure = "/api.v1.PaymentService/ProcessTinkoffNotification"
+	// PaymentServicePaymentProcedure is the fully-qualified name of the PaymentService's Payment RPC.
+	PaymentServicePaymentProcedure = "/api.v1.PaymentService/Payment"
+	// PaymentServiceTinkoffNotificationProcedure is the fully-qualified name of the PaymentService's
+	// TinkoffNotification RPC.
+	PaymentServiceTinkoffNotificationProcedure = "/api.v1.PaymentService/TinkoffNotification"
 )
 
-// CreateProductCardServiceClient is a client for the api.v1.CreateProductCardService service.
-type CreateProductCardServiceClient interface {
-	CreateProductCard(context.Context, *connect.Request[v1.CreateProductCardRequest]) (*connect.Response[v1.CreateProductCardResponse], error)
+// ProductServiceClient is a client for the api.v1.ProductService service.
+type ProductServiceClient interface {
+	Create(context.Context, *connect.Request[v1.CreateRequest]) (*connect.Response[v1.CreateResponse], error)
 }
 
-// NewCreateProductCardServiceClient constructs a client for the api.v1.CreateProductCardService
-// service. By default, it uses the Connect protocol with the binary Protobuf Codec, asks for
-// gzipped responses, and sends uncompressed requests. To use the gRPC or gRPC-Web protocols, supply
-// the connect.WithGRPC() or connect.WithGRPCWeb() options.
+// NewProductServiceClient constructs a client for the api.v1.ProductService service. By default, it
+// uses the Connect protocol with the binary Protobuf Codec, asks for gzipped responses, and sends
+// uncompressed requests. To use the gRPC or gRPC-Web protocols, supply the connect.WithGRPC() or
+// connect.WithGRPCWeb() options.
 //
 // The URL supplied here should be the base URL for the Connect or gRPC server (for example,
 // http://api.acme.com or https://acme.com/grpc).
-func NewCreateProductCardServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) CreateProductCardServiceClient {
+func NewProductServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) ProductServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
-	createProductCardServiceMethods := v1.File_api_v1_product_proto.Services().ByName("CreateProductCardService").Methods()
-	return &createProductCardServiceClient{
-		createProductCard: connect.NewClient[v1.CreateProductCardRequest, v1.CreateProductCardResponse](
+	productServiceMethods := v1.File_api_v1_product_proto.Services().ByName("ProductService").Methods()
+	return &productServiceClient{
+		create: connect.NewClient[v1.CreateRequest, v1.CreateResponse](
 			httpClient,
-			baseURL+CreateProductCardServiceCreateProductCardProcedure,
-			connect.WithSchema(createProductCardServiceMethods.ByName("CreateProductCard")),
+			baseURL+ProductServiceCreateProcedure,
+			connect.WithSchema(productServiceMethods.ByName("Create")),
 			connect.WithClientOptions(opts...),
 		),
 	}
 }
 
-// createProductCardServiceClient implements CreateProductCardServiceClient.
-type createProductCardServiceClient struct {
-	createProductCard *connect.Client[v1.CreateProductCardRequest, v1.CreateProductCardResponse]
+// productServiceClient implements ProductServiceClient.
+type productServiceClient struct {
+	create *connect.Client[v1.CreateRequest, v1.CreateResponse]
 }
 
-// CreateProductCard calls api.v1.CreateProductCardService.CreateProductCard.
-func (c *createProductCardServiceClient) CreateProductCard(ctx context.Context, req *connect.Request[v1.CreateProductCardRequest]) (*connect.Response[v1.CreateProductCardResponse], error) {
-	return c.createProductCard.CallUnary(ctx, req)
+// Create calls api.v1.ProductService.Create.
+func (c *productServiceClient) Create(ctx context.Context, req *connect.Request[v1.CreateRequest]) (*connect.Response[v1.CreateResponse], error) {
+	return c.create.CallUnary(ctx, req)
 }
 
-// CreateProductCardServiceHandler is an implementation of the api.v1.CreateProductCardService
-// service.
-type CreateProductCardServiceHandler interface {
-	CreateProductCard(context.Context, *connect.Request[v1.CreateProductCardRequest]) (*connect.Response[v1.CreateProductCardResponse], error)
+// ProductServiceHandler is an implementation of the api.v1.ProductService service.
+type ProductServiceHandler interface {
+	Create(context.Context, *connect.Request[v1.CreateRequest]) (*connect.Response[v1.CreateResponse], error)
 }
 
-// NewCreateProductCardServiceHandler builds an HTTP handler from the service implementation. It
-// returns the path on which to mount the handler and the handler itself.
+// NewProductServiceHandler builds an HTTP handler from the service implementation. It returns the
+// path on which to mount the handler and the handler itself.
 //
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
-func NewCreateProductCardServiceHandler(svc CreateProductCardServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
-	createProductCardServiceMethods := v1.File_api_v1_product_proto.Services().ByName("CreateProductCardService").Methods()
-	createProductCardServiceCreateProductCardHandler := connect.NewUnaryHandler(
-		CreateProductCardServiceCreateProductCardProcedure,
-		svc.CreateProductCard,
-		connect.WithSchema(createProductCardServiceMethods.ByName("CreateProductCard")),
+func NewProductServiceHandler(svc ProductServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	productServiceMethods := v1.File_api_v1_product_proto.Services().ByName("ProductService").Methods()
+	productServiceCreateHandler := connect.NewUnaryHandler(
+		ProductServiceCreateProcedure,
+		svc.Create,
+		connect.WithSchema(productServiceMethods.ByName("Create")),
 		connect.WithHandlerOptions(opts...),
 	)
-	return "/api.v1.CreateProductCardService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return "/api.v1.ProductService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
-		case CreateProductCardServiceCreateProductCardProcedure:
-			createProductCardServiceCreateProductCardHandler.ServeHTTP(w, r)
+		case ProductServiceCreateProcedure:
+			productServiceCreateHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
 	})
 }
 
-// UnimplementedCreateProductCardServiceHandler returns CodeUnimplemented from all methods.
-type UnimplementedCreateProductCardServiceHandler struct{}
+// UnimplementedProductServiceHandler returns CodeUnimplemented from all methods.
+type UnimplementedProductServiceHandler struct{}
 
-func (UnimplementedCreateProductCardServiceHandler) CreateProductCard(context.Context, *connect.Request[v1.CreateProductCardRequest]) (*connect.Response[v1.CreateProductCardResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("api.v1.CreateProductCardService.CreateProductCard is not implemented"))
+func (UnimplementedProductServiceHandler) Create(context.Context, *connect.Request[v1.CreateRequest]) (*connect.Response[v1.CreateResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("api.v1.ProductService.Create is not implemented"))
 }
 
 // BalanceServiceClient is a client for the api.v1.BalanceService service.
@@ -194,8 +191,8 @@ func (UnimplementedBalanceServiceHandler) GetBalance(context.Context, *connect.R
 
 // PaymentServiceClient is a client for the api.v1.PaymentService service.
 type PaymentServiceClient interface {
-	CreatePaymentRequest(context.Context, *connect.Request[v1.PaymentRequestInput]) (*connect.Response[v1.PaymentResponse], error)
-	ProcessTinkoffNotification(context.Context, *connect.Request[v1.TinkoffNotificationRequest]) (*connect.Response[v1.TinkoffNotificationResponse], error)
+	Payment(context.Context, *connect.Request[v1.PaymentRequest]) (*connect.Response[v1.PaymentResponse], error)
+	TinkoffNotification(context.Context, *connect.Request[v1.TinkoffNotificationRequest]) (*connect.Response[v1.TinkoffNotificationResponse], error)
 }
 
 // NewPaymentServiceClient constructs a client for the api.v1.PaymentService service. By default, it
@@ -209,16 +206,16 @@ func NewPaymentServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 	baseURL = strings.TrimRight(baseURL, "/")
 	paymentServiceMethods := v1.File_api_v1_product_proto.Services().ByName("PaymentService").Methods()
 	return &paymentServiceClient{
-		createPaymentRequest: connect.NewClient[v1.PaymentRequestInput, v1.PaymentResponse](
+		payment: connect.NewClient[v1.PaymentRequest, v1.PaymentResponse](
 			httpClient,
-			baseURL+PaymentServiceCreatePaymentRequestProcedure,
-			connect.WithSchema(paymentServiceMethods.ByName("CreatePaymentRequest")),
+			baseURL+PaymentServicePaymentProcedure,
+			connect.WithSchema(paymentServiceMethods.ByName("Payment")),
 			connect.WithClientOptions(opts...),
 		),
-		processTinkoffNotification: connect.NewClient[v1.TinkoffNotificationRequest, v1.TinkoffNotificationResponse](
+		tinkoffNotification: connect.NewClient[v1.TinkoffNotificationRequest, v1.TinkoffNotificationResponse](
 			httpClient,
-			baseURL+PaymentServiceProcessTinkoffNotificationProcedure,
-			connect.WithSchema(paymentServiceMethods.ByName("ProcessTinkoffNotification")),
+			baseURL+PaymentServiceTinkoffNotificationProcedure,
+			connect.WithSchema(paymentServiceMethods.ByName("TinkoffNotification")),
 			connect.WithClientOptions(opts...),
 		),
 	}
@@ -226,24 +223,24 @@ func NewPaymentServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 
 // paymentServiceClient implements PaymentServiceClient.
 type paymentServiceClient struct {
-	createPaymentRequest       *connect.Client[v1.PaymentRequestInput, v1.PaymentResponse]
-	processTinkoffNotification *connect.Client[v1.TinkoffNotificationRequest, v1.TinkoffNotificationResponse]
+	payment             *connect.Client[v1.PaymentRequest, v1.PaymentResponse]
+	tinkoffNotification *connect.Client[v1.TinkoffNotificationRequest, v1.TinkoffNotificationResponse]
 }
 
-// CreatePaymentRequest calls api.v1.PaymentService.CreatePaymentRequest.
-func (c *paymentServiceClient) CreatePaymentRequest(ctx context.Context, req *connect.Request[v1.PaymentRequestInput]) (*connect.Response[v1.PaymentResponse], error) {
-	return c.createPaymentRequest.CallUnary(ctx, req)
+// Payment calls api.v1.PaymentService.Payment.
+func (c *paymentServiceClient) Payment(ctx context.Context, req *connect.Request[v1.PaymentRequest]) (*connect.Response[v1.PaymentResponse], error) {
+	return c.payment.CallUnary(ctx, req)
 }
 
-// ProcessTinkoffNotification calls api.v1.PaymentService.ProcessTinkoffNotification.
-func (c *paymentServiceClient) ProcessTinkoffNotification(ctx context.Context, req *connect.Request[v1.TinkoffNotificationRequest]) (*connect.Response[v1.TinkoffNotificationResponse], error) {
-	return c.processTinkoffNotification.CallUnary(ctx, req)
+// TinkoffNotification calls api.v1.PaymentService.TinkoffNotification.
+func (c *paymentServiceClient) TinkoffNotification(ctx context.Context, req *connect.Request[v1.TinkoffNotificationRequest]) (*connect.Response[v1.TinkoffNotificationResponse], error) {
+	return c.tinkoffNotification.CallUnary(ctx, req)
 }
 
 // PaymentServiceHandler is an implementation of the api.v1.PaymentService service.
 type PaymentServiceHandler interface {
-	CreatePaymentRequest(context.Context, *connect.Request[v1.PaymentRequestInput]) (*connect.Response[v1.PaymentResponse], error)
-	ProcessTinkoffNotification(context.Context, *connect.Request[v1.TinkoffNotificationRequest]) (*connect.Response[v1.TinkoffNotificationResponse], error)
+	Payment(context.Context, *connect.Request[v1.PaymentRequest]) (*connect.Response[v1.PaymentResponse], error)
+	TinkoffNotification(context.Context, *connect.Request[v1.TinkoffNotificationRequest]) (*connect.Response[v1.TinkoffNotificationResponse], error)
 }
 
 // NewPaymentServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -253,24 +250,24 @@ type PaymentServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewPaymentServiceHandler(svc PaymentServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	paymentServiceMethods := v1.File_api_v1_product_proto.Services().ByName("PaymentService").Methods()
-	paymentServiceCreatePaymentRequestHandler := connect.NewUnaryHandler(
-		PaymentServiceCreatePaymentRequestProcedure,
-		svc.CreatePaymentRequest,
-		connect.WithSchema(paymentServiceMethods.ByName("CreatePaymentRequest")),
+	paymentServicePaymentHandler := connect.NewUnaryHandler(
+		PaymentServicePaymentProcedure,
+		svc.Payment,
+		connect.WithSchema(paymentServiceMethods.ByName("Payment")),
 		connect.WithHandlerOptions(opts...),
 	)
-	paymentServiceProcessTinkoffNotificationHandler := connect.NewUnaryHandler(
-		PaymentServiceProcessTinkoffNotificationProcedure,
-		svc.ProcessTinkoffNotification,
-		connect.WithSchema(paymentServiceMethods.ByName("ProcessTinkoffNotification")),
+	paymentServiceTinkoffNotificationHandler := connect.NewUnaryHandler(
+		PaymentServiceTinkoffNotificationProcedure,
+		svc.TinkoffNotification,
+		connect.WithSchema(paymentServiceMethods.ByName("TinkoffNotification")),
 		connect.WithHandlerOptions(opts...),
 	)
 	return "/api.v1.PaymentService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
-		case PaymentServiceCreatePaymentRequestProcedure:
-			paymentServiceCreatePaymentRequestHandler.ServeHTTP(w, r)
-		case PaymentServiceProcessTinkoffNotificationProcedure:
-			paymentServiceProcessTinkoffNotificationHandler.ServeHTTP(w, r)
+		case PaymentServicePaymentProcedure:
+			paymentServicePaymentHandler.ServeHTTP(w, r)
+		case PaymentServiceTinkoffNotificationProcedure:
+			paymentServiceTinkoffNotificationHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -280,10 +277,10 @@ func NewPaymentServiceHandler(svc PaymentServiceHandler, opts ...connect.Handler
 // UnimplementedPaymentServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedPaymentServiceHandler struct{}
 
-func (UnimplementedPaymentServiceHandler) CreatePaymentRequest(context.Context, *connect.Request[v1.PaymentRequestInput]) (*connect.Response[v1.PaymentResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("api.v1.PaymentService.CreatePaymentRequest is not implemented"))
+func (UnimplementedPaymentServiceHandler) Payment(context.Context, *connect.Request[v1.PaymentRequest]) (*connect.Response[v1.PaymentResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("api.v1.PaymentService.Payment is not implemented"))
 }
 
-func (UnimplementedPaymentServiceHandler) ProcessTinkoffNotification(context.Context, *connect.Request[v1.TinkoffNotificationRequest]) (*connect.Response[v1.TinkoffNotificationResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("api.v1.PaymentService.ProcessTinkoffNotification is not implemented"))
+func (UnimplementedPaymentServiceHandler) TinkoffNotification(context.Context, *connect.Request[v1.TinkoffNotificationRequest]) (*connect.Response[v1.TinkoffNotificationResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("api.v1.PaymentService.TinkoffNotification is not implemented"))
 }

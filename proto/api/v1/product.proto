@@ -5,7 +5,7 @@ package api.v1;
 option go_package = "api/gen/api/v1;apiv1";
 
 // ProductRequest represents the input with the 5 required fields
-message CreateProductCardRequest {
+message CreateRequest {
   string product_title = 1;
   string product_description = 2;
   int32 parent_id = 3;
@@ -49,7 +49,7 @@ message WBMediaFileToUpload {
 }
 
 // ProductResponse represents the output from the Python API
-message CreateProductCardResponse {
+message CreateResponse {
   string title = 1;
   map<string, string> attributes = 2;
   string description = 3;
@@ -84,8 +84,8 @@ message WBMediaSaveByLinksResponse {
 }
 
 // CreateProductCardService provides product card processing functionality
-service CreateProductCardService {
-  rpc CreateProductCard(CreateProductCardRequest) returns (CreateProductCardResponse) {}
+service ProductService {
+  rpc Create(CreateRequest) returns (CreateResponse) {}
 }
 
 // Balance request and response messages
@@ -102,8 +102,10 @@ service BalanceService {
   rpc GetBalance(GetBalanceRequest) returns (GetBalanceResponse) {}
 }
 
+
+
 // Payment system messages
-message PaymentRequestInput {
+message PaymentRequest {
   int64 amount = 1; // Amount in kopecks (1 ruble = 100 kopecks)
   string email = 2; // Customer email
   int64 order_number = 3; // Unique order number
@@ -154,6 +156,6 @@ message TinkoffNotificationResponse {
 
 // PaymentService provides payment processing functionality
 service PaymentService {
-  rpc CreatePaymentRequest(PaymentRequestInput) returns (PaymentResponse) {}
-  rpc ProcessTinkoffNotification(TinkoffNotificationRequest) returns (TinkoffNotificationResponse) {}
+  rpc Payment(PaymentRequest) returns (PaymentResponse) {}
+  rpc TinkoffNotification(TinkoffNotificationRequest) returns (TinkoffNotificationResponse) {}
 }

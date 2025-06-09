@@ -8,8 +8,11 @@ BASE64_CONTENT_2=$(base64 -w 0 photo2.jpg)
 cat > payload.json <<EOF
 {
   "product_title": "Значок Сарказм, Prank Bank, в ассортименте",
-  "product_description": "Значок Сарказм, Prank Bank, с ироничной надписью – лучший способ поднять настроение себе и окружающим! Приблизительный размер: 4х6 см. Состав: фанера (берёза), картон, ламинационная плёнка, фурнитура. Товар представлен в ассортименте.",
+  "product_description": "Значок Сарказм, Prank Bank, с ироничной надписью - лучший способ поднять настроение себе и окружающим! Приблизительный размер: 4х6 см. Состав: фанера (берёза), картон, ламинационная плёнка, фурнитура. Товар представлен в ассортименте.",
   "wb_api_key":  "$WB_TOKEN",
+  "ozon_api_key": "$OZON_API_KEY",
+  "ozon_api_client_id": "$OZON_CLIENT_ID",
+  "ozon": true,
   "wb": true,
   "vendor_code": "testCode",
   "wb_media_to_upload_files": [
@@ -28,7 +31,7 @@ cat > payload.json <<EOF
 EOF
 
 # Send it
-curl -X POST http://45.141.76.230:8080/api.v1.CreateProductCardService/CreateProductCard \
+curl -X POST http://45.141.76.230:8080/v1/CreateProductCard \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer test" \
   -d @payload.json
