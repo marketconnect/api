@@ -9,7 +9,11 @@
     "length": 10,
     "width": 10,
     "height": 10,
-    "weight_brutto": 10
+    "weight_brutto": 10,
+    "depth": 10,
+    "dimension_unit": "mm",
+    "weight": 10,
+    "weight_unit": "g"
   },
   "wb": true,
   "vendor_code": "testCode",
