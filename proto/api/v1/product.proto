@@ -101,3 +101,59 @@ message GetBalanceResponse {
 service BalanceService {
   rpc GetBalance(GetBalanceRequest) returns (GetBalanceResponse) {}
 }
+
+// Payment system messages
+message PaymentRequestInput {
+  int64 amount = 1; // Amount in kopecks (1 ruble = 100 kopecks)
+  string email = 2; // Customer email
+  int64 order_number = 3; // Unique order number
+  string description = 4; // Payment description
+  string end_date = 5; // Subscription end date (YYYY-MM-DD format)
+  Receipt receipt = 6; // Receipt data for fiscal compliance
+}
+
+message Receipt {
+  string email = 1; // Customer email for receipt
+  string taxation = 2; // Taxation system (e.g., "usn_income")
+  repeated ReceiptItem items = 3; // Items in the receipt
+}
+
+message ReceiptItem {
+  string name = 1; // Item name
+  int64 price = 2; // Item price in kopecks
+  double quantity = 3; // Item quantity
+  int64 amount = 4; // Total amount for this item in kopecks
+  string tax = 5; // Tax type (e.g., "none", "vat10", "vat20")
+  string payment_method = 6; // Payment method (e.g., "full_payment")
+  string payment_object = 7; // Payment object type (e.g., "service", "commodity")
+}
+
+message PaymentResponse {
+  bool success = 1; // Whether the payment request was successful
+  string payment_url = 2; // URL for customer to complete payment
+  string payment_id = 3; // Tinkoff payment ID
+  string error_message = 4; // Error message if success is false
+}
+
+message TinkoffNotificationRequest {
+  string terminal_key = 1; // Terminal key
+  int64 amount = 2; // Payment amount
+  int64 order_id = 3; // Order ID
+  bool success = 4; // Payment success status
+  string status = 5; // Payment status
+  int64 payment_id = 6; // Payment ID
+  string error_code = 7; // Error code (if any)
+  string message = 8; // Status message
+  string details = 9; // Additional details
+  string token = 10; // Security token/signature
+}
+
+message TinkoffNotificationResponse {
+  string status = 1; // Response status ("OK" for successful processing)
+}
+
+// PaymentService provides payment processing functionality
+service PaymentService {
+  rpc CreatePaymentRequest(PaymentRequestInput) returns (PaymentResponse) {}
+  rpc ProcessTinkoffNotification(TinkoffNotificationRequest) returns (TinkoffNotificationResponse) {}
+}

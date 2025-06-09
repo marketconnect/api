@@ -804,6 +804,471 @@ func (x *GetBalanceResponse) GetBalance() int32 {
 	return 0
 }
 
+// Payment system messages
+type PaymentRequestInput struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Amount        int64                  `protobuf:"varint,1,opt,name=amount,proto3" json:"amount,omitempty"`                              // Amount in kopecks (1 ruble = 100 kopecks)
+	Email         string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`                                 // Customer email
+	OrderNumber   int64                  `protobuf:"varint,3,opt,name=order_number,json=orderNumber,proto3" json:"order_number,omitempty"` // Unique order number
+	Description   string                 `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`                     // Payment description
+	EndDate       string                 `protobuf:"bytes,5,opt,name=end_date,json=endDate,proto3" json:"end_date,omitempty"`              // Subscription end date (YYYY-MM-DD format)
+	Receipt       *Receipt               `protobuf:"bytes,6,opt,name=receipt,proto3" json:"receipt,omitempty"`                             // Receipt data for fiscal compliance
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PaymentRequestInput) Reset() {
+	*x = PaymentRequestInput{}
+	mi := &file_api_v1_product_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PaymentRequestInput) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PaymentRequestInput) ProtoMessage() {}
+
+func (x *PaymentRequestInput) ProtoReflect() protoreflect.Message {
+	mi := &file_api_v1_product_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PaymentRequestInput.ProtoReflect.Descriptor instead.
+func (*PaymentRequestInput) Descriptor() ([]byte, []int) {
+	return file_api_v1_product_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *PaymentRequestInput) GetAmount() int64 {
+	if x != nil {
+		return x.Amount
+	}
+	return 0
+}
+
+func (x *PaymentRequestInput) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *PaymentRequestInput) GetOrderNumber() int64 {
+	if x != nil {
+		return x.OrderNumber
+	}
+	return 0
+}
+
+func (x *PaymentRequestInput) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *PaymentRequestInput) GetEndDate() string {
+	if x != nil {
+		return x.EndDate
+	}
+	return ""
+}
+
+func (x *PaymentRequestInput) GetReceipt() *Receipt {
+	if x != nil {
+		return x.Receipt
+	}
+	return nil
+}
+
+type Receipt struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Email         string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`       // Customer email for receipt
+	Taxation      string                 `protobuf:"bytes,2,opt,name=taxation,proto3" json:"taxation,omitempty"` // Taxation system (e.g., "usn_income")
+	Items         []*ReceiptItem         `protobuf:"bytes,3,rep,name=items,proto3" json:"items,omitempty"`       // Items in the receipt
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Receipt) Reset() {
+	*x = Receipt{}
+	mi := &file_api_v1_product_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Receipt) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Receipt) ProtoMessage() {}
+
+func (x *Receipt) ProtoReflect() protoreflect.Message {
+	mi := &file_api_v1_product_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Receipt.ProtoReflect.Descriptor instead.
+func (*Receipt) Descriptor() ([]byte, []int) {
+	return file_api_v1_product_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *Receipt) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *Receipt) GetTaxation() string {
+	if x != nil {
+		return x.Taxation
+	}
+	return ""
+}
+
+func (x *Receipt) GetItems() []*ReceiptItem {
+	if x != nil {
+		return x.Items
+	}
+	return nil
+}
+
+type ReceiptItem struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`                                        // Item name
+	Price         int64                  `protobuf:"varint,2,opt,name=price,proto3" json:"price,omitempty"`                                     // Item price in kopecks
+	Quantity      float64                `protobuf:"fixed64,3,opt,name=quantity,proto3" json:"quantity,omitempty"`                              // Item quantity
+	Amount        int64                  `protobuf:"varint,4,opt,name=amount,proto3" json:"amount,omitempty"`                                   // Total amount for this item in kopecks
+	Tax           string                 `protobuf:"bytes,5,opt,name=tax,proto3" json:"tax,omitempty"`                                          // Tax type (e.g., "none", "vat10", "vat20")
+	PaymentMethod string                 `protobuf:"bytes,6,opt,name=payment_method,json=paymentMethod,proto3" json:"payment_method,omitempty"` // Payment method (e.g., "full_payment")
+	PaymentObject string                 `protobuf:"bytes,7,opt,name=payment_object,json=paymentObject,proto3" json:"payment_object,omitempty"` // Payment object type (e.g., "service", "commodity")
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ReceiptItem) Reset() {
+	*x = ReceiptItem{}
+	mi := &file_api_v1_product_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReceiptItem) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReceiptItem) ProtoMessage() {}
+
+func (x *ReceiptItem) ProtoReflect() protoreflect.Message {
+	mi := &file_api_v1_product_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReceiptItem.ProtoReflect.Descriptor instead.
+func (*ReceiptItem) Descriptor() ([]byte, []int) {
+	return file_api_v1_product_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *ReceiptItem) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *ReceiptItem) GetPrice() int64 {
+	if x != nil {
+		return x.Price
+	}
+	return 0
+}
+
+func (x *ReceiptItem) GetQuantity() float64 {
+	if x != nil {
+		return x.Quantity
+	}
+	return 0
+}
+
+func (x *ReceiptItem) GetAmount() int64 {
+	if x != nil {
+		return x.Amount
+	}
+	return 0
+}
+
+func (x *ReceiptItem) GetTax() string {
+	if x != nil {
+		return x.Tax
+	}
+	return ""
+}
+
+func (x *ReceiptItem) GetPaymentMethod() string {
+	if x != nil {
+		return x.PaymentMethod
+	}
+	return ""
+}
+
+func (x *ReceiptItem) GetPaymentObject() string {
+	if x != nil {
+		return x.PaymentObject
+	}
+	return ""
+}
+
+type PaymentResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`                              // Whether the payment request was successful
+	PaymentUrl    string                 `protobuf:"bytes,2,opt,name=payment_url,json=paymentUrl,proto3" json:"payment_url,omitempty"`       // URL for customer to complete payment
+	PaymentId     string                 `protobuf:"bytes,3,opt,name=payment_id,json=paymentId,proto3" json:"payment_id,omitempty"`          // Tinkoff payment ID
+	ErrorMessage  string                 `protobuf:"bytes,4,opt,name=error_message,json=errorMessage,proto3" json:"error_message,omitempty"` // Error message if success is false
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PaymentResponse) Reset() {
+	*x = PaymentResponse{}
+	mi := &file_api_v1_product_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PaymentResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PaymentResponse) ProtoMessage() {}
+
+func (x *PaymentResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_v1_product_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PaymentResponse.ProtoReflect.Descriptor instead.
+func (*PaymentResponse) Descriptor() ([]byte, []int) {
+	return file_api_v1_product_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *PaymentResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *PaymentResponse) GetPaymentUrl() string {
+	if x != nil {
+		return x.PaymentUrl
+	}
+	return ""
+}
+
+func (x *PaymentResponse) GetPaymentId() string {
+	if x != nil {
+		return x.PaymentId
+	}
+	return ""
+}
+
+func (x *PaymentResponse) GetErrorMessage() string {
+	if x != nil {
+		return x.ErrorMessage
+	}
+	return ""
+}
+
+type TinkoffNotificationRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TerminalKey   string                 `protobuf:"bytes,1,opt,name=terminal_key,json=terminalKey,proto3" json:"terminal_key,omitempty"` // Terminal key
+	Amount        int64                  `protobuf:"varint,2,opt,name=amount,proto3" json:"amount,omitempty"`                             // Payment amount
+	OrderId       int64                  `protobuf:"varint,3,opt,name=order_id,json=orderId,proto3" json:"order_id,omitempty"`            // Order ID
+	Success       bool                   `protobuf:"varint,4,opt,name=success,proto3" json:"success,omitempty"`                           // Payment success status
+	Status        string                 `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`                              // Payment status
+	PaymentId     int64                  `protobuf:"varint,6,opt,name=payment_id,json=paymentId,proto3" json:"payment_id,omitempty"`      // Payment ID
+	ErrorCode     string                 `protobuf:"bytes,7,opt,name=error_code,json=errorCode,proto3" json:"error_code,omitempty"`       // Error code (if any)
+	Message       string                 `protobuf:"bytes,8,opt,name=message,proto3" json:"message,omitempty"`                            // Status message
+	Details       string                 `protobuf:"bytes,9,opt,name=details,proto3" json:"details,omitempty"`                            // Additional details
+	Token         string                 `protobuf:"bytes,10,opt,name=token,proto3" json:"token,omitempty"`                               // Security token/signature
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TinkoffNotificationRequest) Reset() {
+	*x = TinkoffNotificationRequest{}
+	mi := &file_api_v1_product_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TinkoffNotificationRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TinkoffNotificationRequest) ProtoMessage() {}
+
+func (x *TinkoffNotificationRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_v1_product_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TinkoffNotificationRequest.ProtoReflect.Descriptor instead.
+func (*TinkoffNotificationRequest) Descriptor() ([]byte, []int) {
+	return file_api_v1_product_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *TinkoffNotificationRequest) GetTerminalKey() string {
+	if x != nil {
+		return x.TerminalKey
+	}
+	return ""
+}
+
+func (x *TinkoffNotificationRequest) GetAmount() int64 {
+	if x != nil {
+		return x.Amount
+	}
+	return 0
+}
+
+func (x *TinkoffNotificationRequest) GetOrderId() int64 {
+	if x != nil {
+		return x.OrderId
+	}
+	return 0
+}
+
+func (x *TinkoffNotificationRequest) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *TinkoffNotificationRequest) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *TinkoffNotificationRequest) GetPaymentId() int64 {
+	if x != nil {
+		return x.PaymentId
+	}
+	return 0
+}
+
+func (x *TinkoffNotificationRequest) GetErrorCode() string {
+	if x != nil {
+		return x.ErrorCode
+	}
+	return ""
+}
+
+func (x *TinkoffNotificationRequest) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *TinkoffNotificationRequest) GetDetails() string {
+	if x != nil {
+		return x.Details
+	}
+	return ""
+}
+
+func (x *TinkoffNotificationRequest) GetToken() string {
+	if x != nil {
+		return x.Token
+	}
+	return ""
+}
+
+type TinkoffNotificationResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Status        string                 `protobuf:"bytes,1,opt,name=status,proto3" json:"status,omitempty"` // Response status ("OK" for successful processing)
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TinkoffNotificationResponse) Reset() {
+	*x = TinkoffNotificationResponse{}
+	mi := &file_api_v1_product_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TinkoffNotificationResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TinkoffNotificationResponse) ProtoMessage() {}
+
+func (x *TinkoffNotificationResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_v1_product_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TinkoffNotificationResponse.ProtoReflect.Descriptor instead.
+func (*TinkoffNotificationResponse) Descriptor() ([]byte, []int) {
+	return file_api_v1_product_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *TinkoffNotificationResponse) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
 var File_api_v1_product_proto protoreflect.FileDescriptor
 
 const file_api_v1_product_proto_rawDesc = "" +
@@ -900,12 +1365,57 @@ const file_api_v1_product_proto_rawDesc = "" +
 	"\x0e_error_message\"\x13\n" +
 	"\x11GetBalanceRequest\".\n" +
 	"\x12GetBalanceResponse\x12\x18\n" +
-	"\abalance\x18\x01 \x01(\x05R\abalance2v\n" +
+	"\abalance\x18\x01 \x01(\x05R\abalance\"\xce\x01\n" +
+	"\x13PaymentRequestInput\x12\x16\n" +
+	"\x06amount\x18\x01 \x01(\x03R\x06amount\x12\x14\n" +
+	"\x05email\x18\x02 \x01(\tR\x05email\x12!\n" +
+	"\forder_number\x18\x03 \x01(\x03R\vorderNumber\x12 \n" +
+	"\vdescription\x18\x04 \x01(\tR\vdescription\x12\x19\n" +
+	"\bend_date\x18\x05 \x01(\tR\aendDate\x12)\n" +
+	"\areceipt\x18\x06 \x01(\v2\x0f.api.v1.ReceiptR\areceipt\"f\n" +
+	"\aReceipt\x12\x14\n" +
+	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
+	"\btaxation\x18\x02 \x01(\tR\btaxation\x12)\n" +
+	"\x05items\x18\x03 \x03(\v2\x13.api.v1.ReceiptItemR\x05items\"\xcb\x01\n" +
+	"\vReceiptItem\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x14\n" +
+	"\x05price\x18\x02 \x01(\x03R\x05price\x12\x1a\n" +
+	"\bquantity\x18\x03 \x01(\x01R\bquantity\x12\x16\n" +
+	"\x06amount\x18\x04 \x01(\x03R\x06amount\x12\x10\n" +
+	"\x03tax\x18\x05 \x01(\tR\x03tax\x12%\n" +
+	"\x0epayment_method\x18\x06 \x01(\tR\rpaymentMethod\x12%\n" +
+	"\x0epayment_object\x18\a \x01(\tR\rpaymentObject\"\x90\x01\n" +
+	"\x0fPaymentResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x1f\n" +
+	"\vpayment_url\x18\x02 \x01(\tR\n" +
+	"paymentUrl\x12\x1d\n" +
+	"\n" +
+	"payment_id\x18\x03 \x01(\tR\tpaymentId\x12#\n" +
+	"\rerror_message\x18\x04 \x01(\tR\ferrorMessage\"\xac\x02\n" +
+	"\x1aTinkoffNotificationRequest\x12!\n" +
+	"\fterminal_key\x18\x01 \x01(\tR\vterminalKey\x12\x16\n" +
+	"\x06amount\x18\x02 \x01(\x03R\x06amount\x12\x19\n" +
+	"\border_id\x18\x03 \x01(\x03R\aorderId\x12\x18\n" +
+	"\asuccess\x18\x04 \x01(\bR\asuccess\x12\x16\n" +
+	"\x06status\x18\x05 \x01(\tR\x06status\x12\x1d\n" +
+	"\n" +
+	"payment_id\x18\x06 \x01(\x03R\tpaymentId\x12\x1d\n" +
+	"\n" +
+	"error_code\x18\a \x01(\tR\terrorCode\x12\x18\n" +
+	"\amessage\x18\b \x01(\tR\amessage\x12\x18\n" +
+	"\adetails\x18\t \x01(\tR\adetails\x12\x14\n" +
+	"\x05token\x18\n" +
+	" \x01(\tR\x05token\"5\n" +
+	"\x1bTinkoffNotificationResponse\x12\x16\n" +
+	"\x06status\x18\x01 \x01(\tR\x06status2v\n" +
 	"\x18CreateProductCardService\x12Z\n" +
 	"\x11CreateProductCard\x12 .api.v1.CreateProductCardRequest\x1a!.api.v1.CreateProductCardResponse\"\x002W\n" +
 	"\x0eBalanceService\x12E\n" +
 	"\n" +
-	"GetBalance\x12\x19.api.v1.GetBalanceRequest\x1a\x1a.api.v1.GetBalanceResponse\"\x00B\x16Z\x14api/gen/api/v1;apiv1b\x06proto3"
+	"GetBalance\x12\x19.api.v1.GetBalanceRequest\x1a\x1a.api.v1.GetBalanceResponse\"\x002\xc9\x01\n" +
+	"\x0ePaymentService\x12N\n" +
+	"\x14CreatePaymentRequest\x12\x1b.api.v1.PaymentRequestInput\x1a\x17.api.v1.PaymentResponse\"\x00\x12g\n" +
+	"\x1aProcessTinkoffNotification\x12\".api.v1.TinkoffNotificationRequest\x1a#.api.v1.TinkoffNotificationResponse\"\x00B\x16Z\x14api/gen/api/v1;apiv1b\x06proto3"
 
 var (
 	file_api_v1_product_proto_rawDescOnce sync.Once
@@ -919,7 +1429,7 @@ func file_api_v1_product_proto_rawDescGZIP() []byte {
 	return file_api_v1_product_proto_rawDescData
 }
 
-var file_api_v1_product_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_api_v1_product_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
 var file_api_v1_product_proto_goTypes = []any{
 	(*CreateProductCardRequest)(nil),        // 0: api.v1.CreateProductCardRequest
 	(*Dimensions)(nil),                      // 1: api.v1.Dimensions
@@ -930,24 +1440,36 @@ var file_api_v1_product_proto_goTypes = []any{
 	(*WBMediaSaveByLinksResponse)(nil),      // 6: api.v1.WBMediaSaveByLinksResponse
 	(*GetBalanceRequest)(nil),               // 7: api.v1.GetBalanceRequest
 	(*GetBalanceResponse)(nil),              // 8: api.v1.GetBalanceResponse
-	nil,                                     // 9: api.v1.CreateProductCardResponse.AttributesEntry
+	(*PaymentRequestInput)(nil),             // 9: api.v1.PaymentRequestInput
+	(*Receipt)(nil),                         // 10: api.v1.Receipt
+	(*ReceiptItem)(nil),                     // 11: api.v1.ReceiptItem
+	(*PaymentResponse)(nil),                 // 12: api.v1.PaymentResponse
+	(*TinkoffNotificationRequest)(nil),      // 13: api.v1.TinkoffNotificationRequest
+	(*TinkoffNotificationResponse)(nil),     // 14: api.v1.TinkoffNotificationResponse
+	nil,                                     // 15: api.v1.CreateProductCardResponse.AttributesEntry
 }
 var file_api_v1_product_proto_depIdxs = []int32{
-	1, // 0: api.v1.CreateProductCardRequest.dimensions:type_name -> api.v1.Dimensions
-	2, // 1: api.v1.CreateProductCardRequest.sizes:type_name -> api.v1.Size
-	3, // 2: api.v1.CreateProductCardRequest.wb_media_to_upload_files:type_name -> api.v1.WBMediaFileToUpload
-	9, // 3: api.v1.CreateProductCardResponse.attributes:type_name -> api.v1.CreateProductCardResponse.AttributesEntry
-	5, // 4: api.v1.CreateProductCardResponse.wb_media_upload_individual_responses:type_name -> api.v1.WBMediaUploadIndividualResponse
-	6, // 5: api.v1.CreateProductCardResponse.wb_media_save_by_links_response:type_name -> api.v1.WBMediaSaveByLinksResponse
-	0, // 6: api.v1.CreateProductCardService.CreateProductCard:input_type -> api.v1.CreateProductCardRequest
-	7, // 7: api.v1.BalanceService.GetBalance:input_type -> api.v1.GetBalanceRequest
-	4, // 8: api.v1.CreateProductCardService.CreateProductCard:output_type -> api.v1.CreateProductCardResponse
-	8, // 9: api.v1.BalanceService.GetBalance:output_type -> api.v1.GetBalanceResponse
-	8, // [8:10] is the sub-list for method output_type
-	6, // [6:8] is the sub-list for method input_type
-	6, // [6:6] is the sub-list for extension type_name
-	6, // [6:6] is the sub-list for extension extendee
-	0, // [0:6] is the sub-list for field type_name
+	1,  // 0: api.v1.CreateProductCardRequest.dimensions:type_name -> api.v1.Dimensions
+	2,  // 1: api.v1.CreateProductCardRequest.sizes:type_name -> api.v1.Size
+	3,  // 2: api.v1.CreateProductCardRequest.wb_media_to_upload_files:type_name -> api.v1.WBMediaFileToUpload
+	15, // 3: api.v1.CreateProductCardResponse.attributes:type_name -> api.v1.CreateProductCardResponse.AttributesEntry
+	5,  // 4: api.v1.CreateProductCardResponse.wb_media_upload_individual_responses:type_name -> api.v1.WBMediaUploadIndividualResponse
+	6,  // 5: api.v1.CreateProductCardResponse.wb_media_save_by_links_response:type_name -> api.v1.WBMediaSaveByLinksResponse
+	10, // 6: api.v1.PaymentRequestInput.receipt:type_name -> api.v1.Receipt
+	11, // 7: api.v1.Receipt.items:type_name -> api.v1.ReceiptItem
+	0,  // 8: api.v1.CreateProductCardService.CreateProductCard:input_type -> api.v1.CreateProductCardRequest
+	7,  // 9: api.v1.BalanceService.GetBalance:input_type -> api.v1.GetBalanceRequest
+	9,  // 10: api.v1.PaymentService.CreatePaymentRequest:input_type -> api.v1.PaymentRequestInput
+	13, // 11: api.v1.PaymentService.ProcessTinkoffNotification:input_type -> api.v1.TinkoffNotificationRequest
+	4,  // 12: api.v1.CreateProductCardService.CreateProductCard:output_type -> api.v1.CreateProductCardResponse
+	8,  // 13: api.v1.BalanceService.GetBalance:output_type -> api.v1.GetBalanceResponse
+	12, // 14: api.v1.PaymentService.CreatePaymentRequest:output_type -> api.v1.PaymentResponse
+	14, // 15: api.v1.PaymentService.ProcessTinkoffNotification:output_type -> api.v1.TinkoffNotificationResponse
+	12, // [12:16] is the sub-list for method output_type
+	8,  // [8:12] is the sub-list for method input_type
+	8,  // [8:8] is the sub-list for extension type_name
+	8,  // [8:8] is the sub-list for extension extendee
+	0,  // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_api_v1_product_proto_init() }
@@ -964,9 +1486,9 @@ func file_api_v1_product_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_v1_product_proto_rawDesc), len(file_api_v1_product_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   10,
+			NumMessages:   16,
 			NumExtensions: 0,
-			NumServices:   2,
+			NumServices:   3,
 		},
 		GoTypes:           file_api_v1_product_proto_goTypes,
 		DependencyIndexes: file_api_v1_product_proto_depIdxs,

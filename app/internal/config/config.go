@@ -32,6 +32,11 @@ type Config struct {
 		Host     string `env:"PG_HOST" env-default:"localhost"`
 		Port     string `env:"PG_PORT" env-default:"5432"`
 	}
+	Tinkoff struct {
+		SecretKey        string `env:"TINKOFF_SECRET_KEY" env-required:"true"`
+		TerminalKey      string `env:"TINKOFF_TERMINAL_KEY" env-required:"true"`
+		TelegramBotToken string `env:"TELEGRAM_BOT_TOKEN" env-default:""`
+	}
 }
 
 // Singleton: Config should only ever be created once.

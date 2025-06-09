@@ -12,6 +12,7 @@ import (
 	"api/app/domain/usecases"
 	"api/app/internal/config"
 	"api/app/internal/presentation"
+	"api/app/internal/presentation/middleware"
 
 	"api/app/internal/infrastructure/external/card_craft_ai"
 	"api/app/internal/infrastructure/external/ozon"
@@ -67,22 +68,34 @@ func NewApp() *App {
 	// usecases
 	createCardUsecase := usecases.NewCreateCardUsecase(cardCraftAiService, wbService, ozonService, tokenBillingService)
 	getBalanceUsecase := usecases.NewGetBalanceUsecase(balanceStorage)
+	updateBalanceUsecase := usecases.NewUpdateBalanceUsecase(balanceStorage)
 
 	// handlers
 	createProductCardHandler := presentation.NewCreateProductCardHandler(createCardUsecase)
 	balanceHandler := presentation.NewBalanceHandler(getBalanceUsecase)
+	tinkoffHandler := presentation.NewTinkoffNotificationHandler(
+		updateBalanceUsecase,
+		cfg.Tinkoff.SecretKey,
+		cfg.Tinkoff.TerminalKey,
+		cfg.Tinkoff.TelegramBotToken,
+	)
+
+	// middleware
+	balanceCheckMiddleware := middleware.NewBalanceCheckMiddleware(getBalanceUsecase, presentation.ExtractAPIKeyFromHeader)
 
 	// mux
 	mux := http.NewServeMux()
 	path, baseHandler := apiv1connect.NewCreateProductCardServiceHandler(createProductCardHandler)
 	balancePath, balanceServiceHandler := apiv1connect.NewBalanceServiceHandler(balanceHandler)
+	paymentPath, paymentServiceHandler := apiv1connect.NewPaymentServiceHandler(tinkoffHandler)
 
-	// Wrap the base handler with Prometheus metrics instrumentation
+	// Wrap the base handler with balance check and Prometheus metrics instrumentation
+	balanceCheckedHandler := balanceCheckMiddleware.CheckBalance(baseHandler)
 	metricsWrappedHandler := promhttp.InstrumentHandlerCounter(
 		metrics.HTTPRequestsTotal.MustCurryWith(prometheus.Labels{"handler": path}),
 		promhttp.InstrumentHandlerDuration(
 			metrics.HTTPRequestDuration.MustCurryWith(prometheus.Labels{"handler": path}),
-			baseHandler,
+			balanceCheckedHandler,
 		),
 	)
 
@@ -96,9 +109,14 @@ func NewApp() *App {
 
 	mux.Handle(path, metricsWrappedHandler)
 	mux.Handle(balancePath, balanceMetricsWrappedHandler)
+	mux.Handle(paymentPath, paymentServiceHandler)
 	mux.Handle("/metrics", promhttp.Handler()) // Expose Prometheus metrics
 	mux.HandleFunc("/balance", balanceHandler.GetBalanceHTTP)
 	mux.HandleFunc("/balance-by-token", balanceHandler.GetBalanceByToken)
+
+	// Tinkoff payment endpoints
+	mux.HandleFunc("/payment/request", tinkoffHandler.ProcessPaymentRequestHandler)
+	mux.HandleFunc("/payment/notification", tinkoffHandler.TinkoffNotificationHandler)
 
 	return &App{
 		cardCraftAiAPIURL: cfg.CardCraftAi.URL,

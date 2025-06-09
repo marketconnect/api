@@ -59,32 +59,72 @@ func (uc *CreateCardUsecase) CreateProductCard(ctx context.Context, apiKey strin
 
 	metrics.AppCardCreationsTotal.Inc() // Core content generation successful
 
-	// Create card in Wildberries
-	wbApiResponseJSON, wbPreparedRequestJSON, wbRequestAttempted, wbErr := uc.wbService.CreateCard(ctx, &req, cardCraftAiGeneratedContent)
-	createProductCardResult.WbApiResponseJson = wbApiResponseJSON
-	createProductCardResult.WbPreparedRequestJson = wbPreparedRequestJSON
-	createProductCardResult.WbRequestAttempted = wbRequestAttempted
+	// Create cards in WB and Ozon in parallel since they are independent
+	type wbResult struct {
+		apiResponseJSON     *string
+		preparedRequestJSON *string
+		requestAttempted    *bool
+		err                 error
+	}
 
-	// Create card in Ozon
-	ozonApiResponseJSON, ozonRequestAttempted, ozonErr := uc.ozonService.CreateCard(ctx, &req, cardCraftAiGeneratedContent)
-	createProductCardResult.OzonApiResponseJson = ozonApiResponseJSON
-	createProductCardResult.OzonRequestAttempted = ozonRequestAttempted
+	type ozonResult struct {
+		apiResponseJSON  *string
+		requestAttempted *bool
+		err              error
+	}
+
+	wbChan := make(chan wbResult, 1)
+	ozonChan := make(chan ozonResult, 1)
+
+	// Create card in Wildberries (parallel)
+	go func() {
+		wbApiResponseJSON, wbPreparedRequestJSON, wbRequestAttempted, wbErr := uc.wbService.CreateCard(ctx, &req, cardCraftAiGeneratedContent)
+		wbChan <- wbResult{
+			apiResponseJSON:     wbApiResponseJSON,
+			preparedRequestJSON: wbPreparedRequestJSON,
+			requestAttempted:    wbRequestAttempted,
+			err:                 wbErr,
+		}
+	}()
+
+	// Create card in Ozon (parallel)
+	go func() {
+		ozonApiResponseJSON, ozonRequestAttempted, ozonErr := uc.ozonService.CreateCard(ctx, &req, cardCraftAiGeneratedContent)
+		ozonChan <- ozonResult{
+			apiResponseJSON:  ozonApiResponseJSON,
+			requestAttempted: ozonRequestAttempted,
+			err:              ozonErr,
+		}
+	}()
+
+	// Wait for both operations to complete
+	wbRes := <-wbChan
+	ozonRes := <-ozonChan
+
+	// Set WB results
+	createProductCardResult.WbApiResponseJson = wbRes.apiResponseJSON
+	createProductCardResult.WbPreparedRequestJson = wbRes.preparedRequestJSON
+	createProductCardResult.WbRequestAttempted = wbRes.requestAttempted
+
+	// Set Ozon results
+	createProductCardResult.OzonApiResponseJson = ozonRes.apiResponseJSON
+	createProductCardResult.OzonRequestAttempted = ozonRes.requestAttempted
 
 	// Log errors but don't stop execution (marketplace integrations are independent)
-	if wbErr != nil {
-		log.Printf("Error in Wildberries card creation: %v", wbErr)
+	if wbRes.err != nil {
+		log.Printf("Error in Wildberries card creation: %v", wbRes.err)
 	}
-	if ozonErr != nil {
-		log.Printf("Error in Ozon card creation: %v", ozonErr)
+	if ozonRes.err != nil {
+		log.Printf("Error in Ozon card creation: %v", ozonRes.err)
 	}
 
 	// Handle media uploads and saves - only if WB card creation was attempted and successful
 	var shouldAttemptMedia bool = false
-	if wbRequestAttempted != nil && *wbRequestAttempted && wbErr == nil {
+	if wbRes.requestAttempted != nil && *wbRes.requestAttempted && wbRes.err == nil {
 		shouldAttemptMedia = true
 		log.Printf("WB card creation successful, proceeding with media operations")
-	} else if wbRequestAttempted != nil && *wbRequestAttempted && wbErr != nil {
-		log.Printf("WB card creation failed, skipping media operations: %v", wbErr)
+	} else if wbRes.requestAttempted != nil && *wbRes.requestAttempted && wbRes.err != nil {
+		log.Printf("WB card creation failed, skipping media operations: %v", wbRes.err)
 	} else {
 		log.Printf("WB card creation was not attempted, skipping media operations")
 	}

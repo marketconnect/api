@@ -25,6 +25,8 @@ const (
 	CreateProductCardServiceName = "api.v1.CreateProductCardService"
 	// BalanceServiceName is the fully-qualified name of the BalanceService service.
 	BalanceServiceName = "api.v1.BalanceService"
+	// PaymentServiceName is the fully-qualified name of the PaymentService service.
+	PaymentServiceName = "api.v1.PaymentService"
 )
 
 // These constants are the fully-qualified names of the RPCs defined in this package. They're
@@ -41,6 +43,12 @@ const (
 	// BalanceServiceGetBalanceProcedure is the fully-qualified name of the BalanceService's GetBalance
 	// RPC.
 	BalanceServiceGetBalanceProcedure = "/api.v1.BalanceService/GetBalance"
+	// PaymentServiceCreatePaymentRequestProcedure is the fully-qualified name of the PaymentService's
+	// CreatePaymentRequest RPC.
+	PaymentServiceCreatePaymentRequestProcedure = "/api.v1.PaymentService/CreatePaymentRequest"
+	// PaymentServiceProcessTinkoffNotificationProcedure is the fully-qualified name of the
+	// PaymentService's ProcessTinkoffNotification RPC.
+	PaymentServiceProcessTinkoffNotificationProcedure = "/api.v1.PaymentService/ProcessTinkoffNotification"
 )
 
 // CreateProductCardServiceClient is a client for the api.v1.CreateProductCardService service.
@@ -182,4 +190,100 @@ type UnimplementedBalanceServiceHandler struct{}
 
 func (UnimplementedBalanceServiceHandler) GetBalance(context.Context, *connect.Request[v1.GetBalanceRequest]) (*connect.Response[v1.GetBalanceResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("api.v1.BalanceService.GetBalance is not implemented"))
+}
+
+// PaymentServiceClient is a client for the api.v1.PaymentService service.
+type PaymentServiceClient interface {
+	CreatePaymentRequest(context.Context, *connect.Request[v1.PaymentRequestInput]) (*connect.Response[v1.PaymentResponse], error)
+	ProcessTinkoffNotification(context.Context, *connect.Request[v1.TinkoffNotificationRequest]) (*connect.Response[v1.TinkoffNotificationResponse], error)
+}
+
+// NewPaymentServiceClient constructs a client for the api.v1.PaymentService service. By default, it
+// uses the Connect protocol with the binary Protobuf Codec, asks for gzipped responses, and sends
+// uncompressed requests. To use the gRPC or gRPC-Web protocols, supply the connect.WithGRPC() or
+// connect.WithGRPCWeb() options.
+//
+// The URL supplied here should be the base URL for the Connect or gRPC server (for example,
+// http://api.acme.com or https://acme.com/grpc).
+func NewPaymentServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) PaymentServiceClient {
+	baseURL = strings.TrimRight(baseURL, "/")
+	paymentServiceMethods := v1.File_api_v1_product_proto.Services().ByName("PaymentService").Methods()
+	return &paymentServiceClient{
+		createPaymentRequest: connect.NewClient[v1.PaymentRequestInput, v1.PaymentResponse](
+			httpClient,
+			baseURL+PaymentServiceCreatePaymentRequestProcedure,
+			connect.WithSchema(paymentServiceMethods.ByName("CreatePaymentRequest")),
+			connect.WithClientOptions(opts...),
+		),
+		processTinkoffNotification: connect.NewClient[v1.TinkoffNotificationRequest, v1.TinkoffNotificationResponse](
+			httpClient,
+			baseURL+PaymentServiceProcessTinkoffNotificationProcedure,
+			connect.WithSchema(paymentServiceMethods.ByName("ProcessTinkoffNotification")),
+			connect.WithClientOptions(opts...),
+		),
+	}
+}
+
+// paymentServiceClient implements PaymentServiceClient.
+type paymentServiceClient struct {
+	createPaymentRequest       *connect.Client[v1.PaymentRequestInput, v1.PaymentResponse]
+	processTinkoffNotification *connect.Client[v1.TinkoffNotificationRequest, v1.TinkoffNotificationResponse]
+}
+
+// CreatePaymentRequest calls api.v1.PaymentService.CreatePaymentRequest.
+func (c *paymentServiceClient) CreatePaymentRequest(ctx context.Context, req *connect.Request[v1.PaymentRequestInput]) (*connect.Response[v1.PaymentResponse], error) {
+	return c.createPaymentRequest.CallUnary(ctx, req)
+}
+
+// ProcessTinkoffNotification calls api.v1.PaymentService.ProcessTinkoffNotification.
+func (c *paymentServiceClient) ProcessTinkoffNotification(ctx context.Context, req *connect.Request[v1.TinkoffNotificationRequest]) (*connect.Response[v1.TinkoffNotificationResponse], error) {
+	return c.processTinkoffNotification.CallUnary(ctx, req)
+}
+
+// PaymentServiceHandler is an implementation of the api.v1.PaymentService service.
+type PaymentServiceHandler interface {
+	CreatePaymentRequest(context.Context, *connect.Request[v1.PaymentRequestInput]) (*connect.Response[v1.PaymentResponse], error)
+	ProcessTinkoffNotification(context.Context, *connect.Request[v1.TinkoffNotificationRequest]) (*connect.Response[v1.TinkoffNotificationResponse], error)
+}
+
+// NewPaymentServiceHandler builds an HTTP handler from the service implementation. It returns the
+// path on which to mount the handler and the handler itself.
+//
+// By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
+// and JSON codecs. They also support gzip compression.
+func NewPaymentServiceHandler(svc PaymentServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	paymentServiceMethods := v1.File_api_v1_product_proto.Services().ByName("PaymentService").Methods()
+	paymentServiceCreatePaymentRequestHandler := connect.NewUnaryHandler(
+		PaymentServiceCreatePaymentRequestProcedure,
+		svc.CreatePaymentRequest,
+		connect.WithSchema(paymentServiceMethods.ByName("CreatePaymentRequest")),
+		connect.WithHandlerOptions(opts...),
+	)
+	paymentServiceProcessTinkoffNotificationHandler := connect.NewUnaryHandler(
+		PaymentServiceProcessTinkoffNotificationProcedure,
+		svc.ProcessTinkoffNotification,
+		connect.WithSchema(paymentServiceMethods.ByName("ProcessTinkoffNotification")),
+		connect.WithHandlerOptions(opts...),
+	)
+	return "/api.v1.PaymentService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case PaymentServiceCreatePaymentRequestProcedure:
+			paymentServiceCreatePaymentRequestHandler.ServeHTTP(w, r)
+		case PaymentServiceProcessTinkoffNotificationProcedure:
+			paymentServiceProcessTinkoffNotificationHandler.ServeHTTP(w, r)
+		default:
+			http.NotFound(w, r)
+		}
+	})
+}
+
+// UnimplementedPaymentServiceHandler returns CodeUnimplemented from all methods.
+type UnimplementedPaymentServiceHandler struct{}
+
+func (UnimplementedPaymentServiceHandler) CreatePaymentRequest(context.Context, *connect.Request[v1.PaymentRequestInput]) (*connect.Response[v1.PaymentResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("api.v1.PaymentService.CreatePaymentRequest is not implemented"))
+}
+
+func (UnimplementedPaymentServiceHandler) ProcessTinkoffNotification(context.Context, *connect.Request[v1.TinkoffNotificationRequest]) (*connect.Response[v1.TinkoffNotificationResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("api.v1.PaymentService.ProcessTinkoffNotification is not implemented"))
 }

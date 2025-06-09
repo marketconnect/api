@@ -28,6 +28,7 @@ cat > payload.json <<EOF
 EOF
 
 # Send it
-curl -X POST http://localhost:8080/api.v1.CreateProductCardService/CreateProductCard \
+curl -X POST http://45.141.76.230:8080/api.v1.CreateProductCardService/CreateProductCard \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer 111" \
   -d @payload.json
