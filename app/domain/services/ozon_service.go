@@ -12,13 +12,20 @@ import (
 type ozonClient interface {
 	ImportProductsV3(ctx context.Context, clientID, apiKey string, request entities.OzonProductImportRequest) (*entities.OzonProductImportResponse, error)
 }
-type ozonService struct {
-	ozonClient ozonClient
+
+type fileUploadService interface {
+	UploadWBMediaFiles(ctx context.Context, wbFiles []*entities.WBClientMediaFile) ([]string, error)
 }
 
-func NewOzonService(ozonClient ozonClient) *ozonService {
+type ozonService struct {
+	ozonClient        ozonClient
+	fileUploadService fileUploadService
+}
+
+func NewOzonService(ozonClient ozonClient, fileUploadService fileUploadService) *ozonService {
 	return &ozonService{
-		ozonClient: ozonClient,
+		ozonClient:        ozonClient,
+		fileUploadService: fileUploadService,
 	}
 }
 
@@ -98,7 +105,41 @@ func (ozs *ozonService) CreateCard(ctx context.Context, req *entities.ProductCar
 	log.Printf("[OZON DEBUG] Dimensions validation passed: %dx%dx%d, weight: %d",
 		*req.Dimensions.Depth, *req.Dimensions.Width, *req.Dimensions.Height, *req.Dimensions.Weight)
 
-	log.Printf("[OZON DEBUG] All validations passed, creating Ozon payload")
+	log.Printf("[OZON DEBUG] All validations passed, processing images")
+
+	// Process images for Ozon - combine uploaded files and existing links
+	var ozonImageURLs []string
+
+	// First, add any existing WbMediaToSaveLinks (already URL links)
+	if len(req.GetWbMediaToSaveLinks()) > 0 {
+		log.Printf("[OZON DEBUG] Using %d existing image links from WbMediaToSaveLinks", len(req.GetWbMediaToSaveLinks()))
+		ozonImageURLs = append(ozonImageURLs, req.GetWbMediaToSaveLinks()...)
+	}
+
+	// Second, upload WbMediaToUploadFiles and get URLs
+	if len(req.GetWbMediaToUploadFiles()) > 0 {
+		log.Printf("[OZON DEBUG] Uploading %d files from WbMediaToUploadFiles to get URLs for Ozon", len(req.GetWbMediaToUploadFiles()))
+
+		uploadedURLs, err := ozs.fileUploadService.UploadWBMediaFiles(ctx, req.GetWbMediaToUploadFiles())
+		if err != nil {
+			log.Printf("[OZON DEBUG] Warning: Failed to upload some files for Ozon: %v", err)
+			// Continue with partial URLs if some uploads succeeded
+		}
+
+		if len(uploadedURLs) > 0 {
+			log.Printf("[OZON DEBUG] Successfully uploaded %d files, adding URLs to Ozon images", len(uploadedURLs))
+			ozonImageURLs = append(ozonImageURLs, uploadedURLs...)
+		} else {
+			log.Printf("[OZON DEBUG] No files were successfully uploaded")
+		}
+	}
+
+	log.Printf("[OZON DEBUG] Total images for Ozon: %d", len(ozonImageURLs))
+	if len(ozonImageURLs) == 0 {
+		log.Printf("[OZON DEBUG] Warning: No images available for Ozon product")
+	}
+
+	log.Printf("[OZON DEBUG] Creating Ozon payload")
 
 	// Determine price from sizes if available, otherwise use a default minimum price
 	var price string = "100" // Minimum price 100 kopecks = 1 ruble
@@ -120,7 +161,7 @@ func (ozs *ozonService) CreateCard(ctx context.Context, req *entities.ProductCar
 		DimensionUnit:         req.Dimensions.DimensionUnit,
 		Weight:                int32(*req.Dimensions.Weight),
 		WeightUnit:            req.Dimensions.WeightUnit,
-		Images:                req.WbMediaToSaveLinks,
+		Images:                ozonImageURLs, // Use processed image URLs
 		Attributes:            []entities.OzonProductAttribute{},
 		ComplexAttributes:     []entities.OzonComplexAttribute{},
 	}

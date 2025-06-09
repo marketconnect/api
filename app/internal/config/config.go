@@ -25,6 +25,10 @@ type Config struct {
 	HTTP struct {
 		Port int `env:"PORT" env-default:"8080"`
 	}
+	FileStorage struct {
+		UploadDir string `env:"FILE_STORAGE_UPLOAD_DIR" env-default:"./uploads"`
+		TTLHours  int    `env:"FILE_STORAGE_TTL_HOURS" env-default:"2"`
+	}
 	PostgreSQL struct {
 		Database string `env:"PG_DATABASE" env-required:"true"`
 		Username string `env:"PG_USER" env-required:"true"`

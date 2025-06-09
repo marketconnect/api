@@ -18,6 +18,7 @@ import (
 	"api/app/internal/infrastructure/external/ozon"
 	"api/app/internal/infrastructure/external/token_counter"
 	"api/app/internal/infrastructure/external/wb"
+	"api/app/internal/infrastructure/file_storage"
 	pgstorage "api/app/internal/infrastructure/persistence/postgres"
 
 	"api/metrics"
@@ -59,11 +60,18 @@ func NewApp() *App {
 	ozonClient := ozon.NewClient()
 	tokenCounterClient := token_counter.NewClient("http://" + cfg.TokenCounter.APIURL + ":" + strconv.Itoa(cfg.TokenCounter.Port))
 
+	// file storage client - configure upload directory and base URL
+	uploadDir := cfg.FileStorage.UploadDir                                    // Directory to store uploaded files
+	baseURL := "http://localhost:" + strconv.Itoa(cfg.HTTP.Port) + "/uploads" // Base URL to access files
+	fileTTL := time.Duration(cfg.FileStorage.TTLHours) * time.Hour            // Keep files for configured hours
+	fileStorageClient := file_storage.NewTemporaryFileStorage(uploadDir, baseURL, fileTTL)
+
 	// services
 	cardCraftAiService := services.NewCardCraftAiService(cardCraftAiClient)
 	tokenBillingService := services.NewTokenBillingService(tokenCounterClient, balanceStorage)
 	wbService := services.NewWbService(cfg.WB.GetCardListMaxAttempts, wbClient)
-	ozonService := services.NewOzonService(ozonClient)
+	fileUploadService := services.NewFileUploadService(fileStorageClient)
+	ozonService := services.NewOzonService(ozonClient, fileUploadService)
 
 	// usecases
 	createCardUsecase := usecases.NewCreateCardUsecase(cardCraftAiService, wbService, ozonService, tokenBillingService)
@@ -117,6 +125,9 @@ func NewApp() *App {
 	// Tinkoff payment endpoints
 	mux.HandleFunc("/payment/request", tinkoffHandler.ProcessPaymentRequestHandler)
 	mux.HandleFunc("/payment/notification", tinkoffHandler.TinkoffNotificationHandler)
+
+	// Serve uploaded files statically
+	mux.Handle("/uploads/", http.StripPrefix("/uploads/", http.FileServer(http.Dir(uploadDir))))
 
 	return &App{
 		cardCraftAiAPIURL: cfg.CardCraftAi.URL,
