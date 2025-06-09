@@ -6,6 +6,12 @@ type WBDimensions struct {
 	Width        *int32   `json:"width"`
 	Height       *int32   `json:"height"`
 	WeightBrutto *float64 `json:"weightBrutto"`
+
+	// Ozon specific fields
+	Depth         *int32 `json:"depth,omitempty"`         // Ozon depth (can be same as length)
+	DimensionUnit string `json:"dimensionUnit,omitempty"` // Ozon dimension unit (e.g., "mm")
+	Weight        *int32 `json:"weight,omitempty"`        // Ozon weight (can be same as weight_brutto)
+	WeightUnit    string `json:"weightUnit,omitempty"`    // Ozon weight unit (e.g., "g")
 }
 
 // WBSize represents product size information for the Wildberries API.

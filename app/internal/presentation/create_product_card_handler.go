@@ -58,16 +58,22 @@ func (h *CreateProductCardHandler) CreateProductCard(ctx context.Context, req *c
 
 		// Check for dimensions - must be present and non-zero
 		if req.Msg.Dimensions == nil {
-			return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("dimensions (length, width, height, weight_brutto) are required when ozon is true"))
-		}
-		if req.Msg.Dimensions.Length <= 0 || req.Msg.Dimensions.Width <= 0 || req.Msg.Dimensions.Height <= 0 || req.Msg.Dimensions.WeightBrutto <= 0 {
-			return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("dimensions (length, width, height, weight_brutto) must be greater than zero when ozon is true"))
+			return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("dimensions are required when ozon is true"))
 		}
 
-		// Check for price in sizes
-		// if len(req.Msg.Sizes) == 0 || req.Msg.Sizes[0].Price <= 0 {
-		// 	return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("price in sizes[0] is required and must be greater than zero when ozon is true"))
-		// }
+		// Check Ozon-specific dimension fields
+		if req.Msg.Dimensions.Depth <= 0 || req.Msg.Dimensions.Width <= 0 || req.Msg.Dimensions.Height <= 0 {
+			return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("depth, width, height must be greater than zero when ozon is true"))
+		}
+		if req.Msg.Dimensions.Weight <= 0 {
+			return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("weight must be greater than zero when ozon is true"))
+		}
+		if req.Msg.Dimensions.DimensionUnit == "" {
+			return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("dimension_unit is required when ozon is true (e.g., 'mm')"))
+		}
+		if req.Msg.Dimensions.WeightUnit == "" {
+			return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("weight_unit is required when ozon is true (e.g., 'g')"))
+		}
 	}
 
 	sizes := make([]*entities.WBSize, len(req.Msg.Sizes))
@@ -196,12 +202,27 @@ func createDimensions(dims *apiv1.Dimensions) *entities.WBDimensions {
 			Width:        nil,
 			Height:       nil,
 			WeightBrutto: nil,
+			Depth:        nil,
+			Weight:       nil,
 		}
 	}
-	return &entities.WBDimensions{
-		Length:       &dims.Length,
-		Width:        &dims.Width,
-		Height:       &dims.Height,
-		WeightBrutto: &dims.WeightBrutto,
+
+	result := &entities.WBDimensions{
+		Length:        &dims.Length,
+		Width:         &dims.Width,
+		Height:        &dims.Height,
+		WeightBrutto:  &dims.WeightBrutto,
+		DimensionUnit: dims.DimensionUnit,
+		WeightUnit:    dims.WeightUnit,
 	}
+
+	// Set Ozon-specific fields if provided
+	if dims.Depth > 0 {
+		result.Depth = &dims.Depth
+	}
+	if dims.Weight > 0 {
+		result.Weight = &dims.Weight
+	}
+
+	return result
 }

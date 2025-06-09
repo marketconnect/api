@@ -29,10 +29,16 @@ message CreateRequest {
 }
 
 message Dimensions {
-  int32 length = 1;
+  int32 length = 1; // For WB compatibility
   int32 width = 2;
   int32 height = 3;
-  double weight_brutto = 4;
+  double weight_brutto = 4; // For WB compatibility
+  
+  // Ozon specific fields
+  int32 depth = 5; // Ozon depth (can be same as length)
+  string dimension_unit = 6; // Ozon dimension unit (e.g., "mm")
+  int32 weight = 7; // Ozon weight (can be same as weight_brutto)
+  string weight_unit = 8; // Ozon weight unit (e.g., "g")
 }
 
 message Size {

@@ -219,11 +219,16 @@ func (x *CreateRequest) GetOzonApiKey() string {
 }
 
 type Dimensions struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Length        int32                  `protobuf:"varint,1,opt,name=length,proto3" json:"length,omitempty"`
-	Width         int32                  `protobuf:"varint,2,opt,name=width,proto3" json:"width,omitempty"`
-	Height        int32                  `protobuf:"varint,3,opt,name=height,proto3" json:"height,omitempty"`
-	WeightBrutto  float64                `protobuf:"fixed64,4,opt,name=weight_brutto,json=weightBrutto,proto3" json:"weight_brutto,omitempty"`
+	state        protoimpl.MessageState `protogen:"open.v1"`
+	Length       int32                  `protobuf:"varint,1,opt,name=length,proto3" json:"length,omitempty"` // For WB compatibility
+	Width        int32                  `protobuf:"varint,2,opt,name=width,proto3" json:"width,omitempty"`
+	Height       int32                  `protobuf:"varint,3,opt,name=height,proto3" json:"height,omitempty"`
+	WeightBrutto float64                `protobuf:"fixed64,4,opt,name=weight_brutto,json=weightBrutto,proto3" json:"weight_brutto,omitempty"` // For WB compatibility
+	// Ozon specific fields
+	Depth         int32  `protobuf:"varint,5,opt,name=depth,proto3" json:"depth,omitempty"`                                     // Ozon depth (can be same as length)
+	DimensionUnit string `protobuf:"bytes,6,opt,name=dimension_unit,json=dimensionUnit,proto3" json:"dimension_unit,omitempty"` // Ozon dimension unit (e.g., "mm")
+	Weight        int32  `protobuf:"varint,7,opt,name=weight,proto3" json:"weight,omitempty"`                                   // Ozon weight (can be same as weight_brutto)
+	WeightUnit    string `protobuf:"bytes,8,opt,name=weight_unit,json=weightUnit,proto3" json:"weight_unit,omitempty"`          // Ozon weight unit (e.g., "g")
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -284,6 +289,34 @@ func (x *Dimensions) GetWeightBrutto() float64 {
 		return x.WeightBrutto
 	}
 	return 0
+}
+
+func (x *Dimensions) GetDepth() int32 {
+	if x != nil {
+		return x.Depth
+	}
+	return 0
+}
+
+func (x *Dimensions) GetDimensionUnit() string {
+	if x != nil {
+		return x.DimensionUnit
+	}
+	return ""
+}
+
+func (x *Dimensions) GetWeight() int32 {
+	if x != nil {
+		return x.Weight
+	}
+	return 0
+}
+
+func (x *Dimensions) GetWeightUnit() string {
+	if x != nil {
+		return x.WeightUnit
+	}
+	return ""
 }
 
 type Size struct {
@@ -1301,13 +1334,18 @@ const file_api_v1_product_proto_rawDesc = "" +
 	"\x16wb_media_to_save_links\x18\x12 \x03(\tR\x12wbMediaToSaveLinks\x12+\n" +
 	"\x12ozon_api_client_id\x18\x13 \x01(\tR\x0fozonApiClientId\x12 \n" +
 	"\fozon_api_key\x18\x14 \x01(\tR\n" +
-	"ozonApiKey\"w\n" +
+	"ozonApiKey\"\xed\x01\n" +
 	"\n" +
 	"Dimensions\x12\x16\n" +
 	"\x06length\x18\x01 \x01(\x05R\x06length\x12\x14\n" +
 	"\x05width\x18\x02 \x01(\x05R\x05width\x12\x16\n" +
 	"\x06height\x18\x03 \x01(\x05R\x06height\x12#\n" +
-	"\rweight_brutto\x18\x04 \x01(\x01R\fweightBrutto\"f\n" +
+	"\rweight_brutto\x18\x04 \x01(\x01R\fweightBrutto\x12\x14\n" +
+	"\x05depth\x18\x05 \x01(\x05R\x05depth\x12%\n" +
+	"\x0edimension_unit\x18\x06 \x01(\tR\rdimensionUnit\x12\x16\n" +
+	"\x06weight\x18\a \x01(\x05R\x06weight\x12\x1f\n" +
+	"\vweight_unit\x18\b \x01(\tR\n" +
+	"weightUnit\"f\n" +
 	"\x04Size\x12\x1b\n" +
 	"\ttech_size\x18\x01 \x01(\tR\btechSize\x12\x17\n" +
 	"\awb_size\x18\x02 \x01(\tR\x06wbSize\x12\x14\n" +

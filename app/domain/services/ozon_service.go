@@ -76,48 +76,42 @@ func (ozs *ozonService) CreateCard(ctx context.Context, req *entities.ProductCar
 	}
 	log.Printf("[OZON DEBUG] SubjectID validation passed: %d", *ccaApiResponse.SubjectID)
 
-	if req.Dimensions == nil || req.Dimensions.Length == nil || req.Dimensions.Width == nil || req.Dimensions.Height == nil || req.Dimensions.WeightBrutto == nil {
-		log.Printf("[OZON DEBUG] Validation failed: Dimensions are incomplete")
+	if req.Dimensions == nil || req.Dimensions.Depth == nil || req.Dimensions.Width == nil || req.Dimensions.Height == nil || req.Dimensions.Weight == nil {
+		log.Printf("[OZON DEBUG] Validation failed: Ozon dimensions are incomplete")
 		log.Printf("[OZON DEBUG] Dimensions present: %t", req.Dimensions != nil)
 		if req.Dimensions != nil {
-			log.Printf("[OZON DEBUG] Length: %v, Width: %v, Height: %v, Weight: %v",
-				req.Dimensions.Length, req.Dimensions.Width, req.Dimensions.Height, req.Dimensions.WeightBrutto)
+			log.Printf("[OZON DEBUG] Depth: %v, Width: %v, Height: %v, Weight: %v",
+				req.Dimensions.Depth, req.Dimensions.Width, req.Dimensions.Height, req.Dimensions.Weight)
 		}
-		errMsg := `{"error":true,"errorText":"Dimensions (length, width, height, weight_brutto) are required and must be non-zero for Ozon integration"}`
+		errMsg := `{"error":true,"errorText":"Dimensions (depth, width, height, weight) are required and must be non-zero for Ozon integration"}`
 		ozonApiResponseJSON = &errMsg
-		return ozonApiResponseJSON, ozonRequestAttempted, fmt.Errorf("dimensions (length, width, height, weight_brutto) are required and must be non-zero for Ozon integration")
+		return ozonApiResponseJSON, ozonRequestAttempted, fmt.Errorf("dimensions (depth, width, height, weight) are required and must be non-zero for Ozon integration")
 	}
-	log.Printf("[OZON DEBUG] Dimensions validation passed: %dx%dx%d, weight: %f",
-		*req.Dimensions.Length, *req.Dimensions.Width, *req.Dimensions.Height, *req.Dimensions.WeightBrutto)
-
-	if len(req.Sizes) == 0 || req.Sizes[0].Price == 0 {
-		log.Printf("[OZON DEBUG] Validation failed: Sizes/Price issue")
-		log.Printf("[OZON DEBUG] Sizes count: %d", len(req.Sizes))
-		if len(req.Sizes) > 0 {
-			log.Printf("[OZON DEBUG] First size price: %d", req.Sizes[0].Price)
-		}
-		errMsg := `{"error":true,"errorText":"Price from Sizes[0] is required for Ozon integration"}`
-		ozonApiResponseJSON = &errMsg
-		return ozonApiResponseJSON, ozonRequestAttempted, fmt.Errorf("price from Sizes[0] is required for Ozon integration")
-	}
-	log.Printf("[OZON DEBUG] Price validation passed: %d", req.Sizes[0].Price)
+	log.Printf("[OZON DEBUG] Dimensions validation passed: %dx%dx%d, weight: %d",
+		*req.Dimensions.Depth, *req.Dimensions.Width, *req.Dimensions.Height, *req.Dimensions.Weight)
 
 	log.Printf("[OZON DEBUG] All validations passed, creating Ozon payload")
+
+	// Determine price from sizes if available, otherwise use a default
+	var price string = "0"
+	if len(req.Sizes) > 0 && req.Sizes[0].Price > 0 {
+		price = fmt.Sprintf("%d", req.Sizes[0].Price)
+	}
 
 	ozonItem := entities.OzonProductImportItem{
 		Name:                  ccaApiResponse.Title,
 		OfferID:               req.VendorCode,
 		DescriptionCategoryID: int64(*ccaApiResponse.SubjectID),
-		Price:                 fmt.Sprintf("%d", req.Sizes[0].Price),
+		Price:                 price,
 		Vat:                   "0.1", // Default VAT, consider making configurable
 		CurrencyCode:          "RUB", // Default currency
-		Depth:                 int64(*req.Dimensions.Length),
+		Depth:                 int64(*req.Dimensions.Depth),
 		Width:                 int64(*req.Dimensions.Width),
 		Height:                int64(*req.Dimensions.Height),
-		DimensionUnit:         "mm",                                // Default unit
-		Weight:                int64(*req.Dimensions.WeightBrutto), // Assuming WeightBrutto is in grams
-		WeightUnit:            "g",                                 // Default unit
-		Images:                req.WbMediaToSaveLinks,              // Use WB media links if available
+		DimensionUnit:         req.Dimensions.DimensionUnit,
+		Weight:                int64(*req.Dimensions.Weight),
+		WeightUnit:            req.Dimensions.WeightUnit,
+		Images:                req.WbMediaToSaveLinks, // Use WB media links if available
 		Attributes:            []entities.OzonProductAttribute{},
 	}
 
@@ -147,7 +141,7 @@ func (ozs *ozonService) CreateCard(ctx context.Context, req *entities.ProductCar
 		errBytes, _ := json.Marshal(errorResponse) // Ignore marshalling error for error response
 		responseStringToStore = string(errBytes)
 		ozonApiResponseJSON = &responseStringToStore
-		return ozonApiResponseJSON, ozonRequestAttempted, fmt.Errorf("ozon product import failed: %w", ozonErr)
+		return ozonApiResponseJSON, ozonRequestAttempted, fmt.Errorf("Ozon product import failed: %w", ozonErr)
 	} else {
 		log.Printf("Successfully called Ozon API. Response: %+v", ozonResp)
 		// Ozon's v3/product/import response doesn't have a top-level error field like WB.

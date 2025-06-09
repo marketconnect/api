@@ -18,8 +18,8 @@ curl -X POST http://45.141.76.230:8080/api.v1.ProductService/Create \
 
 echo -e "\n\n"
 
-# Test 2: Zero dimensions
-echo "Test 2: Zero dimensions"
+# Test 2: Zero Ozon dimensions
+echo "Test 2: Zero Ozon dimensions"
 curl -X POST http://45.141.76.230:8080/api.v1.ProductService/Create \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer test" \
@@ -31,18 +31,19 @@ curl -X POST http://45.141.76.230:8080/api.v1.ProductService/Create \
     "ozon_api_key": "test_key",
     "ozon_api_client_id": "test_client",
     "dimensions": {
-      "length": 0,
+      "depth": 0,
       "width": 0,
       "height": 0,
-      "weight_brutto": 0
-    },
-    "sizes": [{"price": 100}]
+      "weight": 0,
+      "dimension_unit": "mm",
+      "weight_unit": "g"
+    }
   }' | jq .
 
 echo -e "\n\n"
 
-# Test 3: Missing API credentials
-echo "Test 3: Missing API key"
+# Test 3: Missing dimension units
+echo "Test 3: Missing dimension units"
 curl -X POST http://45.141.76.230:8080/api.v1.ProductService/Create \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer test" \
@@ -51,14 +52,14 @@ curl -X POST http://45.141.76.230:8080/api.v1.ProductService/Create \
     "product_description": "Test Description", 
     "ozon": true,
     "vendor_code": "TEST123",
+    "ozon_api_key": "test_key",
     "ozon_api_client_id": "test_client",
     "dimensions": {
-      "length": 100,
+      "depth": 100,
       "width": 50,
       "height": 30,
-      "weight_brutto": 250
-    },
-    "sizes": [{"price": 100}]
+      "weight": 250
+    }
   }' | jq .
 
 echo -e "\n\n"
@@ -76,10 +77,11 @@ curl -X POST http://45.141.76.230:8080/api.v1.ProductService/Create \
     "ozon_api_key": "test_key",
     "ozon_api_client_id": "test_client",
     "dimensions": {
-      "length": 100,
+      "depth": 100,
       "width": 50,
       "height": 30,
-      "weight_brutto": 250
-    },
-    "sizes": [{"price": 1500}]
+      "weight": 250,
+      "dimension_unit": "mm",
+      "weight_unit": "g"
+    }
   }' | jq . 
