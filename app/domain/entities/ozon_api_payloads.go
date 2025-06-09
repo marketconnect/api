@@ -20,30 +20,32 @@ type OzonComplexAttribute struct {
 
 // OzonProductImportItem represents a single product item for Ozon's v3/product/import.
 type OzonProductImportItem struct {
-	Attributes            []OzonProductAttribute `json:"attributes"`
-	Barcode               string                 `json:"barcode,omitempty"`
-	DescriptionCategoryID int64                  `json:"description_category_id"`
-	ColorImage            string                 `json:"color_image,omitempty"`
-	ComplexAttributes     []OzonComplexAttribute `json:"complex_attributes,omitempty"`
-	CurrencyCode          string                 `json:"currency_code,omitempty"` // Default: RUB
-	Depth                 int64                  `json:"depth"`
-	DimensionUnit         string                 `json:"dimension_unit,omitempty"` // e.g., mm
-	Height                int64                  `json:"height"`
-	Images                []string               `json:"images,omitempty"`
-	Images360             []string               `json:"images360,omitempty"`
-	Name                  string                 `json:"name"`
-	OfferID               string                 `json:"offer_id"`
-	OldPrice              string                 `json:"old_price,omitempty"`
-	PdfList               []string               `json:"pdf_list,omitempty"` // Assuming URLs
-	Price                 string                 `json:"price"`
-	PrimaryImage          string                 `json:"primary_image,omitempty"`
-	Vat                   string                 `json:"vat"` // e.g., "0.1" for 10%
-	Weight                int64                  `json:"weight"`
-	WeightUnit            string                 `json:"weight_unit,omitempty"` // e.g., g
-	Width                 int64                  `json:"width"`
-	// NewDescriptionCategoryID int64 `json:"new_description_category_id,omitempty"`
-	// TypeID int64 `json:"type_id,omitempty"`
-	// Promotions []interface{} `json:"promotions,omitempty"` // Define if needed
+	Attributes               []OzonProductAttribute `json:"attributes"`
+	Barcode                  string                 `json:"barcode,omitempty"`
+	DescriptionCategoryID    int64                  `json:"description_category_id"` // REQUIRED
+	NewDescriptionCategoryID int64                  `json:"new_description_category_id,omitempty"`
+	ColorImage               string                 `json:"color_image,omitempty"`
+	ComplexAttributes        []OzonComplexAttribute `json:"complex_attributes,omitempty"`
+	CurrencyCode             string                 `json:"currency_code,omitempty"` // Default: RUB
+	Depth                    int32                  `json:"depth"`
+	DimensionUnit            string                 `json:"dimension_unit,omitempty"` // e.g., mm
+	GeoNames                 []string               `json:"geo_names,omitempty"`
+	Height                   int32                  `json:"height"`
+	Images                   []string               `json:"images,omitempty"`
+	Images360                []string               `json:"images360,omitempty"`
+	Name                     string                 `json:"name"`
+	OfferID                  string                 `json:"offer_id"`
+	OldPrice                 string                 `json:"old_price,omitempty"`
+	PdfList                  []interface{}          `json:"pdf_list,omitempty"` // PDF files list
+	Price                    string                 `json:"price"`
+	PrimaryImage             string                 `json:"primary_image,omitempty"`
+	Promotions               []interface{}          `json:"promotions,omitempty"` // Promotions
+	ServiceType              string                 `json:"service_type,omitempty"`
+	TypeID                   int64                  `json:"type_id"` // REQUIRED
+	Vat                      string                 `json:"vat"`     // e.g., "0.1" for 10%
+	Weight                   int32                  `json:"weight"`
+	WeightUnit               string                 `json:"weight_unit,omitempty"` // e.g., g
+	Width                    int32                  `json:"width"`
 }
 
 // OzonProductImportRequest is the request body for POST /v3/product/import.

@@ -102,17 +102,19 @@ func (ozs *ozonService) CreateCard(ctx context.Context, req *entities.ProductCar
 		Name:                  ccaApiResponse.Title,
 		OfferID:               req.VendorCode,
 		DescriptionCategoryID: int64(*ccaApiResponse.SubjectID),
+		TypeID:                int64(*ccaApiResponse.TypeID),
 		Price:                 price,
 		Vat:                   "0.1", // Default VAT, consider making configurable
 		CurrencyCode:          "RUB", // Default currency
-		Depth:                 int64(*req.Dimensions.Depth),
-		Width:                 int64(*req.Dimensions.Width),
-		Height:                int64(*req.Dimensions.Height),
+		Depth:                 int32(*req.Dimensions.Depth),
+		Width:                 int32(*req.Dimensions.Width),
+		Height:                int32(*req.Dimensions.Height),
 		DimensionUnit:         req.Dimensions.DimensionUnit,
-		Weight:                int64(*req.Dimensions.Weight),
+		Weight:                int32(*req.Dimensions.Weight),
 		WeightUnit:            req.Dimensions.WeightUnit,
-		Images:                req.WbMediaToSaveLinks, // Use WB media links if available
+		Images:                req.WbMediaToSaveLinks,
 		Attributes:            []entities.OzonProductAttribute{},
+		ComplexAttributes:     []entities.OzonComplexAttribute{},
 	}
 
 	if len(req.Sizes) > 0 && len(req.Sizes[0].Skus) > 0 {

@@ -39,5 +39,5 @@ lint:
 	buf lint
 
 format:
-	buf format -w
+	buf format -w 
 
