@@ -44,8 +44,12 @@ message Dimensions {
 message Size {
   string tech_size = 1;
   string wb_size = 2;
-  int32 price = 3;
+  int32 price = 3; // Primary price in kopecks (used as fallback if marketplace-specific prices not provided)
   repeated string skus = 4;
+  
+  // Marketplace-specific prices (in kopecks for consistency)
+  optional int32 wb_price = 5; // Price for WildBerries in kopecks
+  optional int32 ozon_price = 6; // Price for Ozon in kopecks
 }
 
 message WBMediaFileToUpload {

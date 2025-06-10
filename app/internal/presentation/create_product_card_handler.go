@@ -79,11 +79,40 @@ func (h *CreateProductCardHandler) CreateProductCard(ctx context.Context, req *c
 
 	sizes := make([]*entities.WBSize, len(req.Msg.Sizes))
 	for i, s := range req.Msg.Sizes {
-		sizes[i] = &entities.WBSize{
+		size := &entities.WBSize{
 			TechSize: s.TechSize,
 			WbSize:   s.WbSize,
-			Price:    int(s.Price),
+			Price:    int(s.Price), // Keep for backward compatibility
 			Skus:     s.Skus,
+		}
+
+		// Set marketplace-specific prices if provided
+		if s.WbPrice != nil {
+			size.WbPrice = s.WbPrice
+		}
+		if s.OzonPrice != nil {
+			size.OzonPrice = s.OzonPrice
+		}
+
+		sizes[i] = size
+	}
+
+	// Validate that prices are provided for enabled marketplaces
+	if req.Msg.GetWb() && len(sizes) > 0 {
+		for i, size := range sizes {
+			if size.WbPrice == nil && size.Price == 0 {
+				return nil, connect.NewError(connect.CodeInvalidArgument,
+					fmt.Errorf("price (wb_price or general price) is required for size %d when WildBerries integration is enabled", i))
+			}
+		}
+	}
+
+	if req.Msg.GetOzon() && len(sizes) > 0 {
+		for i, size := range sizes {
+			if size.OzonPrice == nil && size.Price == 0 {
+				return nil, connect.NewError(connect.CodeInvalidArgument,
+					fmt.Errorf("price (ozon_price or general price) is required for size %d when Ozon integration is enabled", i))
+			}
 		}
 	}
 

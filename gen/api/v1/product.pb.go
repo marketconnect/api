@@ -320,11 +320,14 @@ func (x *Dimensions) GetWeightUnit() string {
 }
 
 type Size struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	TechSize      string                 `protobuf:"bytes,1,opt,name=tech_size,json=techSize,proto3" json:"tech_size,omitempty"`
-	WbSize        string                 `protobuf:"bytes,2,opt,name=wb_size,json=wbSize,proto3" json:"wb_size,omitempty"`
-	Price         int32                  `protobuf:"varint,3,opt,name=price,proto3" json:"price,omitempty"`
-	Skus          []string               `protobuf:"bytes,4,rep,name=skus,proto3" json:"skus,omitempty"`
+	state    protoimpl.MessageState `protogen:"open.v1"`
+	TechSize string                 `protobuf:"bytes,1,opt,name=tech_size,json=techSize,proto3" json:"tech_size,omitempty"`
+	WbSize   string                 `protobuf:"bytes,2,opt,name=wb_size,json=wbSize,proto3" json:"wb_size,omitempty"`
+	Price    int32                  `protobuf:"varint,3,opt,name=price,proto3" json:"price,omitempty"` // Primary price in kopecks (used as fallback if marketplace-specific prices not provided)
+	Skus     []string               `protobuf:"bytes,4,rep,name=skus,proto3" json:"skus,omitempty"`
+	// Marketplace-specific prices (in kopecks for consistency)
+	WbPrice       *int32 `protobuf:"varint,5,opt,name=wb_price,json=wbPrice,proto3,oneof" json:"wb_price,omitempty"`       // Price for WildBerries in kopecks
+	OzonPrice     *int32 `protobuf:"varint,6,opt,name=ozon_price,json=ozonPrice,proto3,oneof" json:"ozon_price,omitempty"` // Price for Ozon in kopecks
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -385,6 +388,20 @@ func (x *Size) GetSkus() []string {
 		return x.Skus
 	}
 	return nil
+}
+
+func (x *Size) GetWbPrice() int32 {
+	if x != nil && x.WbPrice != nil {
+		return *x.WbPrice
+	}
+	return 0
+}
+
+func (x *Size) GetOzonPrice() int32 {
+	if x != nil && x.OzonPrice != nil {
+		return *x.OzonPrice
+	}
+	return 0
 }
 
 type WBMediaFileToUpload struct {
@@ -1345,12 +1362,17 @@ const file_api_v1_product_proto_rawDesc = "" +
 	"\x0edimension_unit\x18\x06 \x01(\tR\rdimensionUnit\x12\x16\n" +
 	"\x06weight\x18\a \x01(\x05R\x06weight\x12\x1f\n" +
 	"\vweight_unit\x18\b \x01(\tR\n" +
-	"weightUnit\"f\n" +
+	"weightUnit\"\xc6\x01\n" +
 	"\x04Size\x12\x1b\n" +
 	"\ttech_size\x18\x01 \x01(\tR\btechSize\x12\x17\n" +
 	"\awb_size\x18\x02 \x01(\tR\x06wbSize\x12\x14\n" +
 	"\x05price\x18\x03 \x01(\x05R\x05price\x12\x12\n" +
-	"\x04skus\x18\x04 \x03(\tR\x04skus\"n\n" +
+	"\x04skus\x18\x04 \x03(\tR\x04skus\x12\x1e\n" +
+	"\bwb_price\x18\x05 \x01(\x05H\x00R\awbPrice\x88\x01\x01\x12\"\n" +
+	"\n" +
+	"ozon_price\x18\x06 \x01(\x05H\x01R\tozonPrice\x88\x01\x01B\v\n" +
+	"\t_wb_priceB\r\n" +
+	"\v_ozon_price\"n\n" +
 	"\x13WBMediaFileToUpload\x12\x18\n" +
 	"\acontent\x18\x01 \x01(\fR\acontent\x12\x1a\n" +
 	"\bfilename\x18\x02 \x01(\tR\bfilename\x12!\n" +
@@ -1515,6 +1537,7 @@ func file_api_v1_product_proto_init() {
 	if File_api_v1_product_proto != nil {
 		return
 	}
+	file_api_v1_product_proto_msgTypes[2].OneofWrappers = []any{}
 	file_api_v1_product_proto_msgTypes[4].OneofWrappers = []any{}
 	file_api_v1_product_proto_msgTypes[5].OneofWrappers = []any{}
 	file_api_v1_product_proto_msgTypes[6].OneofWrappers = []any{}

@@ -171,8 +171,14 @@ func (ozs *ozonService) CreateCard(ctx context.Context, req *entities.ProductCar
 
 	// Determine price from sizes if available, otherwise use a default minimum price
 	var price string = "100" // Minimum price 100 kopecks = 1 ruble
-	if len(req.Sizes) > 0 && req.Sizes[0].Price > 0 {
-		price = fmt.Sprintf("%d", req.Sizes[0].Price)
+	if len(req.Sizes) > 0 {
+		// Prefer Ozon-specific price, fallback to general price
+		if req.Sizes[0].OzonPrice != nil && *req.Sizes[0].OzonPrice > 0 {
+			price = fmt.Sprintf("%d", *req.Sizes[0].OzonPrice)
+		} else if req.Sizes[0].Price > 0 {
+			price = fmt.Sprintf("%d", req.Sizes[0].Price)
+		}
+		log.Printf("[OZON DEBUG] Using price: %s kopecks for Ozon", price)
 	}
 
 	ozonItem := entities.OzonProductImportItem{

@@ -24,7 +24,17 @@ cat > payload.json <<EOF
     "weight_unit": "g"
   },
   "wb": true,
-  "vendor_code": "badge",
+  "vendor_code": "badge_2",
+  "sizes": [
+    {
+      "tech_size": "0",
+      "wb_size": "Универсальный",
+      "price": 15000,
+      "wb_price": 12000,
+      "ozon_price": 18000,
+      "skus": ["4627180440022"]
+    }
+  ],
   "wb_media_to_upload_files": [
     {
       "content": "$BASE64_CONTENT_1",

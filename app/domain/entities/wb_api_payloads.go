@@ -18,8 +18,12 @@ type WBDimensions struct {
 type WBSize struct {
 	TechSize string   `json:"techSize"`
 	WbSize   string   `json:"wbSize,omitempty"`
-	Price    int      `json:"price,omitempty"`
+	Price    int      `json:"price,omitempty"` // Primary price in kopecks (used as fallback if marketplace-specific prices not provided)
 	Skus     []string `json:"skus"`
+
+	// Marketplace-specific prices (in kopecks for consistency)
+	WbPrice   *int32 `json:"wbPrice,omitempty"`   // Price for WildBerries in kopecks
+	OzonPrice *int32 `json:"ozonPrice,omitempty"` // Price for Ozon in kopecks
 }
 
 // WBCharacteristic represents a product characteristic for the Wildberries API.

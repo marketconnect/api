@@ -227,10 +227,18 @@ func (wbs *WbService) CreateCard(ctx context.Context, req *entities.ProductCard,
 		Sizes:       make([]entities.WBSize, len(req.Sizes)),
 	}
 	for i, s := range req.Sizes {
+		// Determine price for WildBerries - prefer WB-specific price, fallback to general price
+		var price int
+		if s.WbPrice != nil {
+			price = int(*s.WbPrice)
+		} else {
+			price = s.Price
+		}
+
 		wbVariant.Sizes[i] = entities.WBSize{
 			TechSize: s.TechSize,
 			WbSize:   s.WbSize,
-			Price:    int(s.Price),
+			Price:    price,
 			Skus:     s.Skus,
 		}
 	}
