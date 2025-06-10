@@ -110,6 +110,18 @@ func (ozs *ozonService) CreateCard(ctx context.Context, req *entities.ProductCar
 	// Process images for Ozon - combine uploaded files and existing links
 	var ozonImageURLs []string
 
+	// Debug: Log the input images
+	log.Printf("[OZON DEBUG] Input image data - WbMediaToSaveLinks: %d, WbMediaToUploadFiles: %d",
+		len(req.GetWbMediaToSaveLinks()), len(req.GetWbMediaToUploadFiles()))
+
+	for i, link := range req.GetWbMediaToSaveLinks() {
+		log.Printf("[OZON DEBUG] WbMediaToSaveLinks[%d]: %s", i, link)
+	}
+
+	for i, file := range req.GetWbMediaToUploadFiles() {
+		log.Printf("[OZON DEBUG] WbMediaToUploadFiles[%d]: filename=%s, size=%d", i, file.Filename, len(file.Content))
+	}
+
 	// First, add any existing WbMediaToSaveLinks (already URL links)
 	if len(req.GetWbMediaToSaveLinks()) > 0 {
 		log.Printf("[OZON DEBUG] Using %d existing image links from WbMediaToSaveLinks", len(req.GetWbMediaToSaveLinks()))
@@ -122,19 +134,35 @@ func (ozs *ozonService) CreateCard(ctx context.Context, req *entities.ProductCar
 
 		uploadedURLs, err := ozs.fileUploadService.UploadWBMediaFiles(ctx, req.GetWbMediaToUploadFiles())
 		if err != nil {
-			log.Printf("[OZON DEBUG] Warning: Failed to upload some files for Ozon: %v", err)
-			// Continue with partial URLs if some uploads succeeded
+			log.Printf("[OZON DEBUG] ERROR: File upload service failed: %v", err)
+			// Don't continue on error - this is critical for Ozon
+			errMsg := `{"error":true,"errorText":"Failed to upload image files for Ozon: ` + err.Error() + `"}`
+			ozonApiResponseJSON = &errMsg
+			return ozonApiResponseJSON, ozonRequestAttempted, fmt.Errorf("failed to upload image files for Ozon: %w", err)
+		}
+
+		log.Printf("[OZON DEBUG] File upload service returned %d URLs", len(uploadedURLs))
+		for i, url := range uploadedURLs {
+			log.Printf("[OZON DEBUG] Uploaded URL[%d]: %s", i, url)
 		}
 
 		if len(uploadedURLs) > 0 {
 			log.Printf("[OZON DEBUG] Successfully uploaded %d files, adding URLs to Ozon images", len(uploadedURLs))
 			ozonImageURLs = append(ozonImageURLs, uploadedURLs...)
 		} else {
-			log.Printf("[OZON DEBUG] No files were successfully uploaded")
+			log.Printf("[OZON DEBUG] WARNING: File upload service returned 0 URLs despite %d input files", len(req.GetWbMediaToUploadFiles()))
+			// This is suspicious - let's not proceed with empty images for Ozon
+			errMsg := `{"error":true,"errorText":"No images were successfully uploaded for Ozon despite having input files"}`
+			ozonApiResponseJSON = &errMsg
+			return ozonApiResponseJSON, ozonRequestAttempted, fmt.Errorf("no images were successfully uploaded for Ozon despite having %d input files", len(req.GetWbMediaToUploadFiles()))
 		}
 	}
 
 	log.Printf("[OZON DEBUG] Total images for Ozon: %d", len(ozonImageURLs))
+	for i, url := range ozonImageURLs {
+		log.Printf("[OZON DEBUG] Final Ozon image[%d]: %s", i, url)
+	}
+
 	if len(ozonImageURLs) == 0 {
 		log.Printf("[OZON DEBUG] Warning: No images available for Ozon product")
 	}
@@ -166,6 +194,10 @@ func (ozs *ozonService) CreateCard(ctx context.Context, req *entities.ProductCar
 		ComplexAttributes:     []entities.OzonComplexAttribute{},
 	}
 
+	// Debug: Log the final ozonItem structure before adding to payload
+	log.Printf("[OZON DEBUG] Created ozonItem with %d images", len(ozonItem.Images))
+	log.Printf("[OZON DEBUG] ozonItem.Images: %v", ozonItem.Images)
+
 	if len(req.Sizes) > 0 && len(req.Sizes[0].Skus) > 0 {
 		ozonItem.Barcode = req.Sizes[0].Skus[0]
 	}
@@ -186,6 +218,13 @@ func (ozs *ozonService) CreateCard(ctx context.Context, req *entities.ProductCar
 	}
 
 	ozonPayload := entities.OzonProductImportRequest{Items: []entities.OzonProductImportItem{ozonItem}}
+
+	// Debug: Log the final payload structure
+	log.Printf("[OZON DEBUG] Final payload items count: %d", len(ozonPayload.Items))
+	if len(ozonPayload.Items) > 0 {
+		log.Printf("[OZON DEBUG] Final payload item[0] images count: %d", len(ozonPayload.Items[0].Images))
+		log.Printf("[OZON DEBUG] Final payload item[0] images: %v", ozonPayload.Items[0].Images)
+	}
 
 	log.Printf("Attempting to import product to Ozon with ClientID: %s", req.GetOzonApiClientId())
 	ozonResp, ozonErr := ozs.ozonClient.ImportProductsV3(ctx, req.GetOzonApiClientId(), req.GetOzonApiKey(), ozonPayload)

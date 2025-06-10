@@ -21,7 +21,9 @@ type TemporaryFileStorage struct {
 func NewTemporaryFileStorage(uploadDir, baseURL string, fileTTL time.Duration) *TemporaryFileStorage {
 	// Create upload directory if it doesn't exist
 	if err := os.MkdirAll(uploadDir, 0755); err != nil {
-		log.Printf("Warning: Failed to create upload directory %s: %v", uploadDir, err)
+		log.Printf("ERROR: Failed to create upload directory %s: %v", uploadDir, err)
+	} else {
+		log.Printf("[FILE STORAGE] Created/verified upload directory: %s", uploadDir)
 	}
 
 	tfs := &TemporaryFileStorage{
@@ -29,6 +31,8 @@ func NewTemporaryFileStorage(uploadDir, baseURL string, fileTTL time.Duration) *
 		baseURL:   strings.TrimSuffix(baseURL, "/"),
 		fileTTL:   fileTTL,
 	}
+
+	log.Printf("[FILE STORAGE] Initialized TemporaryFileStorage: uploadDir=%s, baseURL=%s, TTL=%v", uploadDir, tfs.baseURL, fileTTL)
 
 	// Start background cleanup routine
 	go tfs.startCleanupRoutine()
@@ -39,10 +43,15 @@ func NewTemporaryFileStorage(uploadDir, baseURL string, fileTTL time.Duration) *
 func (tfs *TemporaryFileStorage) UploadFiles(ctx context.Context, files []entities.FileUploadRequest) ([]entities.FileUploadResult, error) {
 	results := make([]entities.FileUploadResult, len(files))
 
+	log.Printf("[FILE STORAGE] Starting upload of %d files to %s", len(files), tfs.uploadDir)
+
 	for i, file := range files {
+		log.Printf("[FILE STORAGE] Processing file %d/%d: %s (size: %d bytes)", i+1, len(files), file.Filename, len(file.Content))
+
 		// Generate unique filename
 		uniqueFilename, err := tfs.generateUniqueFilename(file.Filename)
 		if err != nil {
+			log.Printf("[FILE STORAGE] ERROR: Failed to generate unique filename for %s: %v", file.Filename, err)
 			results[i] = entities.FileUploadResult{
 				Filename: file.Filename,
 				Error:    fmt.Errorf("failed to generate unique filename: %w", err),
@@ -52,9 +61,11 @@ func (tfs *TemporaryFileStorage) UploadFiles(ctx context.Context, files []entiti
 
 		// Full path for the file
 		filePath := filepath.Join(tfs.uploadDir, uniqueFilename)
+		log.Printf("[FILE STORAGE] Writing file to: %s", filePath)
 
 		// Write file to disk
 		if err := os.WriteFile(filePath, file.Content, 0644); err != nil {
+			log.Printf("[FILE STORAGE] ERROR: Failed to write file %s to %s: %v", file.Filename, filePath, err)
 			results[i] = entities.FileUploadResult{
 				Filename: file.Filename,
 				Error:    fmt.Errorf("failed to write file to disk: %w", err),
@@ -71,9 +82,10 @@ func (tfs *TemporaryFileStorage) UploadFiles(ctx context.Context, files []entiti
 			Error:    nil,
 		}
 
-		log.Printf("Successfully uploaded temporary file: %s -> %s (TTL: %v)", file.Filename, publicURL, tfs.fileTTL)
+		log.Printf("[FILE STORAGE] Successfully uploaded temporary file: %s -> %s (TTL: %v)", file.Filename, publicURL, tfs.fileTTL)
 	}
 
+	log.Printf("[FILE STORAGE] Upload batch completed: %d files processed", len(files))
 	return results, nil
 }
 

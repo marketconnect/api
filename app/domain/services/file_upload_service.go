@@ -72,10 +72,11 @@ func (fus *FileUploadService) UploadWBMediaFiles(ctx context.Context, wbFiles []
 
 	if len(uploadErrors) > 0 {
 		log.Printf("[FILE UPLOAD] Upload completed with %d errors out of %d files", len(uploadErrors), len(wbFiles))
-		// Return partial success - URLs that worked
-		if len(urls) > 0 {
-			log.Printf("[FILE UPLOAD] Returning %d successful URLs despite errors", len(urls))
+		// For Ozon, we need successful uploads - return error if no files uploaded successfully
+		if len(urls) == 0 {
+			return nil, fmt.Errorf("all file uploads failed: %v", uploadErrors)
 		}
+		log.Printf("[FILE UPLOAD] Returning %d successful URLs despite errors", len(urls))
 	} else {
 		log.Printf("[FILE UPLOAD] All %d files uploaded successfully", len(wbFiles))
 	}
