@@ -24,7 +24,7 @@ cat > payload.json <<EOF
     "weight_unit": "g"
   },
   "wb": true,
-  "vendor_code": "testCode",
+  "vendor_code": "badge",
   "wb_media_to_upload_files": [
     {
       "content": "$BASE64_CONTENT_1",
@@ -41,7 +41,7 @@ cat > payload.json <<EOF
 EOF
 
 # Send it
-curl -X POST http://45.141.76.230:8080/api.v1.ProductService/Create \
+curl -X POST https://api.mcpconnect.ru/api.v1.ProductService/Create \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer test" \
   -d @payload.json
