@@ -5,7 +5,9 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
 	"api/app/domain/services"
@@ -61,9 +63,34 @@ func NewApp() *App {
 	tokenCounterClient := token_counter.NewClient("http://" + cfg.TokenCounter.APIURL + ":" + strconv.Itoa(cfg.TokenCounter.Port))
 
 	// file storage client - configure upload directory and base URL
-	uploadDir := cfg.FileStorage.UploadDir                                    // Directory to store uploaded files
-	baseURL := "http://localhost:" + strconv.Itoa(cfg.HTTP.Port) + "/uploads" // Base URL to access files
-	fileTTL := time.Duration(cfg.FileStorage.TTLHours) * time.Hour            // Keep files for configured hours
+	uploadDir := cfg.FileStorage.UploadDir // Directory to store uploaded files
+
+	// Generate the correct URL path from upload directory
+	var urlPath string
+	if strings.HasPrefix(uploadDir, "./") {
+		// Remove "./" prefix for URL path: "./uploads" -> "/uploads"
+		urlPath = "/" + strings.TrimPrefix(uploadDir, "./")
+	} else if strings.HasPrefix(uploadDir, "/") {
+		// Absolute path - use last component for URL: "/var/uploads" -> "/uploads"
+		urlPath = "/" + filepath.Base(uploadDir)
+	} else {
+		// Relative path - use as URL path: "uploads" -> "/uploads"
+		urlPath = "/" + uploadDir
+	}
+
+	// Determine base URL - use configured public URL or fallback to localhost
+	var baseURL string
+	if cfg.FileStorage.BaseURL != "" {
+		// Use configured public URL (for production): "https://myapi.com" + "/uploads"
+		baseURL = strings.TrimSuffix(cfg.FileStorage.BaseURL, "/") + urlPath
+		log.Printf("Using configured public baseURL for file storage: %s", baseURL)
+	} else {
+		// Fallback to localhost (for development)
+		baseURL = "http://localhost:" + strconv.Itoa(cfg.HTTP.Port) + urlPath
+		log.Printf("WARNING: Using localhost baseURL for file storage: %s - Set FILE_STORAGE_BASE_URL for production!", baseURL)
+	}
+
+	fileTTL := time.Duration(cfg.FileStorage.TTLMinutes) * time.Minute // Keep files for configured hours
 	fileStorageClient := file_storage.NewTemporaryFileStorage(uploadDir, baseURL, fileTTL)
 
 	// services
@@ -126,8 +153,8 @@ func NewApp() *App {
 	mux.HandleFunc("/payment/request", tinkoffHandler.ProcessPaymentRequestHandler)
 	mux.HandleFunc("/payment/notification", tinkoffHandler.TinkoffNotificationHandler)
 
-	// Serve uploaded files statically
-	mux.Handle("/uploads/", http.StripPrefix("/uploads/", http.FileServer(http.Dir(uploadDir))))
+	// Serve uploaded files statically - use the same URL path as generated above
+	mux.Handle(urlPath+"/", http.StripPrefix(urlPath+"/", http.FileServer(http.Dir(uploadDir))))
 
 	return &App{
 		cardCraftAiAPIURL: cfg.CardCraftAi.URL,

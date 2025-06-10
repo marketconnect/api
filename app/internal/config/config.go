@@ -26,8 +26,9 @@ type Config struct {
 		Port int `env:"PORT" env-default:"8080"`
 	}
 	FileStorage struct {
-		UploadDir string `env:"FILE_STORAGE_UPLOAD_DIR" env-default:"./uploads"`
-		TTLHours  int    `env:"FILE_STORAGE_TTL_HOURS" env-default:"2"`
+		UploadDir  string `env:"FILE_STORAGE_UPLOAD_DIR" env-default:"./uploads"`
+		TTLMinutes int    `env:"FILE_STORAGE_TTL_MINUTES" env-default:"10"`
+		BaseURL    string `env:"FILE_STORAGE_BASE_URL" env-required:"true"`
 	}
 	PostgreSQL struct {
 		Database string `env:"PG_DATABASE" env-required:"true"`
