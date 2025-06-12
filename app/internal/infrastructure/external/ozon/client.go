@@ -34,7 +34,7 @@ func (c *Client) ImportProductsV3(ctx context.Context, clientID, apiKey string, 
 	if apiKey == "" {
 		return nil, fmt.Errorf("ozon Api-Key is required")
 	}
-
+	return nil, nil
 	payloadBytes, err := json.Marshal(request)
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal Ozon product import request: %w", err)

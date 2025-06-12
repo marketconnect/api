@@ -39,12 +39,12 @@ cat > payload.json <<EOF
     {
       "content": "$BASE64_CONTENT_1",
       "filename": "photo1.jpg",
-      "photo_number": 1
+      "photo_number": 2
     },
     {
       "content": "$BASE64_CONTENT_2",
       "filename": "photo2.jpg",
-      "photo_number": 2
+      "photo_number": 1
     }
   ]
 }
