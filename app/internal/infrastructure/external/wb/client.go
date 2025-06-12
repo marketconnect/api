@@ -30,7 +30,7 @@ func (c *WBClient) UploadWBCard(ctx context.Context, wbPayload entities.WBCardUp
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal Wildberries card payload: %w", err)
 	}
-
+	return nil, nil
 	uploadURL := fmt.Sprintf("%s/content/v2/cards/upload", wildberriesAPIHost)
 	log.Printf("Uploading card to Wildberries: %s, Payload: %s", uploadURL, string(payloadBytes))
 
